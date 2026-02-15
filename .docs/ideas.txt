@@ -1,0 +1,48 @@
+## RECIPE TAGS (recipe_tags collection)
+Key format: camelCase | Text format: French description
+
+Proposed Tags (Descriptive - can have multiple per recipe):
+- tartinades | Tartinades
+- entree | Entrée
+- plat | Plat
+- dessert | Dessert
+- viande | Viande
+- fromage | Fromage
+- salade | Salade
+- sauce | Sauce
+- comfortFood | Plat réconfortant
+- leger | Léger
+- chaud | Chaud
+- froid | Froid
+- sandwich | Sandwich
+- soupe | Soupe
+- pickles | Pickles
+- feculent | Féculent
+- legumineuse | Légumineuse
+- poisson | Poisson
+- fruits | Fruits
+- legumes | Légumes
+- pates | Pâtes
+- riz | Riz
+
+STATUS: [ ] CONFIRM / [ ] MODIFY
+
+
+## DIETS (diets collection)
+Key format: camelCase | Text format: French description
+
+Proposed Diets:
+
+- vegetarian | Végétarien
+- vegan | Végan
+- glutenFree | Sans gluten
+- dairyFree | Sans lactose
+
+
+STATUS: [ ] CONFIRM / [ ] MODIFY
+
+
+## NOTES
+- Using key field instead of id for static collections
+- Will need to update MCP server if necessary
+- Creating items via POST calls after confirmation

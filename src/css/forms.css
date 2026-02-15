@@ -1,0 +1,53 @@
+/* forms.css - Form element base styles */
+
+input,
+textarea,
+select {
+    border: 1px solid var(--border-medium);
+    border-radius: 4px;
+    padding: 8px 12px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border-color 0.15s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-tertiary);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-weight: var(--font-medium);
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+label {
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+}
+
+input.translucide {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--beige);
+    background-color: rgba(0, 0, 0, 0.042);
+    outline: none;
+    border: none;
+    border-bottom: 1px solid var(--beige);
+}

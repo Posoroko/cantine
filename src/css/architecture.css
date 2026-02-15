@@ -1,0 +1,5 @@
+/* architecture.css - App shell layout styles */
+
+.appBox {
+    background-color: var(--bg-primary);
+}
