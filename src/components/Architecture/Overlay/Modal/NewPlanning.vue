@@ -3,7 +3,6 @@ import type { Item_PlanningSlot } from '@/types/directusDataModel'
 
 import Title from '@/components/Architecture/Overlay/Modal/Title.vue'
 import ListItem from '@/components/Cards/ListItem.vue'
-import Icon from '@/components/Icon/Main.vue'
 import { appAssetStore } from '@/composables/appAssets'
 import { dbPost } from '@/composables/fetch'
 import { loadCurrentEvent, currentEventStore } from '@/composables/currentEvent'
