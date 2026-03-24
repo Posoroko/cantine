@@ -21,8 +21,8 @@ const services = computed(() => {
 
     return props.day.services.map(service => ({
         ...service,
-        text: service.slot?.text || '',
-        icon: service.slot?.icon || ''
+        text: (service.slot as any)?.text || '',
+        icon: (service.slot as any)?.icon || ''
     }))
 })
 
@@ -39,7 +39,7 @@ const handleServiceClick = (service: Item_Service) => {
 
 const handleAddService = async () => {
     const existingSlotKeys = props.day.services
-        ?.map(s => typeof s.slot === 'string' ? s.slot : s.slot?.key)
+        ?.map(s => typeof s.slot === 'string' ? s.slot : (s.slot as any)?.key)
         .filter(Boolean) || []
 
     await showModal(

@@ -58,7 +58,7 @@ async function dbFetch<T>(p: {
     // Handle empty responses (e.g., DELETE requests returning 204 No Content)
     const text = await response.text()
     if (!text) {
-        return { data: null }
+        return { data: null as unknown as T }
     }
 
     const res = JSON.parse(text)

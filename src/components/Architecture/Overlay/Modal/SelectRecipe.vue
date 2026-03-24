@@ -19,7 +19,7 @@ const filteredRecipes = computed(() => {
     if (!searchQuery.value) return recipes.value
 
     const query = searchQuery.value.toLowerCase()
-    return recipes.value.filter(recipe => recipe.name.toLowerCase().includes(query))
+    return recipes.value.filter(recipe => recipe.name?.toLowerCase().includes(query))
 })
 
 async function fetchRecipes() {
@@ -30,10 +30,10 @@ async function fetchRecipes() {
             sort: 'name'
         }
     })
-    recipes.value = data
+    recipes.value = data as Item_Recipe[]
 }
 
-function selectRecipe(recipe) {
+function selectRecipe(recipe: Item_Recipe) {
     confirm(recipe)
 }
 

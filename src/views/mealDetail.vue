@@ -16,7 +16,7 @@ const previousPage = computed(() => {
     return route.query.previousPage || route.path
 })
 
-const mealId = computed(() => parseInt(route.params.mealId))
+const mealId = computed(() => parseInt(route.params.mealId as string))
 
 const meal = computed(() => {
     if (!currentEventStore.value) return null
@@ -32,26 +32,29 @@ const meal = computed(() => {
     return eventMeal || null
 })
 
-const recipe = computed(() => meal.value?.recipe || null)
+const recipe = computed(() => (meal.value?.recipe || null) as any)
 
 const serviceDietCounts = computed(() => {
-    if (!meal.value?.service?.dietCounts) return []
-    return meal.value.service.dietCounts
+    if (!meal.value?.service || typeof meal.value.service === 'number') return []
+    const service = meal.value.service as any
+    if (!service.dietCounts) return []
+    return service.dietCounts
 })
 
 const mealGuestCount = computed(() => {
     const targetIds = meal.value?.targetDiets?.map(td => td.dietCount) || []
     if (!targetIds.length) {
-        return serviceDietCounts.value.reduce((sum, dc) => sum + dc.count, 0)
+        return serviceDietCounts.value.reduce((sum: number, dc: any) => sum + dc.count, 0)
     }
     return serviceDietCounts.value
-        .filter(dc => targetIds.includes(dc.id))
-        .reduce((sum, dc) => sum + dc.count, 0)
+        .filter((dc: any) => targetIds.includes(dc.id))
+        .reduce((sum: number, dc: any) => sum + dc.count, 0)
 })
 
 const scaleFactor = computed(() => {
-    if (!recipe.value?.servings || !mealGuestCount.value) return 1
-    return mealGuestCount.value / recipe.value.servings
+    const rec = recipe.value as any
+    if (!rec?.servings || !mealGuestCount.value) return 1
+    return mealGuestCount.value / rec.servings
 })
 
 function scaledQuantity(quantity: string | null): string {
@@ -69,7 +72,7 @@ function getUnitText(unitKey: string | null): string {
 }
 
 function goBack() {
-    router.push(previousPage.value)
+    router.push(previousPage.value as string)
 }
 </script>
 
@@ -98,7 +101,7 @@ function goBack() {
                 </Icon>
 
                 <h1 class="title">
-                    {{ meal.recipe?.name || 'Sans recette' }}
+                    {{ recipe?.name || 'Sans recette' }}
                 </h1>
 
                 <span

@@ -11,8 +11,8 @@ export function useIngredientsList() {
     async function fetchAll() {
         isLoading.value = true
         try {
-            const response = await dbGet({ endpoint: '/items/ingredients' })
-            allIngredients.value = response.data.sort((a: BasicIngredient, b: BasicIngredient) =>
+            const response = await dbGet<{ data: BasicIngredient[] }>({ endpoint: '/items/ingredients' })
+            allIngredients.value = (response as any).data.sort((a: BasicIngredient, b: BasicIngredient) =>
                 a.name.localeCompare(b.name)
             )
         } catch (error) {

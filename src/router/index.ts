@@ -65,7 +65,7 @@ const router = createRouter({
 })
 
 // Route guard to check authentication
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
     const user = useUserState()
     const appInitialized = useAppInitialized()
     const requiresAuth = to.meta.requiresAuth

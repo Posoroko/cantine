@@ -11,7 +11,7 @@
 
 type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
     size?: IconSize,
     color?: 'green' | 'beige'
 }>(), {

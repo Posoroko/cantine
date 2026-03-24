@@ -3,7 +3,7 @@
 
 const model = defineModel('')
 
-const props = defineProps<{
+defineProps<{
     type: 'text' | 'password'
     preset: 'beige' | 'green'
 }>()
