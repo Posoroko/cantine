@@ -1,5 +1,9 @@
 /* architecture.css - App shell layout styles */
 
+html {
+    overflow: hidden;
+}
+
 .appBox {
     background-color: var(--bg-primary);
 }

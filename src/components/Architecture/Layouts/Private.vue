@@ -1,5 +1,5 @@
 <script setup>
-import TopBar from '@/components/Architecture/Bars/TopBar.vue'
+import BottomBar from '@/components/Architecture/Bars/BottomBar.vue'
 </script>
 
 <template>
@@ -22,12 +22,19 @@ import TopBar from '@/components/Architecture/Bars/TopBar.vue'
                     flex column
                 "
             >
+                <slot name="topBar" />
+
                 <p>
                     <slot name="title" />
                 </p>
 
                 <div class="grow relative">
-                    <div class="absoluteFull">
+                    <div 
+                        class="
+                            absoluteFull
+                            mainSlotBox pad5
+                        "
+                    >
                         <slot name="main" />
                     </div>
                 </div>
@@ -35,11 +42,11 @@ import TopBar from '@/components/Architecture/Bars/TopBar.vue'
         </div>
 
         <div>
-            <TopBar>
+            <BottomBar>
                 <template #links>
-                    <slot name="topBarLinks" />
+                    <slot name="bottomBarLinks" />
                 </template>
-            </TopBar>
+            </BottomBar>
         </div>
     </div>
 </template>

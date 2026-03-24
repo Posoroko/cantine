@@ -121,6 +121,9 @@
 .pad20 {padding: 20px;}
 .pad25 {padding: 25px;}
 
+.rounded5 { border-radius: 5px}
+.rounded10 { border-radius: 10px}
+.rounded20 { border-radius: 20px}
 
 /* text and fonts */
 

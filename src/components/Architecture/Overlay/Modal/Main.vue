@@ -32,6 +32,7 @@ provide('modal', { confirm, cancel })
                 :is="modalState.modal"
                 @confirm="confirm"
                 @cancel="cancel"
+                class="modalComponent"
             />
             
             <!-- Confirmation modal with separate rendering -->
@@ -68,9 +69,15 @@ provide('modal', { confirm, cancel })
 
 .modalBox {
     width: min(500px, 100%);
+    height: 100%;
     background-color: var(--green);
     padding: 30px;
     border-radius: 30px;
     margin: auto;
+    overflow: hidden;
+}
+.modalComponent {
+    height: 100%;
+    overflow: scroll;
 }
 </style>

@@ -45,7 +45,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="daysContainer">
+    <div 
+        class="
+            daysContainer grow
+            flex column justifyCenter pad10
+        "
+    >
         <div v-if="isLoading" class="loadingText">
             Chargement...
         </div>

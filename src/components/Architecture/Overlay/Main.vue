@@ -1,5 +1,6 @@
 <script setup>
 import ModalMain from '@/components/Architecture/Overlay/Modal/Main.vue'
+import ToasterMain from '@/components/Architecture/Overlay/Toaster/Main.vue'
 import { useModal } from '@/composables/modal'
 
 const {
@@ -20,6 +21,7 @@ const {
         "
     >
         <ModalMain />
+        <ToasterMain />
     </div>
 </template>
 

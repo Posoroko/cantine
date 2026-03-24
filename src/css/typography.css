@@ -45,6 +45,39 @@
     --leading-relaxed: 1.75;
 }
 
+/* Font size classes */
+.textXs {
+    font-size: var(--text-xs);
+}
+
+.textSm {
+    font-size: var(--text-sm);
+}
+
+.textBase {
+    font-size: var(--text-base);
+}
+
+.textLg {
+    font-size: var(--text-lg);
+}
+
+.textXl {
+    font-size: var(--text-xl);
+}
+
+.text2xl {
+    font-size: var(--text-2xl);
+}
+
+.text3xl {
+    font-size: var(--text-3xl);
+}
+
+.text4xl {
+    font-size: var(--text-4xl);
+}
+
 /* Font weight classes */
 .fontWeightLight {
     font-weight: var(--font-light);

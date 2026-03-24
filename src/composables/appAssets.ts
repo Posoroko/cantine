@@ -1,68 +1,109 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { dbGet } from '@/composables/fetch'
 
-// Singleton instance
-let assetsCache = null
-let appAssetsInstance = null
+export {
+    appAssetStore,
+    loadAppAssets
+}
 
-function createAppAssets() {
-    const assets = ref({
-        recipe_tags: [],
-        diets: []
-    })
+export type {
+    RecipeTag,
+    Diet,
+    IngredientCategory,
+    Unit,
+    PlanningSlot,
+    ServiceSlot
+}
 
-    const recipeTags = computed(() => assets.value.recipe_tags)
-    const diets = computed(() => assets.value.diets)
 
-    const loadAssets = async () => {
-        // Return cached data if already loaded
-        if (assetsCache) {
-            assets.value = assetsCache
-            return assetsCache
-        }
+//* 
+//* c5t_specs_01 
+const appAssetStore = ref<{
+    recipeTags: RecipeTag[]
+    diets: Diet[]
+    ingredientCategories: IngredientCategory[]
+    units: Unit[]
+    planningSlots: PlanningSlot[]
+    serviceSlots: ServiceSlot[]
+}>({
+    recipeTags: [],
+    diets: [],
+    ingredientCategories: [],
+    units: [],
+    planningSlots: [],
+    serviceSlots: []
+})
 
-        try {
-            // Fetch all asset collections in parallel
-            const [tagsResponse, dietsResponse] = await Promise.all([
-                dbGet({ endpoint: '/items/recipe_tags?limit=-1' }),
-                dbGet({ endpoint: '/items/diets?limit=-1' })
-            ])
+async function loadAppAssets() {
+    try {
+        const [
+            tagsRes, 
+            dietsRes, 
+            categoriesRes, 
+            unitsRes, 
+            planningRes, 
+            serviceRes
+        ] = await Promise.all([
+            dbGet<RecipeTag[]>({ endpoint: '/items/recipe_tags' }),
+            dbGet<Diet[]>({ endpoint: '/items/diets' }),
+            dbGet<IngredientCategory[]>({ endpoint: '/items/ingredient_categories' }),
+            dbGet<Unit[]>({ endpoint: '/items/units' }),
+            dbGet<PlanningSlot[]>({ endpoint: '/items/planning_slots?sort=sort' }),
+            dbGet<ServiceSlot[]>({ endpoint: '/items/service_slots?sort=sort' })
+        ])
 
-            assets.value = {
-                recipe_tags: tagsResponse || [],
-                diets: dietsResponse || []
-            }
-
-            // Cache the result
-            assetsCache = assets.value
-
-            return assets.value
-        } catch (err) {
-            console.error('Failed to load app assets:', err)
-            throw err
-        }
-    }
-
-    // Optional: Refresh specific collection
-    const refresh = async (collectionName) => {
-        assetsCache = null
-        return await loadAssets()
-    }
-
-    return {
-        recipeTags,
-        diets,
-        refresh,
-        loadAssets
+        appAssetStore.value.recipeTags = tagsRes || []
+        appAssetStore.value.diets = dietsRes || []
+        appAssetStore.value.ingredientCategories = categoriesRes || []
+        appAssetStore.value.units = unitsRes || []
+        appAssetStore.value.planningSlots = planningRes || []
+        appAssetStore.value.serviceSlots = serviceRes || []
+    } catch (err) {
+        console.error('Failed to load app assets:', err)
+        throw err
     }
 }
 
-export function useAppAssets() {
-    if (!appAssetsInstance) {
-        appAssetsInstance = createAppAssets()
-        // Auto-load on first instantiation
-        appAssetsInstance.loadAssets()
-    }
-    
-    return appAssetsInstance
+type RecipeTag = {
+    key: string
+    text: string
 }
+
+type Diet = {
+    key: string
+    text: string
+}
+
+type IngredientCategory = {
+    key: string
+    text: string
+}
+
+type Unit = {
+    key: string
+    sort: number | null
+    singular: string
+    plural: string
+}
+
+type PlanningSlot = {
+    key: string
+    text: string
+    icon: string
+    sort: number | null
+}
+
+type ServiceSlot = {
+    key: string
+    text: string
+    icon: string
+    sort: number | null
+    services: any[]
+}
+
+
+// c5t_specs_01
+// 
+// App assets
+// Assets are defined in directus collections so it is easy to manage them. 
+// They should be seen as "static assets", even though they are fetch and have the abylity to be updated.

@@ -1,6 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import Icon from '@/components/Icon/Main.vue'
 import { useModal } from '@/composables/modal'
+
+withDefaults(
+    defineProps<{
+        showBack?: boolean
+    }>(), 
+    {
+        showBack: false
+    }
+)
 
 const { cancel } = useModal()
 </script>
@@ -9,9 +18,20 @@ const { cancel } = useModal()
     <div
         class="flex justifyBetween alignCenter"
     >
-        <p>
-            <slot />
-        </p>
+        <div class="flex alignCenter gap10">
+            <Icon
+                v-if="showBack"
+                @click="cancel('back')"
+                class="pointer"
+                size="lg"
+            >
+                arrow_back
+            </Icon>
+
+            <p>
+                <slot />
+            </p>
+        </div>
 
         <Icon
             @click="cancel"

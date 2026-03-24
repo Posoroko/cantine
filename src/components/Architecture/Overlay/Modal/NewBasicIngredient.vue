@@ -3,28 +3,27 @@ import { ref, onMounted } from 'vue'
 import Title from '@/components/Architecture/Overlay/Modal/Title.vue'
 import Buttons from '@/components/Architecture/Overlay/Modal/Buttons.vue'
 import { useModal } from '@/composables/modal'
-import { dbGet, dbPost } from '@/composables/fetch'
+import { dbPost } from '@/composables/fetch'
+import { appAssetStore } from '@/composables/appAssets'
 
 const emit = defineEmits(['confirm', 'cancel'])
 
 const name = ref('')
-const selectedTypeId = ref(null)
-const ingredientTypes = ref([])
+const selectedCategoryKey = ref(null)
+const categories = ref([])
 
 onMounted(async () => {
-    ingredientTypes.value = await dbGet({
-        endpoint: '/items/ingredient_types'
-    })
+    categories.value = appAssetStore.value.ingredientCategories || []
 })
 
 async function onConfirm() {
-    if (!name.value || !selectedTypeId.value) return
+    if (!name.value || !selectedCategoryKey.value) return
 
     const newIngredient = await dbPost({
         endpoint: '/items/ingredients',
         body: {
             name: name.value,
-            type: selectedTypeId.value
+            category: selectedCategoryKey.value
         }
     })
 
@@ -70,19 +69,19 @@ function onCancel() {
                     <label
                         class="colorBeige"
                     >
-                        Type
+                        Catégorie
                     </label>
 
                     <div class="flex wrap gap5">
                         <div
-                            v-for="t in ingredientTypes" :key="t.id"
-                            @click="selectedTypeId = t.id"
+                            v-for="cat in categories" :key="cat.key"
+                            @click="selectedCategoryKey = cat.key"
                             class="typeCard"
                             :class="[
-                                selectedTypeId === t.id ? 'selected' : ''
+                                selectedCategoryKey === cat.key ? 'selected' : ''
                             ]"
                         >
-                            {{ t.text }}
+                            {{ cat.text }}
                         </div>
                     </div>
                 </div>

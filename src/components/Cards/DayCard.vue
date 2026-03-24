@@ -1,9 +1,11 @@
 <script setup>
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import Icon from '@/components/Icon/Main.vue'
 import { dbPatch } from '@/composables/fetch'
+import Date from '@/components/Text/Date.vue'
 
 const router = useRouter()
+const route = useRoute()
 
 const props = defineProps({
     day: {
@@ -66,7 +68,8 @@ const goToDayDetails = () => {
     router.push({
         query: {
             slide: 'dayDetails',
-            day: props.day.id
+            day: props.day.id,
+            previousPage: route.fullPath
         }
     })
 }
@@ -76,22 +79,31 @@ const goToDayDetails = () => {
     <div 
         class="
             dayCard
-            flex justifyEnd alignCenter
+            flex justifyBetween alignCenter
         "
     >
-        <div 
-            @click="goToDayDetails"
-            class="
-                dayHeader
-                grow
-                flex justifyBetween alignCenter
-            "
-        >
-            <span class="dayDate">
-                {{ formatDate(day.date) }}
-            </span>
 
-            <div class="dayIcons flex gap10">
+        <Date
+            @click="goToDayDetails"
+            :timestamp="day.date"
+            format="textNoMonth"
+            class="
+                dateCard
+                fontWeightBold text3xl caprasimo
+                colorGreen
+                pointer
+            "
+        />
+
+        <div
+            class="flex alignCenter"
+        >
+            <div 
+                class="
+                    dayIcons 
+                    flex gap10
+                "
+            >
                 <Icon v-if="day.showDay" size="lg">
                     festival
                 </Icon>
@@ -100,49 +112,56 @@ const goToDayDetails = () => {
                     restaurant
                 </Icon>
             </div>
-        </div>
-
-        <div class="menuContainer relative">
-            <button
-                @click.stop="toggleMenu"
-                class="centered"
-            >
-                <Icon size="lg">
-                    menu
-                </Icon>
-            </button>
-
+            
             <div 
-                v-if="isMenuOpen" 
-                @click.stop
-                class="dropdownMenu"
+                class="
+                    menuContainer relative
+                "
             >
-                <button 
-                    @click="toggleShowDay"
-                    class="menuItem"
+                <button
+                    @click.stop="toggleMenu"
+                    class="centered"
                 >
-                    <Icon>
-                        {{ day.showDay ? 'check_box' : 'check_box_outline_blank' }}
+                    <Icon size="lg">
+                        menu
                     </Icon>
-                    <span>
-                        <Icon>
-                            festival
-                        </Icon>
-                    </span>
                 </button>
-                <button 
-                    @click="toggleServingFood"
-                    class="menuItem"
+
+                <div 
+                    v-if="isMenuOpen" 
+                    @click.stop
+                    class="
+                        dropdownMenu
+                    "
                 >
-                    <Icon>
-                        {{ day.servingFood ? 'check_box' : 'check_box_outline_blank' }}
-                    </Icon>
-                    <span>
+                    <button 
+                        @click="toggleShowDay"
+                        class="menuItem"
+                    >
                         <Icon>
-                            restaurant
+                            {{ day.showDay ? 'check_box' : 'check_box_outline_blank' }}
                         </Icon>
-                    </span>
-                </button>
+                        <span>
+                            <Icon>
+                                festival
+                            </Icon>
+                        </span>
+                    </button>
+
+                    <button 
+                        @click="toggleServingFood"
+                        class="menuItem"
+                    >
+                        <Icon>
+                            {{ day.servingFood ? 'check_box' : 'check_box_outline_blank' }}
+                        </Icon>
+                        <span>
+                            <Icon>
+                                restaurant
+                            </Icon>
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -151,33 +170,13 @@ const goToDayDetails = () => {
 <style scoped>
 
 .dayCard {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--beige);
     border-radius: 6px;
-    cursor: pointer;
 }
-
-.dayHeader {
-    padding: 16px;
-    cursor: pointer;
-    transition: all 200ms;
+.dateCard {
+    background-color: var(--beige);
+    padding: 0px 14px;
+    border-radius: 10px;
 }
-
-.dayHeader:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.dayDate {
-    color: var(--beige);
-    font-weight: 600;
-    font-size: 18px;
-    text-transform: capitalize;
-}
-
-.menuContainer {
-    position: relative;
-}
-
 .dropdownMenu {
     position: absolute;
     top: 100%;

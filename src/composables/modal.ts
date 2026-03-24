@@ -14,21 +14,9 @@
 import { ref } from 'vue'
 import ConfirmationModal from '@/components/Architecture/Overlay/Modal/ConfirmationModal.vue'
 
-interface ConfirmationModalProps {
-    title: string
-    message: string
-    confirmText?: string
-    cancelText?: string
-}
-
-interface ModalState {
-    visible: boolean
-    modal: any
-    modalType?: 'confirmation' | 'custom'
-    data?: Record<string, any>
-    confirmationProps?: ConfirmationModalProps
-    resolveFn?: (value: any) => void
-    rejectFn?: (reason?: any) => void
+export {
+    modalState,
+    useModal 
 }
 
 const modalState = ref<ModalState>({
@@ -39,7 +27,10 @@ const modalState = ref<ModalState>({
     rejectFn: undefined
 })
 
+let resetTimeout: ReturnType<typeof setTimeout> | undefined
+
 function useModal() {
+    console.log('Running useModal composable')
     /**
      * Show a modal component and return a promise
      * @param modal - Vue component to display
@@ -50,6 +41,11 @@ function useModal() {
         modal: any, 
         data?: Record<string, any>
     ) => {
+        if (resetTimeout) {
+            clearTimeout(resetTimeout)
+            resetTimeout = undefined
+        }
+
         modalState.value.modal = modal
         modalState.value.modalType = 'custom'
         modalState.value.data = data
@@ -95,6 +91,11 @@ function useModal() {
      * @returns Promise that resolves when confirm is clicked
      */
     const showConfirmationModal = (props: ConfirmationModalProps) => {
+        if (resetTimeout) {
+            clearTimeout(resetTimeout)
+            resetTimeout = undefined
+        }
+
         modalState.value.modal = ConfirmationModal
         modalState.value.modalType = 'confirmation'
         modalState.value.confirmationProps = props
@@ -110,7 +111,7 @@ function useModal() {
      * Reset modal state after closing
      */
     const resetModalState = () => {
-        setTimeout(() => {
+        resetTimeout = setTimeout(() => {
             modalState.value.modal = undefined
             modalState.value.modalType = undefined
             modalState.value.data = undefined
@@ -129,4 +130,19 @@ function useModal() {
     }
 }
 
-export { useModal }
+interface ConfirmationModalProps {
+    title: string
+    message: string
+    confirmText?: string
+    cancelText?: string
+}
+
+interface ModalState {
+    visible: boolean
+    modal: any
+    modalType?: 'confirmation' | 'custom'
+    data?: Record<string, any>
+    confirmationProps?: ConfirmationModalProps
+    resolveFn?: (value: any) => void
+    rejectFn?: (reason?: any) => void
+}

@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/router/index'
 import { useAuth } from '@/composables/auth'
-import { useAppAssets } from '@/composables/appAssets'
+import { loadAppAssets } from '@/composables/appAssets'
 
 import '@/css/_styles_.css'
 
@@ -15,8 +15,7 @@ app.config.globalProperties.$getEnvVar = function(varName: string): string | und
 
 app.use(router)
 
-// Initialize app assets (auto-loads on first use)
-useAppAssets()
+loadAppAssets()
 
 // Try to load user data on app startup (session validation)
 const { loadUserData } = useAuth()

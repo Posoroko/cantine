@@ -5,24 +5,36 @@ import TitleWIthCreateButton from '@/components/Text/TitleWithCreateButton.vue'
 import NewBasicIngredient from '@/components/Architecture/Overlay/Modal/NewBasicIngredient.vue'
 import { useModal } from '@/composables/modal'
 import { dbGet } from '@/composables/fetch'
+import { appAssetStore } from '@/composables/appAssets'
 
 const { showModal } = useModal()
 const ingredients = ref([])
-const ingredientTypes = ref([])
+const categories = ref([])
 const selectedTypeId = ref(null)
+const searchQuery = ref('')
 
 const filteredIngredients = computed(() => {
-    if (!selectedTypeId.value) {
-        return ingredients.value
+    let results = ingredients.value
+    
+    // Filter by category
+    if (selectedTypeId.value) {
+        results = results.filter(ing => ing.category?.key === selectedTypeId.value)
     }
-    return ingredients.value.filter(ing => ing.type?.id === selectedTypeId.value)
+    
+    // Filter by search query
+    if (searchQuery.value) {
+        const query = searchQuery.value.toLowerCase()
+        results = results.filter(ing => ing.name.toLowerCase().includes(query))
+    }
+    
+    return results
 })
 
 async function fetchIngredients() {
     const data = await dbGet({
         endpoint: '/items/ingredients',
         query: {
-            fields: '*,type.*'
+            fields: '*,category.*'
         }
     })
     ingredients.value = data.sort((a, b) => a.name.localeCompare(b.name))
@@ -30,10 +42,7 @@ async function fetchIngredients() {
 
 onMounted(async () => {
     await fetchIngredients()
-    
-    ingredientTypes.value = await dbGet({
-        endpoint: '/items/ingredient_types'
-    })
+    categories.value = appAssetStore.value.ingredientCategories || []
 })
 
 async function createNew() {
@@ -73,9 +82,16 @@ function filterByType(typeId) {
                     pad20
                 "
             >
+                <input 
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Rechercher un ingrédient..."
+                    class="searchInput"
+                />
+
                 <div class="filters flex wrap gap5">
                     <button
-                        @click="filterByType(null)"
+                        @click.prevent.stop="filterByType(null)"
                         class="filterTag"
                         :class="[!selectedTypeId ? 'active' : '']"
                     >
@@ -83,23 +99,30 @@ function filterByType(typeId) {
                     </button>
                     
                     <button
-                        v-for="type in ingredientTypes"
-                        :key="type.id"
-                        @click="filterByType(type.id)"
+                        v-for="type in categories"
+                        :key="type.key"
+                        @click.prevent.stop="filterByType(type.key)"
                         class="filterTag"
-                        :class="[selectedTypeId === type.id ? 'active' : '']"
+                        :class="[selectedTypeId === type.key ? 'active' : '']"
                     >
                         {{ type.text }}
                     </button>
                 </div>
 
                 <div
-                    v-for="ingredient in filteredIngredients"
-                    :key="ingredient.id"
-                    @click="openIngredient(ingredient)"
-                    class="ingredient"
+                    class="
+                        ingredientList
+                        flex column gap10
+                    "
                 >
-                    {{ ingredient.name }}
+                    <div
+                        v-for="ingredient in filteredIngredients"
+                        :key="ingredient.id"
+                        @click="openIngredient(ingredient)"
+                        class="ingredient"
+                    >
+                        {{ ingredient.name }}
+                    </div>
                 </div>
             </div>
         </template>
@@ -111,9 +134,29 @@ function filterByType(typeId) {
 </template>
 
 <style scoped>
+.searchInput {
+    padding: 10px 15px;
+    border: none;
+    border-bottom: 2px solid var(--beige);
+    border-radius: 0;
+    background-color: transparent;
+    color: var(--beige);
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.searchInput::placeholder {
+    color: rgba(181, 159, 122, 0.5);
+}
+
+.searchInput:focus {
+    outline: none;
+    border-bottom-color: rgba(181, 159, 122, 0.8);
+}
+
 .filterTag {
     padding: 8px 16px;
-    border: 2px solid rgba(181, 159, 122, 0.3);
+    border: 2px solid var(--beige);
     border-radius: 20px;
     background-color: transparent;
     color: var(--beige);
@@ -123,17 +166,13 @@ function filterByType(typeId) {
     font-weight: 500;
 }
 
-.filterTag:hover {
-    border-color: rgba(181, 159, 122, 0.6);
-    transform: translateY(-2px);
-}
-
 .filterTag.active {
     background-color: var(--beige);
     color: var(--green);
-    border-color: var(--beige);
 }
-
+.ingredientList {
+    overflow-y: scroll;
+}
 .ingredient {
     padding: 15px;
     background-color: rgba(0, 0, 0, 0.1);
@@ -141,9 +180,5 @@ function filterByType(typeId) {
     cursor: pointer;
     color: var(--beige);
     font-weight: 500;
-}
-
-.ingredient:hover {
-    background-color: rgba(0, 0, 0, 0.2);
 }
 </style>

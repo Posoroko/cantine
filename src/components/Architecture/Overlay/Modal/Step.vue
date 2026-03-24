@@ -53,6 +53,7 @@ const emit = defineEmits(['previous', 'next', 'save'])
                 v-else
                 :disabled="!valid"
                 @click.prevent.stop="emit('next')"
+                class="marTop20"
             >
                 Continuer
             </button>

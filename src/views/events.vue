@@ -7,6 +7,7 @@ import NewEvent from '@/components/Architecture/Overlay/Modal/NewEvent.vue'
 import Icon from '@/components/Icon/Main.vue'
 import { useModal } from '@/composables/modal'
 import { useEvents } from '@/composables/events'
+import { loadCurrentEvent } from '@/composables/currentEvent'
 import appConfig from '@/composables/appConfig'
 import DateParser from '@/components/Text/Date.vue'
 
@@ -62,7 +63,8 @@ function getDateRange(days) {
 }
 
 function goToEvent(eventId) {
-    router.push(`/evenements/${eventId}`)
+    loadCurrentEvent(eventId)
+    router.push(`/evenements/${eventId}?slide=days`)
 }
 
 onMounted(() => {

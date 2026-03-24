@@ -1,55 +1,27 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { dbGet } from '@/composables/fetch'
+import { currentEventStore } from '@/composables/currentEvent'
 import Icon from '@/components/Icon/Main.vue'
+import Loading from '@/components/Loading/Main.vue'
 import DayCard from '@/components/Cards/DayCard.vue'
 import DayServices from '@/components/Pages/Events/DayServices.vue'
-import DayPrep from '@/components/Pages/Events/DayPrep.vue'
+import DayPlannings from '@/components/Pages/Events/DayPlannings.vue'
+import Date from '@/components/Text/Date.vue'
 
 const route = useRoute()
 
-const day = ref(null)
-const isLoading = ref(true)
+const day = computed(() => {
+    const dayId = parseInt(route.query.day)
+    if (!currentEventStore.value || !dayId) return null
+    return currentEventStore.value.days.find(d => d.id === dayId) || null
+})
+
 const openMenuId = ref(null)
 const activeSchedule = ref('services')
 
-const loadDay = async () => {
-    try {
-        isLoading.value = true
-        const dayId = route.query.day
-        
-        if (!dayId) {
-            console.error('No day ID in query params')
-            return
-        }
-
-        const response = await dbGet({
-            endpoint: `/items/days/${dayId}`
-        })
-
-        console.log('getting the day:', response)
-        
-        day.value = response
-    } catch (error) {
-        console.error('Error loading day:', error)
-    } finally {
-        isLoading.value = false
-    }
-}
-
 const toggleSchedule = (schedule) => {
     activeSchedule.value = schedule
-}
-
-const formatDate = (dateString) => {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat('fr-FR', {
-        weekday: 'long',
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    }).format(date)
 }
 
 const toggleMenu = (dayId) => {
@@ -59,35 +31,40 @@ const toggleMenu = (dayId) => {
 const closeMenu = () => {
     openMenuId.value = null
 }
-
-onMounted(() => {
-    loadDay()
+const previousPage = computed(() => {
+    return route.query.previousPage || route.path
 })
 </script>
-
 <template>
-    <div
-        class="dayDetailsContainer"
-    >
-        <div 
-            v-if="isLoading" 
-            class="loadingText"
-        >
+    <div class="dayDetailsContainer">
+        <Loading v-if="!day">
             Chargement...
-        </div>
+        </Loading>
 
         <div 
-            v-else-if="day" 
+            v-if="day" 
             class="
                 dayDetailsContent
-                flex column gap20
+                flex column
             "
         >
+            <router-link
+                :to="previousPage"
+                class="pad10"
+            >
+                <Icon
+                    size="xl"
+                >
+                    arrow_back
+                </Icon>
+            </router-link>
+
             <DayCard
                 :day="day"
                 :isMenuOpen="openMenuId === day.id"
                 @toggle-menu="toggleMenu"
                 @close-menu="closeMenu"
+                class="grow"
             />
 
             <div class="actionsContainer flex gap10">
@@ -100,7 +77,7 @@ onMounted(() => {
                     "
                 >
                     <Icon>
-                        restaurant
+                        dinner_dining
                     </Icon>
 
                     <span>Services</span>
@@ -112,6 +89,7 @@ onMounted(() => {
                     class="
                         actionButton
                         flex alignCenter justifyCenter gap10
+                        marTop20
                     "
                 >
                     <Icon>
@@ -124,9 +102,10 @@ onMounted(() => {
             <DayServices
                 v-if="activeSchedule === 'services'"
                 :day="day"
+                class="marTop20"
             />
 
-            <DayPrep
+            <DayPlannings
                 v-if="activeSchedule === 'prep'"
                 :day="day"
             />
@@ -156,20 +135,14 @@ onMounted(() => {
     font-size: 24px;
     font-weight: 700;
     padding: 8px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    border-radius: 0px;
     flex: 1 1 0;
-    border: 1px solid transparent;
+    border-bottom: 6px solid transparent;
     transition: all 200ms;
 }
 
-.actionButton:hover {
-    background: rgba(13, 139, 95, 0.2);
-}
-
 .actionButton.active {
-    background: rgba(13, 139, 95, 0.4);
-    border-color: var(--green);
+    border-bottom: 6px solid var(--beige);
 }
 
 </style>

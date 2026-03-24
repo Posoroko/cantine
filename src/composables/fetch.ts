@@ -14,7 +14,6 @@ export {
     dbUploadFile
 }
 
-// Core fetch function - internal, not exported
 async function dbFetch<T>(p: {
     method: 'GET' | 'POST' | 'PATCH' | 'DELETE'
     endpoint: string
@@ -26,9 +25,12 @@ async function dbFetch<T>(p: {
     let url = `${appConfig.dbUrl}${p.endpoint}`
 
     if (p.query) {
+
         const params = new URLSearchParams()
         Object.entries(p.query).forEach(([key, value]) => {
-            params.append(key, String(value))
+            if (typeof value === 'string') params.append(key, value)
+            else if (typeof value === 'object') params.append(key, JSON.stringify(value))
+            else params.append(key, String(value))
         })
         url += `?${params.toString()}`
     }

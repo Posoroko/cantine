@@ -42,7 +42,9 @@ label {
     color: var(--text-primary);
 }
 
-input.translucide {
+input.translucide,
+textarea.translucide,
+select.translucide {
     font-size: 20px;
     font-weight: 700;
     color: var(--beige);
@@ -50,4 +52,53 @@ input.translucide {
     outline: none;
     border: none;
     border-bottom: 1px solid var(--beige);
+    border-radius: 0;
+    padding: 8px 0;
+}
+
+input.translucide::placeholder,
+textarea.translucide::placeholder {
+    color: rgba(181, 159, 122, 0.5);
+}
+
+input.translucide::-webkit-inner-spin-button,
+input.translucide::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input.translucide[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.defaultInputStyles {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--beige);
+    background-color: rgba(255, 255, 255, 0.021);
+    box-shadow: inset 2px -4px 10px rgba(46, 43, 43, 0.2);
+    outline: none;
+    border: none;
+    border-bottom: 2px solid var(--beige);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.defaultInputStyles::placeholder {
+    color: rgba(181, 159, 122, 0.5);
+}
+
+.defaultInputStyles:focus {
+    outline: none;
+    border-bottom-color: rgba(181, 159, 122, 0.8);
+}
+
+.defaultInputStyles::-webkit-inner-spin-button,
+.defaultInputStyles::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input.defaultInputStyles[type="number"] {
+    -moz-appearance: textfield;
 }

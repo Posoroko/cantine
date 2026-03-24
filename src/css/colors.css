@@ -59,3 +59,10 @@
 .colorBeige {
     color: var(--beige);
 }
+
+.beigeCardGreenText,
+.beigeCardGreenText *,
+.beigeCardGreenText .icon {
+    background-color: var(--beige);
+    color: var(--green);
+}
