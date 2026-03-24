@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import Private from '@/Components/Architecture/Layouts/Private.vue'
+import Private from '@/components/Architecture/Layouts/Private.vue'
 import Icon from '@/components/Icon/Main.vue'
 import Loading from '@/components/Loading/Main.vue'
 import EventBar from '@/components/Architecture/Bars/EventBar.vue'
