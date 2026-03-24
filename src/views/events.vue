@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import TitleWIthCreateButton from '@/components/Text/TitleWithCreateButton.vue'
-import Private from '@/Components/Architecture/Layouts/Private.vue'
+import Private from '@/components/Architecture/Layouts/Private.vue'
 import NewEvent from '@/components/Architecture/Overlay/Modal/NewEvent.vue'
 import Icon from '@/components/Icon/Main.vue'
 import { useModal } from '@/composables/modal'

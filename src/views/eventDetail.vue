@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import Private from '@/Components/Architecture/Layouts/Private.vue'
+import Private from '@/components/Architecture/Layouts/Private.vue'
 import Loading from '@/components/Loading/Main.vue'
 import EventBar from '@/components/Architecture/Bars/EventBar.vue'
 import Informations from '@/components/Pages/Events/Informations.vue'
