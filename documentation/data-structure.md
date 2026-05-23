@@ -104,11 +104,11 @@ Recettes de base pour un nombre standard de convives (ex: 100).
 | notes | text | Notes |
 
 **Relations:**
-- `ingredients` → O2M vers `recipe_ingredients`
+- `ingredients` → O2M vers `recipes_ingredients`
 
 ---
 
-### 6. `recipe_ingredients` (Ingrédients de recette - base)
+### 6. `recipes_ingredients` (Ingrédients de recette - base)
 Ingrédients pour la recette de base (ex: pour 100 convives).
 
 | Field | Type | Description |
@@ -387,7 +387,7 @@ Instance d'une recette adaptée pour un service.
        │                           │         O2M  │
        │                           │              ▼
        │                           │    ┌───────────────────┐
-       │                           │    │ recipe_ingredients│
+       │                           │    │ recipes_ingredients│
        │                           │    └─────────┬─────────┘
        │                           │              │ M2O
        │                           ◀──────────────┘
@@ -412,7 +412,7 @@ Instance d'une recette adaptée pour un service.
 └─────────────┘
 
 ┌─────────────┐
-│    units    │◀─── M2O from ingredients, recipe_ingredients, day_prep_slots
+│    units    │◀─── M2O from ingredients, recipes_ingredients, day_prep_slots
 └─────────────┘
 ```
 
@@ -437,7 +437,7 @@ Instance d'une recette adaptée pour un service.
 
 ### Créer une recette
 1. Créer `recipe`
-2. Ajouter des `recipe_ingredients` avec quantités
+2. Ajouter des `recipes_ingredients` avec quantités
 
 ### Gérer les fournisseurs
 1. Créer des `suppliers`

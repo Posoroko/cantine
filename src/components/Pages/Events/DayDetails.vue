@@ -48,24 +48,28 @@ const previousPage = computed(() => {
                 flex column
             "
         >
-            <router-link
-                :to="previousPage"
-                class="pad10"
+            <div
+                class="flex gap10"
             >
-                <Icon
-                    size="xl"
+                <router-link
+                    :to="previousPage"
+                    class="pad10"
                 >
-                    arrow_back
-                </Icon>
-            </router-link>
+                    <Icon
+                        size="xl"
+                    >
+                        arrow_back
+                    </Icon>
+                </router-link>
 
-            <DayCard
-                :day="day"
-                :isMenuOpen="openMenuId === day.id"
-                @toggle-menu="toggleMenu"
-                @close-menu="closeMenu"
-                class="grow"
-            />
+                <DayCard
+                    :day="day"
+                    :isMenuOpen="openMenuId === day.id"
+                    @toggle-menu="toggleMenu"
+                    @close-menu="closeMenu"
+                    class="grow"
+                />
+            </div>
 
             <div class="actionsContainer flex gap10">
                 <button 

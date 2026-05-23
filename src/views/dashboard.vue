@@ -8,15 +8,11 @@ const appState = useAppState()
 
 <template>
     <Private>
-        <template #title>
-            Tableau de bord
-        </template>
-
         <template #main>
             <div 
                 class="
                     flex column gap20
-                    pad20
+                    pad20 justifyCenter h100
                 "
             >
                 <RouterLink

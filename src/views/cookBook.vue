@@ -1,14 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import Private from '@/components/Architecture/Layouts/Private.vue'
-import TitleWithCreateButton from '@/components/Text/TitleWithCreateButton.vue'
-import NewRecipe from '@/components/Architecture/Overlay/Modal/NewRecipe.vue'
 import Icon from '@/components/Icon/Main.vue'
 import { dbGet } from '@/composables/fetch'
 import { appAssetStore } from '@/composables/appAssets'
-import { useModal } from '@/composables/modal'
-
-const { showModal } = useModal()
+import ListItem from '@/components/Cards/ListItem.vue'
 
 const recipes = ref([])
 const tags = ref([])
@@ -79,13 +75,6 @@ function toggleDiet(dietKey) {
     }
 }
 
-async function createNew() {
-    const result = await showModal(NewRecipe)
-
-    if (result) {
-        await fetchRecipes()
-    }
-}
 </script>
 
 <template>
@@ -98,17 +87,13 @@ async function createNew() {
                     pad20
                 "
             >
-                <TitleWithCreateButton
-                    @createNew="createNew"
-                >
-                    Recettes
-                </TitleWithCreateButton>
+                <h1>Recettes</h1>
 
                 <input 
                     v-model="searchQuery"
                     type="text"
                     placeholder="Rechercher une recette..."
-                    class="searchInput"
+                    class="defaultInputStyles"
                 />
 
                 <div
@@ -131,7 +116,7 @@ async function createNew() {
 
                         <div
                             v-if="showTags"
-                            class="filters flex wrap gap5"
+                            class="filters flex wrap gap10"
                         >
                             <button
                                 v-for="tag in tags"
@@ -160,7 +145,7 @@ async function createNew() {
                     </div>
                     <div
                         v-if="showDiets"
-                        class="filters flex wrap gap5"
+                        class="filters flex wrap gap10"
                     >
                         <button
                             v-for="diet in diets"
@@ -176,10 +161,10 @@ async function createNew() {
 
                     <div
                         class="
-                            flex column gap5
+                            flex column gap5 marTop20
                         "
                     >
-                        <div
+                        <ListItem
                             v-for="recipe in filteredRecipes"
                             :key="recipe.id"
                             class="
@@ -187,8 +172,14 @@ async function createNew() {
                                 fontWeightSemibold
                             "
                         >
-                            {{ recipe.name }}
-                        </div>
+                            <template #text>
+                                {{ recipe.name }}
+                            </template>
+
+                            <template #details>
+                                <!-- will display the price per plate when feature is ready -->
+                            </template>
+                        </ListItem>
                     </div>
                 </div>
             </div>
@@ -226,23 +217,16 @@ async function createNew() {
 }
 
 .filterLabel {
-    color: var(--beige);
-    font-weight: 600;
-    font-size: 13px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .filterTag {
-    padding: 8px 16px;
-    border: 2px solid var(--beige);
+    padding: 2px 10px;
+    border: 1px solid var(--beige);
     border-radius: 20px;
-    background-color: transparent;
-    color: var(--beige);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 14px;
-    font-weight: 500;
 }
 
 .filterTag.active {

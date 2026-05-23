@@ -1,11 +1,6 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import TitleWithCreateButton from '@/components/Text/TitleWithCreateButton.vue'
-import MenuButton from '@/components/Cards/MenuButton/Main.vue'
-import SelectCook from '@/components/Architecture/Overlay/Modal/SelectCook.vue'
-import { useModal } from '@/composables/modal'
+import { ref, onMounted } from 'vue'
 import { useCooks } from '@/composables/cooks'
-import { dbDelete } from '@/composables/fetch'
 import appConfig from '@/composables/appConfig'
 
 const props = defineProps({
@@ -15,16 +10,7 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['cooks-updated'])
-
-const { 
-    showModal, 
-    showConfirmationModal 
-} = useModal()
-const { 
-    getHiredCooks, 
-    fire 
-} = useCooks()
+const { getHiredCooks } = useCooks()
 
 const hiredCooks = ref([])
 const isLoading = ref(false)
@@ -46,47 +32,6 @@ const loadHiredCooks = async () => {
     }
 }
 
-const openSelectCookModal = async () => {
-    try {
-        await showModal(
-            SelectCook, 
-            { 
-                eventId: props.eventId 
-            }
-        )
-        // Modal closed, reload the hired cooks list
-        await loadHiredCooks()
-        emit('cooks-updated')
-    } catch (error) {
-        console.log('Modal cancelled')
-    }
-}
-
-const handleCookDelete = (data) => {
-    showConfirmationModal({
-        title: 'Retirer ce cuisinier?',
-        message: 'Cette action ne peut pas être annulée.',
-        confirmText: 'Retirer',
-        cancelText: 'Annuler'
-    }).then(async () => {
-        try {
-            await fire(data.id, props.eventId)
-            console.log('Cook fired successfully')
-            await loadHiredCooks()
-            emit('cooks-updated')
-        } catch (error) {
-            console.error('Failed to fire cook:', error)
-        }
-    }).catch(() => {
-        console.log('Delete cancelled')
-    })
-}
-
-const handleCookUpdate = (data) => {
-    console.log('Update cook:', data)
-    // TODO: Implement update cook functionality
-}
-
 onMounted(() => {
     loadHiredCooks()
 })
@@ -94,11 +39,7 @@ onMounted(() => {
 
 <template>
     <div class="scrollBox grow flex column">
-        <TitleWithCreateButton 
-            @createNew="openSelectCookModal"
-        >
-            Cuisiniers
-        </TitleWithCreateButton>
+        <h2>Cuisiniers</h2>
 
         <div v-if="isLoading" class="loadingText">
             Chargement...
@@ -126,13 +67,6 @@ onMounted(() => {
                             <span>Email:</span> {{ cook.email }}
                         </div>
                     </div>
-                    <MenuButton
-                        :collection="'cooks'"
-                        :id="cook.id"
-                        canDelete
-                        @delete="handleCookDelete"
-                        @update="handleCookUpdate"
-                    />
                 </div>
             </div>
         </div>

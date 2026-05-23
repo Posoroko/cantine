@@ -133,17 +133,42 @@ const editService = async () => {
         >
             <div
                 class="
-                    flex justifyBetween
+                    flex justifyBetween alignCenter
                 "
             >
-                <router-link
-                    :to="previousPage"
-                    class="pad10"
+                <div
+                    class="flex alignCenter"
                 >
-                    <Icon size="lg">
-                        arrow_back
-                    </Icon>
-                </router-link>
+                    <router-link
+                        :to="previousPage"
+                        class="pad10 flex alignCenter"
+                    >
+                        <Icon size="lg">
+                            arrow_back
+                        </Icon>
+                    </router-link>
+
+                    <div
+                        class="
+                            beigeCardGreenText
+                            detailTab
+                            textLg
+                            flex alignCenter gap5
+                        "
+                    >
+                        <Icon
+                            class="icon"
+                            size="sm"
+                        >
+                            event
+                        </Icon>
+
+                        <Date
+                            :timestamp="service.day.date"
+                            format="textNoMonth"
+                        />
+                    </div>
+                </div>
 
                 <div 
                     class="
@@ -196,7 +221,7 @@ const editService = async () => {
                 </div>
             </div>
 
-            <div class="flex column gap20">
+            <div class="flex column gap20 marTop20">
                 <div>
                     <h2 
                         class="
@@ -204,26 +229,7 @@ const editService = async () => {
                             flex alignCenter gap10
                         "
                     >
-                        <div
-                            class="
-                                beigeCardGreenText
-                                detailTab
-                                textLg
-                                flex alignCenter gap5
-                            "
-                        >
-                            <Icon
-                                class="icon"
-                                size="sm"
-                            >
-                                event
-                            </Icon>
-
-                            <Date
-                                :timestamp="service.day.date"
-                                format="textNoMonth"
-                            />
-                        </div>
+                        
 
                         <div
                             class="
@@ -244,21 +250,21 @@ const editService = async () => {
                         </div>
 
                         <div
-                                class="
-                                    beigeCardGreenText
-                                    detailTab
-                                    textLg
-                                    flex alignCenter gap5
-                                "
+                            class="
+                                beigeCardGreenText
+                                detailTab
+                                textLg
+                                flex alignCenter gap5
+                            "
+                        >
+                            <Icon
+                                class="icon"
+                                size="sm"
                             >
-                                <Icon
-                                    class="icon"
-                                    size="sm"
-                                >
-                                    person
-                                </Icon>
-                                {{ service.guestCount }}
-                            </div>
+                                person
+                            </Icon>
+                            {{ service.guestCount }}
+                        </div>
                     </h2>
                     
                     <DietDetails
@@ -326,7 +332,7 @@ const editService = async () => {
     font-weight: 700;
     margin-bottom: 10px;
 }
-.serviceTitle .detailTab {
+.detailTab {
     padding: 0 5px;
     border-radius: 5px;
 }

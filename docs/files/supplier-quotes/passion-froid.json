@@ -1,0 +1,506 @@
+{
+    "supplier": "Passion Froid",
+    "quoteDate": "2026-05",
+    "items": [
+        {
+            "ref": "0292986",
+            "name": "Haricots rouges cuits surgelés",
+            "unit": "kg",
+            "pricePerUnit": 3.80,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0299041",
+            "name": "Pois chiches cuits surgelés",
+            "unit": "sachet",
+            "pricePerUnit": 6.30,
+            "colisWeight": 1.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0003591",
+            "name": "Maïs doux grain surgelé",
+            "unit": "kg",
+            "pricePerUnit": 3.50,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0046234",
+            "name": "Plaque feuilletée margarine",
+            "unit": "pièce",
+            "pricePerUnit": 3.30,
+            "colisWeight": 0.5,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0178267",
+            "name": "Tomates cerises séchées marinées",
+            "unit": "kg",
+            "pricePerUnit": 12.00,
+            "colisWeight": 1.0,
+            "foodCategory": "Conserves",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0305710",
+            "name": "Ail confit",
+            "unit": "kg",
+            "pricePerUnit": 17.00,
+            "colisWeight": 0.5,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0326323",
+            "name": "Saucisse fumée hêtre",
+            "unit": "kg",
+            "pricePerUnit": 9.35,
+            "colisWeight": 1.2,
+            "foodCategory": "Charcuterie",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0065662",
+            "name": "Allumettes lardons fumés",
+            "unit": "kg",
+            "pricePerUnit": 8.00,
+            "colisWeight": 1.0,
+            "foodCategory": "Charcuterie",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0064927",
+            "name": "Rillettes rôti",
+            "unit": "kg",
+            "pricePerUnit": 14.00,
+            "colisWeight": 1.2,
+            "foodCategory": "Charcuterie",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0012693",
+            "name": "Pâté de campagne",
+            "unit": "kg",
+            "pricePerUnit": 5.80,
+            "colisWeight": 1.7,
+            "foodCategory": "Charcuterie",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0058237",
+            "name": "Plaques lasagne",
+            "unit": "kg",
+            "pricePerUnit": 6.85,
+            "colisWeight": 5.0,
+            "foodCategory": "Féculents",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0316724",
+            "name": "Tofu nature Bio",
+            "unit": "kg",
+            "pricePerUnit": 11.00,
+            "colisWeight": 0.5,
+            "foodCategory": "Protéines végétales",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0049448",
+            "name": "Mayonnaise fraîche",
+            "unit": "seau",
+            "pricePerUnit": 18.00,
+            "colisWeight": 4.65,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0246289",
+            "name": "Crevettes crues décortiquées 30/40",
+            "unit": "sachet",
+            "pricePerUnit": 14.90,
+            "colisWeight": 0.8,
+            "foodCategory": "Poisson",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0314511",
+            "name": "Filet de merlan",
+            "unit": "kg",
+            "pricePerUnit": 13.50,
+            "colisWeight": 5.0,
+            "foodCategory": "Poisson",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0147069",
+            "name": "Cuisse de poulet (fraîche)",
+            "unit": "kg",
+            "pricePerUnit": 7.76,
+            "colisWeight": 2.3,
+            "foodCategory": "Viande",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0238630",
+            "name": "Cuisse de poulet (surgelée)",
+            "unit": "kg",
+            "pricePerUnit": 7.30,
+            "colisWeight": 5.0,
+            "foodCategory": "Viande",
+            "supplyCategory": "Surgelé",
+            "prepLess": false
+        },
+        {
+            "ref": "0296977",
+            "name": "Sauté de porc épaule",
+            "unit": "kg",
+            "pricePerUnit": 8.65,
+            "colisWeight": 1.0,
+            "foodCategory": "Viande",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0297002",
+            "name": "Rôti de porc échine ficelé",
+            "unit": "kg",
+            "pricePerUnit": 8.54,
+            "colisWeight": 1.0,
+            "foodCategory": "Viande",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0017142",
+            "name": "Sauté d'agneau épaule",
+            "unit": "kg",
+            "pricePerUnit": 15.85,
+            "colisWeight": 5.0,
+            "foodCategory": "Viande",
+            "supplyCategory": "Surgelé",
+            "prepLess": false
+        },
+        {
+            "ref": "0237611",
+            "name": "Petits pois extra fins (marque)",
+            "unit": "kg",
+            "pricePerUnit": 3.90,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0244546",
+            "name": "Petits pois extra fins",
+            "unit": "kg",
+            "pricePerUnit": 3.30,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0020086",
+            "name": "Ail coupé surgelé",
+            "unit": "sachet",
+            "pricePerUnit": 2.80,
+            "colisWeight": 0.5,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0063985",
+            "name": "Aubergine grillée",
+            "unit": "kg",
+            "pricePerUnit": 5.80,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0244568",
+            "name": "Épinard haché",
+            "unit": "kg",
+            "pricePerUnit": 2.80,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0244588",
+            "name": "Haricots verts extra fins",
+            "unit": "kg",
+            "pricePerUnit": 2.60,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Surgelé",
+            "prepLess": true
+        },
+        {
+            "ref": "0178333",
+            "name": "Œufs (vrac)",
+            "unit": "pièce",
+            "pricePerUnit": 0.32,
+            "colisWeight": 3.42,
+            "foodCategory": "Œufs",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0288307",
+            "name": "Œuf entier liquide pasteurisé",
+            "unit": "L",
+            "pricePerUnit": 6.40,
+            "colisWeight": 5.0,
+            "foodCategory": "Œufs",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0280710",
+            "name": "Mascarpone",
+            "unit": "pot",
+            "pricePerUnit": 3.60,
+            "colisWeight": 0.5,
+            "foodCategory": "Produits laitiers",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0217590",
+            "name": "Préparation tiramisu Elle & Vire",
+            "unit": "L",
+            "pricePerUnit": 7.30,
+            "colisWeight": 1.0,
+            "foodCategory": "Produits laitiers",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0083145",
+            "name": "Préparation tiramisu Debic",
+            "unit": "L",
+            "pricePerUnit": 7.30,
+            "colisWeight": 1.04,
+            "foodCategory": "Produits laitiers",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0145005",
+            "name": "Yaourt grec",
+            "unit": "pot",
+            "pricePerUnit": 7.00,
+            "colisWeight": 1.0,
+            "foodCategory": "Produits laitiers",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0025507",
+            "name": "Yaourt nature entier",
+            "unit": "pot",
+            "pricePerUnit": 0.38,
+            "colisWeight": 0.125,
+            "foodCategory": "Produits laitiers",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0039370",
+            "name": "Beurre demi-sel",
+            "unit": "kg",
+            "pricePerUnit": 7.70,
+            "colisWeight": 1.0,
+            "foodCategory": "Produits laitiers",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0007462",
+            "name": "Fromage blanc 3,2%",
+            "unit": "kg",
+            "pricePerUnit": 2.70,
+            "colisWeight": 5.0,
+            "foodCategory": "Produits laitiers",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0024929",
+            "name": "Cream cheese",
+            "unit": "kg",
+            "pricePerUnit": 13.90,
+            "colisWeight": 1.0,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0328631",
+            "name": "Halloumi AOP 850g",
+            "unit": "kg",
+            "pricePerUnit": 13.80,
+            "colisWeight": 0.85,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0096540",
+            "name": "Comté bloc AOP",
+            "unit": "kg",
+            "pricePerUnit": 20.00,
+            "colisWeight": 2.0,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0006908",
+            "name": "Comté râpé AOP",
+            "unit": "kg",
+            "pricePerUnit": 17.80,
+            "colisWeight": 1.0,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0244294",
+            "name": "Bleu (fromage)",
+            "unit": "kg",
+            "pricePerUnit": 11.00,
+            "colisWeight": 1.9,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0244299",
+            "name": "Camembert",
+            "unit": "pièce",
+            "pricePerUnit": 2.50,
+            "colisWeight": 0.24,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0244291",
+            "name": "Brie pasteurisé",
+            "unit": "kg",
+            "pricePerUnit": 8.00,
+            "colisWeight": 3.3,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0184686",
+            "name": "Coulommiers",
+            "unit": "pièce",
+            "pricePerUnit": 3.90,
+            "colisWeight": 0.32,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0244149",
+            "name": "Emmental râpé",
+            "unit": "kg",
+            "pricePerUnit": 7.00,
+            "colisWeight": 1.0,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0320297",
+            "name": "Mozzarella râpée",
+            "unit": "kg",
+            "pricePerUnit": 6.00,
+            "colisWeight": 2.5,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0096096",
+            "name": "Mozzarella / Emmental râpé mélange",
+            "unit": "kg",
+            "pricePerUnit": 7.00,
+            "colisWeight": 1.0,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0308762",
+            "name": "Mozzarella boule",
+            "unit": "kg",
+            "pricePerUnit": 7.85,
+            "colisWeight": 0.13,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0058027",
+            "name": "Feta AOP bloc",
+            "unit": "kg",
+            "pricePerUnit": 17.85,
+            "colisWeight": 1.0,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0171705",
+            "name": "Parmesan râpé AOP",
+            "unit": "kg",
+            "pricePerUnit": 20.20,
+            "colisWeight": 1.0,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0320575",
+            "name": "Halloumi AOP 225g",
+            "unit": "boite",
+            "pricePerUnit": 4.70,
+            "colisWeight": 0.23,
+            "foodCategory": "Fromages",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        }
+    ]
+}

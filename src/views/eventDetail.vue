@@ -41,7 +41,7 @@ function onContactCreated() {
             <div 
                 class="
                     scrollBox
-                    h100 
+                    h100 pad10
                     flex column
                 "
             >

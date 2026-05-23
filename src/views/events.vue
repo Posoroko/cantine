@@ -1,18 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import TitleWIthCreateButton from '@/components/Text/TitleWithCreateButton.vue'
 import Private from '@/components/Architecture/Layouts/Private.vue'
-import NewEvent from '@/components/Architecture/Overlay/Modal/NewEvent.vue'
 import Icon from '@/components/Icon/Main.vue'
-import { useModal } from '@/composables/modal'
 import { useEvents } from '@/composables/events'
 import { loadCurrentEvent } from '@/composables/currentEvent'
 import appConfig from '@/composables/appConfig'
 import DateParser from '@/components/Text/Date.vue'
 
 const router = useRouter()
-const { showModal } = useModal()
 const { getEvents } = useEvents()
 
 const events = ref([])
@@ -28,17 +24,6 @@ async function loadEvents() {
         events.value = []
     } finally {
         isLoading.value = false
-    }
-}
-
-async function openNewEventModal() {
-    try {
-        const result = await showModal(NewEvent)
-        console.log('Event created:', result)
-        // Reload events list
-        await loadEvents()
-    } catch (error) {
-        console.log('Modal cancelled')
     }
 }
 
@@ -75,11 +60,7 @@ onMounted(() => {
 <template>
     <Private>
         <template #title>
-            <TitleWIthCreateButton
-                @createNew="openNewEventModal"
-            >
-                Événements
-            </TitleWIthCreateButton>
+            <h1>Événements</h1>
         </template>
 
         <template #main>

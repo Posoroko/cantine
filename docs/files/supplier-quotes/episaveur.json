@@ -1,0 +1,906 @@
+{
+    "supplier": "Episaveur",
+    "quoteDate": "2026-05",
+    "items": [
+        {
+            "ref": "0183983",
+            "name": "Jus de citron vert",
+            "unit": "L",
+            "pricePerUnit": 2.58,
+            "colisWeight": 6.0,
+            "foodCategory": "Liquides",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0022625",
+            "name": "Jus de citron",
+            "unit": "L",
+            "pricePerUnit": 2.28,
+            "colisWeight": 10.0,
+            "foodCategory": "Liquides",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0183984",
+            "name": "Jus de citron naturel Sicile",
+            "unit": "L",
+            "pricePerUnit": 3.14,
+            "colisWeight": 6.0,
+            "foodCategory": "Liquides",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0313340",
+            "name": "Jus de citron vert Pulco",
+            "unit": "bouteille",
+            "pricePerUnit": 4.65,
+            "colisWeight": 0.71,
+            "foodCategory": "Liquides",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0007270",
+            "name": "Film cuisson aluminium 50cm×50m",
+            "unit": "rouleau",
+            "pricePerUnit": 31.62,
+            "colisWeight": 0.6,
+            "foodCategory": null,
+            "supplyCategory": "Matériel",
+            "prepLess": true
+        },
+        {
+            "ref": "0066391",
+            "name": "Papier cuisson 40×60 (500U)",
+            "unit": "colis",
+            "pricePerUnit": 32.94,
+            "colisWeight": 4.68,
+            "foodCategory": null,
+            "supplyCategory": "Matériel",
+            "prepLess": true
+        },
+        {
+            "ref": "0324790",
+            "name": "Papier cuisson 32×53 (500U)",
+            "unit": "colis",
+            "pricePerUnit": 31.17,
+            "colisWeight": 3.36,
+            "foodCategory": null,
+            "supplyCategory": "Matériel",
+            "prepLess": true
+        },
+        {
+            "ref": "0228527",
+            "name": "Gobelet carton 18cL (50U)",
+            "unit": "sachet",
+            "pricePerUnit": 2.50,
+            "colisWeight": 0.22,
+            "foodCategory": null,
+            "supplyCategory": "Matériel",
+            "prepLess": true
+        },
+        {
+            "ref": "0040422",
+            "name": "Moule cake aluminium 1050cc (100U)",
+            "unit": "paquet",
+            "pricePerUnit": 24.00,
+            "colisWeight": 1.36,
+            "foodCategory": null,
+            "supplyCategory": "Matériel",
+            "prepLess": true
+        },
+        {
+            "ref": "0179165",
+            "name": "Pot glace carton 240mL (50U)",
+            "unit": "paquet",
+            "pricePerUnit": 5.17,
+            "colisWeight": 0.37,
+            "foodCategory": null,
+            "supplyCategory": "Matériel",
+            "prepLess": true
+        },
+        {
+            "ref": "0311460",
+            "name": "Farine blé T55",
+            "unit": "kg",
+            "pricePerUnit": 0.72,
+            "colisWeight": 10.0,
+            "foodCategory": "Farines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0011242",
+            "name": "Farine blé noir",
+            "unit": "kg",
+            "pricePerUnit": 3.74,
+            "colisWeight": 10.0,
+            "foodCategory": "Farines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0309442",
+            "name": "Tartelette beurre 8cm",
+            "unit": "pièce",
+            "pricePerUnit": 0.34,
+            "colisWeight": 3.46,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0303828",
+            "name": "Tartelette beurre 10.5cm",
+            "unit": "pièce",
+            "pricePerUnit": 0.62,
+            "colisWeight": 3.02,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0012534",
+            "name": "Pain de mie",
+            "unit": "paquet",
+            "pricePerUnit": 1.88,
+            "colisWeight": 0.5,
+            "foodCategory": "Boulangerie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0133962",
+            "name": "Bouchée hôtelière",
+            "unit": "pièce",
+            "pricePerUnit": 0.47,
+            "colisWeight": 2.74,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0319410",
+            "name": "Huile d'olive vierge extra",
+            "unit": "L",
+            "pricePerUnit": 6.28,
+            "colisWeight": 13.74,
+            "foodCategory": "Matières grasses",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0012318",
+            "name": "Vinaigre de cidre",
+            "unit": "L",
+            "pricePerUnit": 2.00,
+            "colisWeight": 6.0,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0025254",
+            "name": "Sel mer fin",
+            "unit": "kg",
+            "pricePerUnit": 0.45,
+            "colisWeight": 12.0,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0097151",
+            "name": "Poivre noir mignonette",
+            "unit": "kg",
+            "pricePerUnit": 16.18,
+            "colisWeight": 1.0,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0018147",
+            "name": "Poivre vert saumure",
+            "unit": "boite",
+            "pricePerUnit": 13.21,
+            "colisWeight": 0.8,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0133569",
+            "name": "Baie rose",
+            "unit": "boite",
+            "pricePerUnit": 9.66,
+            "colisWeight": 0.22,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0015694",
+            "name": "Thym",
+            "unit": "kg",
+            "pricePerUnit": 16.46,
+            "colisWeight": 1.0,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0133568",
+            "name": "Cumin moulu",
+            "unit": "boite",
+            "pricePerUnit": 10.23,
+            "colisWeight": 0.4,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0030283",
+            "name": "Moutarde Dijon forte",
+            "unit": "kg",
+            "pricePerUnit": 3.00,
+            "colisWeight": 1.0,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0024030",
+            "name": "Moutarde forte Dijon 5kg",
+            "unit": "kg",
+            "pricePerUnit": 2.78,
+            "colisWeight": 5.0,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0175172",
+            "name": "Curry biryani poudre",
+            "unit": "flacon",
+            "pricePerUnit": 14.79,
+            "colisWeight": 0.28,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0093261",
+            "name": "Curry Madras",
+            "unit": "kg",
+            "pricePerUnit": 15.26,
+            "colisWeight": 0.5,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0187743",
+            "name": "Mélange zaatar",
+            "unit": "kg",
+            "pricePerUnit": 15.37,
+            "colisWeight": 0.5,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0000327",
+            "name": "Curry doux",
+            "unit": "kg",
+            "pricePerUnit": 12.94,
+            "colisWeight": 1.0,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0010300",
+            "name": "Ail semoule",
+            "unit": "boite",
+            "pricePerUnit": 14.92,
+            "colisWeight": 0.5,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0059106",
+            "name": "Sauce soja Kikkoman",
+            "unit": "L",
+            "pricePerUnit": 10.24,
+            "colisWeight": 1.17,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0310365",
+            "name": "Sauce soja sucrée",
+            "unit": "L",
+            "pricePerUnit": 7.90,
+            "colisWeight": 1.12,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0190351",
+            "name": "Huile de sésame grillé",
+            "unit": "L",
+            "pricePerUnit": 15.86,
+            "colisWeight": 0.91,
+            "foodCategory": "Matières grasses",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0135876",
+            "name": "Carvi noir entier",
+            "unit": "kg",
+            "pricePerUnit": 15.82,
+            "colisWeight": 0.5,
+            "foodCategory": "Épices",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0066785",
+            "name": "Vinaigre blanc",
+            "unit": "bouteille",
+            "pricePerUnit": 4.89,
+            "colisWeight": 0.5,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0043222",
+            "name": "Vinaigre vin rouge",
+            "unit": "bouteille",
+            "pricePerUnit": 1.48,
+            "colisWeight": 1.5,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0186407",
+            "name": "Tahini pâte de sésame",
+            "unit": "kg",
+            "pricePerUnit": 15.92,
+            "colisWeight": 1.0,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0089347",
+            "name": "Sauce sweet chili",
+            "unit": "bouteille",
+            "pricePerUnit": 4.40,
+            "colisWeight": 0.9,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0096256",
+            "name": "Graines de sésame noir",
+            "unit": "kg",
+            "pricePerUnit": 11.36,
+            "colisWeight": 1.0,
+            "foodCategory": "Graines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0057667",
+            "name": "Graines de sésame décortiquées",
+            "unit": "kg",
+            "pricePerUnit": 12.58,
+            "colisWeight": 1.0,
+            "foodCategory": "Graines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0160618",
+            "name": "Graines de sésame",
+            "unit": "kg",
+            "pricePerUnit": 9.24,
+            "colisWeight": 1.0,
+            "foodCategory": "Graines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0247583",
+            "name": "Graines de tournesol",
+            "unit": "kg",
+            "pricePerUnit": 13.90,
+            "colisWeight": 0.5,
+            "foodCategory": "Graines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0321080",
+            "name": "Haricots noirs cuits",
+            "unit": "kg",
+            "pricePerUnit": 3.51,
+            "colisWeight": 2.25,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0291805",
+            "name": "Haricots blancs (boite)",
+            "unit": "boite",
+            "pricePerUnit": 5.94,
+            "colisWeight": 4.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0034418",
+            "name": "Haricots lingots blancs secs",
+            "unit": "kg",
+            "pricePerUnit": 3.99,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Sec",
+            "prepLess": false
+        },
+        {
+            "ref": "0094690",
+            "name": "Haricots blancs secs",
+            "unit": "kg",
+            "pricePerUnit": 3.99,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Sec",
+            "prepLess": false
+        },
+        {
+            "ref": "0020800",
+            "name": "Haricots blancs cuits Bonduelle",
+            "unit": "poche",
+            "pricePerUnit": 14.91,
+            "colisWeight": 4.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0217662",
+            "name": "Lentilles corail",
+            "unit": "kg",
+            "pricePerUnit": 3.15,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Sec",
+            "prepLess": false
+        },
+        {
+            "ref": "0059163",
+            "name": "Couscous moyen",
+            "unit": "kg",
+            "pricePerUnit": 1.80,
+            "colisWeight": 5.0,
+            "foodCategory": "Féculents",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0012421",
+            "name": "Farine de riz",
+            "unit": "kg",
+            "pricePerUnit": 1.56,
+            "colisWeight": 5.0,
+            "foodCategory": "Farines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0099882",
+            "name": "Maïs à éclater",
+            "unit": "kg",
+            "pricePerUnit": 4.79,
+            "colisWeight": 1.0,
+            "foodCategory": "Féculents",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0281348",
+            "name": "Riz basmati",
+            "unit": "kg",
+            "pricePerUnit": 2.66,
+            "colisWeight": 5.0,
+            "foodCategory": "Féculents",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0202892",
+            "name": "Sarrasin grillé kasha",
+            "unit": "kg",
+            "pricePerUnit": 4.44,
+            "colisWeight": 1.0,
+            "foodCategory": "Féculents",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0045731",
+            "name": "Tortis (pâtes)",
+            "unit": "kg",
+            "pricePerUnit": 1.64,
+            "colisWeight": 5.0,
+            "foodCategory": "Féculents",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0025087",
+            "name": "Haricots rouges (boite)",
+            "unit": "boite",
+            "pricePerUnit": 6.58,
+            "colisWeight": 4.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0025092",
+            "name": "Lentilles préparées (boite)",
+            "unit": "boite",
+            "pricePerUnit": 5.75,
+            "colisWeight": 4.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0182278",
+            "name": "Tomate pulpe fine (boite)",
+            "unit": "boite",
+            "pricePerUnit": 10.26,
+            "colisWeight": 4.05,
+            "foodCategory": "Conserves",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0025095",
+            "name": "Maïs grain (boite)",
+            "unit": "boite",
+            "pricePerUnit": 2.27,
+            "colisWeight": 0.6,
+            "foodCategory": "Conserves",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0025101",
+            "name": "Pois chiches (boite)",
+            "unit": "boite",
+            "pricePerUnit": 6.48,
+            "colisWeight": 4.0,
+            "foodCategory": "Légumineuses",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0059443",
+            "name": "Tortilla blé 30cm",
+            "unit": "paquet",
+            "pricePerUnit": 7.15,
+            "colisWeight": 1.8,
+            "foodCategory": "Boulangerie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0020107",
+            "name": "Tortilla blé 25cm",
+            "unit": "paquet",
+            "pricePerUnit": 5.80,
+            "colisWeight": 1.2,
+            "foodCategory": "Boulangerie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0159637",
+            "name": "Tortilla maïs 20cm",
+            "unit": "paquet",
+            "pricePerUnit": 2.42,
+            "colisWeight": 0.32,
+            "foodCategory": "Boulangerie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0097979",
+            "name": "Tomates semi-séchées à l'huile",
+            "unit": "boite",
+            "pricePerUnit": 11.85,
+            "colisWeight": 0.78,
+            "foodCategory": "Conserves",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0299826",
+            "name": "Lait de coco",
+            "unit": "L",
+            "pricePerUnit": 5.15,
+            "colisWeight": 1.0,
+            "foodCategory": "Liquides",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0295880",
+            "name": "Lait de coco Thai Kitchen",
+            "unit": "L",
+            "pricePerUnit": 5.40,
+            "colisWeight": 3.0,
+            "foodCategory": "Liquides",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0217334",
+            "name": "Sauce sriracha fumée",
+            "unit": "L",
+            "pricePerUnit": 14.90,
+            "colisWeight": 1.16,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0163155",
+            "name": "Sauce sriracha épicée",
+            "unit": "L",
+            "pricePerUnit": 13.90,
+            "colisWeight": 1.16,
+            "foodCategory": "Condiments",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0304844",
+            "name": "Fond de volaille naturel",
+            "unit": "L",
+            "pricePerUnit": 17.67,
+            "colisWeight": 1.03,
+            "foodCategory": "Liquides",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0291803",
+            "name": "Amande en poudre",
+            "unit": "kg",
+            "pricePerUnit": 11.95,
+            "colisWeight": 1.0,
+            "foodCategory": "Graines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0067535",
+            "name": "Cacahuètes crues",
+            "unit": "kg",
+            "pricePerUnit": 6.82,
+            "colisWeight": 1.0,
+            "foodCategory": "Graines",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0312098",
+            "name": "Miel de fleurs",
+            "unit": "kg",
+            "pricePerUnit": 6.06,
+            "colisWeight": 1.0,
+            "foodCategory": "Sucrants",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0220898",
+            "name": "Sucre cassonade",
+            "unit": "kg",
+            "pricePerUnit": 3.44,
+            "colisWeight": 1.0,
+            "foodCategory": "Sucrants",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0295988",
+            "name": "Sucre en poudre",
+            "unit": "kg",
+            "pricePerUnit": 1.52,
+            "colisWeight": 10.0,
+            "foodCategory": "Sucrants",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0220982",
+            "name": "Sucre glace",
+            "unit": "kg",
+            "pricePerUnit": 2.98,
+            "colisWeight": 1.0,
+            "foodCategory": "Sucrants",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0049510",
+            "name": "Levure chimique",
+            "unit": "kg",
+            "pricePerUnit": 9.45,
+            "colisWeight": 1.0,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0199610",
+            "name": "Agar-agar (pot 270g)",
+            "unit": "pot",
+            "pricePerUnit": 22.00,
+            "colisWeight": 0.27,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0216951",
+            "name": "Agar-agar poudre (pot 650g)",
+            "unit": "pot",
+            "pricePerUnit": 42.60,
+            "colisWeight": 0.65,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0313895",
+            "name": "Miel de France Bio",
+            "unit": "kg",
+            "pricePerUnit": 19.04,
+            "colisWeight": 1.0,
+            "foodCategory": "Sucrants",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0133634",
+            "name": "Miel de fleurs Bio squeeze",
+            "unit": "flacon",
+            "pricePerUnit": 11.82,
+            "colisWeight": 0.5,
+            "foodCategory": "Sucrants",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0010403",
+            "name": "Biscuits cuillère",
+            "unit": "kg",
+            "pricePerUnit": 13.05,
+            "colisWeight": 2.0,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0295815",
+            "name": "Chocolat noir 50%",
+            "unit": "kg",
+            "pricePerUnit": 11.95,
+            "colisWeight": 5.0,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Sec",
+            "prepLess": true
+        },
+        {
+            "ref": "0011712",
+            "name": "Arôme vanille naturel",
+            "unit": "L",
+            "pricePerUnit": 10.15,
+            "colisWeight": 1.0,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0008013",
+            "name": "Arôme vanille artificiel",
+            "unit": "L",
+            "pricePerUnit": 5.80,
+            "colisWeight": 1.0,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0313144",
+            "name": "Sauce dessert fruits rouges",
+            "unit": "kg",
+            "pricePerUnit": 7.95,
+            "colisWeight": 1.0,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0095317",
+            "name": "Sauce dessert mangue abricot",
+            "unit": "kg",
+            "pricePerUnit": 8.85,
+            "colisWeight": 1.0,
+            "foodCategory": "Pâtisserie",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0271503",
+            "name": "Sardines à l'huile de colza",
+            "unit": "boite",
+            "pricePerUnit": 7.97,
+            "colisWeight": 0.7,
+            "foodCategory": "Poisson",
+            "supplyCategory": "Conserve",
+            "prepLess": true
+        },
+        {
+            "ref": "0300007",
+            "name": "Cidre traditionnel",
+            "unit": "bouteille",
+            "pricePerUnit": 3.10,
+            "colisWeight": 1.5,
+            "foodCategory": "Boissons",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0031324",
+            "name": "Vin blanc BIB 10L",
+            "unit": "L",
+            "pricePerUnit": 1.42,
+            "colisWeight": 10.0,
+            "foodCategory": "Boissons",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        },
+        {
+            "ref": "0031325",
+            "name": "Vin rouge BIB 10L",
+            "unit": "L",
+            "pricePerUnit": 1.29,
+            "colisWeight": 10.33,
+            "foodCategory": "Boissons",
+            "supplyCategory": "Liquide",
+            "prepLess": true
+        }
+    ]
+}

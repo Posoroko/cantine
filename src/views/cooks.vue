@@ -1,29 +1,14 @@
 <script setup>
 import Private from '@/components/Architecture/Layouts/Private.vue'
-import TitleWithCreateButton from '@/components/Text/TitleWithCreateButton.vue'
 import Icon from '@/components/Icon/Main.vue'
-import MenuButton from '@/components/Cards/MenuButton/Main.vue'
-import NewCook from '@/components/Architecture/Overlay/Modal/NewCook.vue'
-import { useModal } from '@/composables/modal'
 import { useCooks } from '@/composables/cooks'
-import { dbDelete } from '@/composables/fetch'
 import appConfig from '@/composables/appConfig'
 import { ref, onMounted } from 'vue'
 
-const { showModal, showConfirmationModal } = useModal()
 const { getCooks } = useCooks()
 
 const cooks = ref([])
 const isLoading = ref(false)
-
-const openNewCookModal = () => {
-    showModal(NewCook).then(() => {
-        console.log('Cook created, reloading list')
-        loadCooks()
-    }).catch(() => {
-        console.log('Modal cancelled')
-    })
-}
 
 const loadCooks = async () => {
     isLoading.value = true
@@ -42,30 +27,6 @@ const getImageUrl = (imageId) => {
     return `${appConfig.dbUrl}/assets/${imageId}`
 }
 
-const handleCookDelete = (data) => {
-    showConfirmationModal({
-        title: 'Supprimer ce cuisinier?',
-        message: 'Cette action ne peut pas être annulée.',
-        confirmText: 'Supprimer',
-        cancelText: 'Annuler'
-    }).then(async () => {
-        try {
-            await dbDelete(`/items/${data.collection}/${data.id}`)
-            console.log('Cook deleted successfully')
-            loadCooks()
-        } catch (error) {
-            console.error('Failed to delete cook:', error)
-        }
-    }).catch(() => {
-        console.log('Delete cancelled')
-    })
-}
-
-const handleCookUpdate = (data) => {
-    console.log('Update cook:', data)
-    // TODO: Implement update cook functionality
-}
-
 onMounted(() => {
     loadCooks()
 })
@@ -80,11 +41,7 @@ onMounted(() => {
                     pad20
                 "
             >
-                <TitleWithCreateButton 
-                    @createNew="openNewCookModal"
-                >
-                    Cuisiniers
-                </TitleWithCreateButton>
+                <h1>Cuisiniers</h1>
 
                 <div v-if="isLoading" class="loadingText">
                     Chargement...
@@ -115,19 +72,12 @@ onMounted(() => {
                                     <span>Email:</span> {{ cook.email }}
                                 </div>
                             </div>
-                            <MenuButton
-                                :collection="'cooks'"
-                                :id="cook.id"
-                                canDelete
-                                @delete="handleCookDelete"
-                                @update="handleCookUpdate"
-                            />
                         </div>
                     </div>
                 </div>
 
                 <p v-else class="noCooksText">
-                    Aucun cuisinier n'a été créé. Cliquez sur le bouton "+" pour ajouter un cuisinier.
+                    Aucun cuisinier.
                 </p>
             </div>
         </template>

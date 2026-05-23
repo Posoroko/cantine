@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ---- Navigation tabs ---- */
+        .nav {
+            display: flex;
+            border-bottom: 2px solid #1a73e8;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 10;
+        }
+
+        .navBtn {
+            flex: 1;
+            padding: 9px 4px;
+            border: none;
+            background: none;
+            font-size: 12px;
+            font-weight: bold;
+            color: #888;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .navBtn.active {
+            color: #1a73e8;
+            border-bottom-color: #1a73e8;
+        }
+
+        .navBtn:hover:not(.active) {
+            color: #444;
+            background: #f8f8f8;
+        }
+
+        /* ---- Screen containers ---- */
+        .screen {
+            display: none;
+            padding: 14px 14px 20px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #222;
+            padding: 16px;
+            background: #fff;
+        }
+
+        h2 {
+            font-size: 15px;
+            margin-bottom: 16px;
+            color: #1a73e8;
+        }
+
+        h3 {
+            font-size: 13px;
+            color: #555;
+            margin: 20px 0 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            margin-top: 12px;
+            color: #444;
+        }
+
+        label:first-of-type {
+            margin-top: 0;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 7px 9px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #222;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #1a73e8;
+            outline: none;
+            background: #fff;
+        }
+
+        .row {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+        }
+
+        .row input,
+        .row select {
+            flex: 1;
+        }
+
+        .addBtn {
+            padding: 7px 10px;
+            background: #f1f3f4;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            color: #444;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .addBtn:hover {
+            background: #e8f0fe;
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+
+        .submitBtn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submitBtn:hover {
+            background: #1558b0;
+        }
+
+        .submitBtn:disabled {
+            background: #aaa;
+            cursor: default;
+        }
+
+        .msg {
+            margin-top: 12px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .msg.success {
+            background: #e6f4ea;
+            color: #137333;
+            border: 1px solid #b7e1c6;
+        }
+
+        .msg.error {
+            background: #fce8e6;
+            color: #c5221f;
+            border: 1px solid #f5c6c5;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        /* ---- Shared component styles ---- */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            color: #222;
+            background: #fff;
+        }
+
+        h3 {
+            font-size: 13px;
+            font-weight: bold;
+            color: #1a73e8;
+            margin: 0 0 12px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            margin-top: 10px;
+            color: #444;
+            font-size: 12px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 7px 9px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #222;
+            background: #fafafa;
+        }
+
+        input:focus, select:focus {
+            border-color: #1a73e8;
+            outline: none;
+            background: #fff;
+        }
+
+        .row {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+        }
+
+        .row input,
+        .row select {
+            flex: 1;
+        }
+
+        .addBtn {
+            padding: 7px 10px;
+            background: #f1f3f4;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            line-height: 1;
+            color: #444;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .addBtn:hover {
+            background: #e8f0fe;
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btnPrimary {
+            background: #1a73e8;
+            color: #fff;
+            width: 100%;
+            margin-top: 14px;
+        }
+
+        .btnPrimary:hover { background: #1558b0; }
+        .btnPrimary:disabled { background: #aaa; cursor: default; }
+
+        .btnSecondary {
+            background: #f1f3f4;
+            color: #444;
+            border: 1px solid #ccc;
+        }
+
+        .btnSecondary:hover { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
+
+        .btnDanger {
+            background: #fce8e6;
+            color: #c5221f;
+            border: 1px solid #f5c6c5;
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btnDanger:hover { background: #c5221f; color: #fff; }
+
+        .msg {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .msg.success { background: #e6f4ea; color: #137333; border: 1px solid #b7e1c6; }
+        .msg.error   { background: #fce8e6; color: #c5221f; border: 1px solid #f5c6c5; }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 14px 0;
+        }
+
+        .list {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .listItem {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .listItem:nth-child(odd) { background: #f8f9fa; }
+
+        .listItem .listName { flex: 1; }
+        .listItem .listMeta { color: #888; font-size: 11px; margin: 0 8px; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation tabs -->
+    <nav class="nav">
+        <button class="navBtn active" onclick="showScreen('ingredients')">Ingrédients</button>
+        <button class="navBtn" onclick="showScreen('recettes')">Recettes</button>
+        <button class="navBtn" onclick="showScreen('evenement')">Événement</button>
+    </nav>
+
+    <!-- SCREEN: Ingrédients -->
+    <div id="screen-ingredients" class="screen active">
+
+        <h3>Nouvel ingrédient</h3>
+
+        <label>Nom</label>
+        <input type="text" id="ingName" placeholder="ex: Tofu fumé" />
+
+        <label>Catégorie</label>
+        <div class="row">
+            <select id="ingCategory"><option value="">— Choisir —</option></select>
+            <button class="addBtn" onclick="ingToggleNewCategory()">＋</button>
+        </div>
+        <div id="ingNewCatArea" style="display:none; margin-top:6px;">
+            <div class="row">
+                <input type="text" id="ingNewCatName" placeholder="Nom de la catégorie" />
+                <button class="addBtn" onclick="ingSubmitNewCategory()">OK</button>
+            </div>
+            <div id="msgIngCat" class="msg" style="display:none;"></div>
+        </div>
+
+        <label>Unité</label>
+        <div class="row">
+            <select id="ingUnit"><option value="">— Choisir —</option></select>
+            <button class="addBtn" onclick="ingToggleNewUnit()">＋</button>
+        </div>
+        <div id="ingNewUnitArea" style="display:none; margin-top:6px;">
+            <div class="row">
+                <input type="text" id="ingNewUnitName" placeholder="ex: liasse" />
+                <button class="addBtn" onclick="ingSubmitNewUnit()">OK</button>
+            </div>
+            <div id="msgIngUnit" class="msg" style="display:none;"></div>
+        </div>
+
+        <label>Prix / unité (€)</label>
+        <input type="number" id="ingPrice" placeholder="ex: 8.50" min="0" step="0.01" />
+
+        <button class="btn btnPrimary" id="ingSubmitBtn" onclick="ingSubmit()">Ajouter l'ingrédient</button>
+        <div id="msgIng" class="msg" style="display:none;"></div>
+
+        <hr class="divider" />
+        <h3>Ingrédients enregistrés</h3>
+        <ul id="ingList" class="list"></ul>
+
+    </div>
+
+    <!-- SCREEN: Recettes -->
+    <div id="screen-recettes" class="screen">
+
+        <h3>Nouvelle recette</h3>
+
+        <label>Nom de la recette</label>
+        <input type="text" id="recNom" placeholder="ex: Dal de lentilles" />
+
+        <label>Nb portions de base</label>
+        <input type="number" id="recPortions" placeholder="ex: 20" min="1" step="1" value="20" />
+
+        <label>Notes (optionnel)</label>
+        <input type="text" id="recNotes" placeholder="ex: sans gluten" />
+
+        <button class="btn btnPrimary" id="recSubmitBtn" onclick="recSubmit()">Créer la recette</button>
+        <div id="msgRec" class="msg" style="display:none;"></div>
+
+        <hr class="divider" />
+        <h3>Recettes</h3>
+        <ul id="recList" class="list"></ul>
+
+        <!-- Détail d'une recette (ingrédients) -->
+        <div id="recDetail" style="display:none;">
+            <hr class="divider" />
+            <h3 id="recDetailTitle"></h3>
+
+            <label>Ajouter un ingrédient</label>
+            <div class="row">
+                <select id="recIngSelect"><option value="">— Choisir —</option></select>
+            </div>
+            <label>Quantité</label>
+            <div class="row">
+                <input type="number" id="recIngQty" placeholder="ex: 2.5" min="0" step="0.01" />
+                <button class="addBtn" onclick="recAddIngredient()">＋</button>
+            </div>
+            <div id="msgRecDetail" class="msg" style="display:none;"></div>
+
+            <ul id="recIngList" class="list" style="margin-top:10px;"></ul>
+
+            <button class="btn btnSecondary" style="margin-top:10px; width:100%;" onclick="recCloseDetail()">← Retour aux recettes</button>
+        </div>
+
+    </div>
+
+    <!-- SCREEN: Événement -->
+    <div id="screen-evenement" class="screen">
+
+        <!-- Liste des événements -->
+        <div id="evtListView">
+            <h3>Nouvel événement</h3>
+
+            <label>Nom</label>
+            <input type="text" id="evtNom" placeholder="ex: Camp été 2026" />
+
+            <label>Date début</label>
+            <input type="date" id="evtDebut" />
+
+            <label>Date fin</label>
+            <input type="date" id="evtFin" />
+
+            <button class="btn btnPrimary" id="evtSubmitBtn" onclick="evtSubmit()">Créer l'événement</button>
+            <div id="msgEvt" class="msg" style="display:none;"></div>
+
+            <hr class="divider" />
+            <h3>Événements</h3>
+            <ul id="evtList" class="list"></ul>
+        </div>
+
+        <!-- Détail événement : jours + services -->
+        <div id="evtDetailView" style="display:none;">
+            <h3 id="evtDetailTitle"></h3>
+
+            <!-- Ajouter un jour -->
+            <label>Ajouter un jour</label>
+            <div class="row">
+                <input type="date" id="jourDate" />
+                <input type="text" id="jourLabel" placeholder="ex: Jour 1" style="flex:1;" />
+                <button class="addBtn" onclick="jourAdd()">＋</button>
+            </div>
+            <div id="msgJour" class="msg" style="display:none;"></div>
+
+            <!-- Liste des jours -->
+            <div id="jourList" style="margin-top:10px;"></div>
+
+            <hr class="divider" />
+            <button class="btn btnPrimary" onclick="evtGenerer()">Générer Courses + Budget</button>
+            <div id="msgGen" class="msg" style="display:none;"></div>
+
+            <button class="btn btnSecondary" style="margin-top:8px; width:100%;" onclick="evtCloseDetail()">← Retour aux événements</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --------------------------------------------------------
+        // Navigation
+        // --------------------------------------------------------
+
+        var currentScreen = 'ingredients'
+
+        function showScreen(name) {
+            document.querySelectorAll('.screen').forEach(function (s) {
+                s.classList.remove('active')
+            })
+            document.querySelectorAll('.navBtn').forEach(function (b) {
+                b.classList.remove('active')
+            })
+            document.getElementById('screen-' + name).classList.add('active')
+            var btns = document.querySelectorAll('.navBtn')
+            var order = ['ingredients', 'recettes', 'evenement']
+            btns[order.indexOf(name)].classList.add('active')
+            currentScreen = name
+
+            if (name === 'recettes') initRecettes()
+            if (name === 'evenement') initEvenement()
+        }
+
+        // --------------------------------------------------------
+        // Shared helpers
+        // --------------------------------------------------------
+
+        function showMsg(id, text, type) {
+            var el = document.getElementById(id)
+            if (!el) return
+            el.textContent = text
+            el.className = 'msg ' + type
+            el.style.display = 'block'
+        }
+
+        function hideMsg(id) {
+            var el = document.getElementById(id)
+            if (el) el.style.display = 'none'
+        }
+
+        function showError(id, err) {
+            showMsg(id, 'Erreur : ' + (err.message || err), 'error')
+        }
+
+        function populateSelect(id, items, valueFn, labelFn) {
+            var sel = document.getElementById(id)
+            if (!sel) return
+            var current = sel.value
+            while (sel.options.length > 1) sel.remove(1)
+            items.forEach(function (item) {
+                var opt = document.createElement('option')
+                opt.value = valueFn ? valueFn(item) : item
+                opt.textContent = labelFn ? labelFn(item) : item
+                sel.appendChild(opt)
+            })
+            if (current) sel.value = current
+        }
+
+        // --------------------------------------------------------
+        // Init
+        // --------------------------------------------------------
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initIngredients()
+        })
+
+
+        // --------------------------------------------------------
+        // SCREEN: Ingrédients
+        // --------------------------------------------------------
+
+        var ingConfig = { categories: [], units: [] }
+        var ingAll = []
+
+        function initIngredients() {
+            google.script.run
+                .withSuccessHandler(function (config) {
+                    ingConfig = config
+                    populateSelect('ingCategory', config.categories)
+                    populateSelect('ingUnit', config.units)
+                    ingLoadList()
+                })
+                .withFailureHandler(function (e) { showError('msgIng', e) })
+                .getConfig()
+        }
+
+        function ingLoadList() {
+            google.script.run
+                .withSuccessHandler(function (rows) {
+                    ingAll = rows
+                    ingRenderList(rows)
+                })
+                .withFailureHandler(function (e) { showError('msgIng', e) })
+                .getIngredients()
+        }
+
+        function ingRenderList(rows) {
+            var ul = document.getElementById('ingList')
+            ul.innerHTML = ''
+            if (rows.length === 0) {
+                ul.innerHTML = '<li style="color:#888;font-size:12px;padding:6px">Aucun ingrédient.</li>'
+                return
+            }
+            rows.forEach(function (ing) {
+                var li = document.createElement('li')
+                li.className = 'listItem'
+                li.innerHTML =
+                    '<span class="listName">' + ing.nom + '</span>' +
+                    '<span class="listMeta">' + ing.categorie + ' · ' + ing.unite + (ing.prix_unitaire ? ' · ' + ing.prix_unitaire + '€' : '') + '</span>' +
+                    '<button class="btn btnDanger" onclick="ingDelete(' + ing.id + ')">✕</button>'
+                ul.appendChild(li)
+            })
+        }
+
+        function ingToggleNewCategory() {
+            var a = document.getElementById('ingNewCatArea')
+            a.style.display = a.style.display === 'none' ? 'block' : 'none'
+            hideMsg('msgIngCat')
+        }
+
+        function ingSubmitNewCategory() {
+            var name = document.getElementById('ingNewCatName').value.trim()
+            if (!name) return
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgIngCat', r.error, 'error'); return }
+                    ingConfig.categories = r.categories
+                    populateSelect('ingCategory', r.categories)
+                    document.getElementById('ingCategory').value = name
+                    document.getElementById('ingNewCatName').value = ''
+                    document.getElementById('ingNewCatArea').style.display = 'none'
+                    showMsg('msgIng', 'Catégorie "' + name + '" créée.', 'success')
+                })
+                .withFailureHandler(function (e) { showError('msgIngCat', e) })
+                .addCategory(name)
+        }
+
+        function ingToggleNewUnit() {
+            var a = document.getElementById('ingNewUnitArea')
+            a.style.display = a.style.display === 'none' ? 'block' : 'none'
+            hideMsg('msgIngUnit')
+        }
+
+        function ingSubmitNewUnit() {
+            var name = document.getElementById('ingNewUnitName').value.trim()
+            if (!name) return
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgIngUnit', r.error, 'error'); return }
+                    ingConfig.units = r.units
+                    populateSelect('ingUnit', r.units)
+                    document.getElementById('ingUnit').value = name
+                    document.getElementById('ingNewUnitName').value = ''
+                    document.getElementById('ingNewUnitArea').style.display = 'none'
+                    showMsg('msgIng', 'Unité "' + name + '" créée.', 'success')
+                })
+                .withFailureHandler(function (e) { showError('msgIngUnit', e) })
+                .addUnit(name)
+        }
+
+        function ingSubmit() {
+            var nom = document.getElementById('ingName').value.trim()
+            var cat = document.getElementById('ingCategory').value
+            var unit = document.getElementById('ingUnit').value
+            var prix = document.getElementById('ingPrice').value
+
+            if (!nom) { showMsg('msgIng', 'Le nom est obligatoire.', 'error'); return }
+            if (!cat) { showMsg('msgIng', 'Choisissez une catégorie.', 'error'); return }
+
+            var btn = document.getElementById('ingSubmitBtn')
+            btn.disabled = true
+            btn.textContent = 'En cours…'
+            hideMsg('msgIng')
+
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    btn.disabled = false
+                    btn.textContent = 'Ajouter l\'ingrédient'
+                    if (r.error) { showMsg('msgIng', r.error, 'error'); return }
+                    showMsg('msgIng', '"' + nom + '" ajouté.', 'success')
+                    document.getElementById('ingName').value = ''
+                    document.getElementById('ingCategory').value = ''
+                    document.getElementById('ingUnit').value = ''
+                    document.getElementById('ingPrice').value = ''
+                    ingLoadList()
+                })
+                .withFailureHandler(function (e) {
+                    btn.disabled = false
+                    btn.textContent = 'Ajouter l\'ingrédient'
+                    showError('msgIng', e)
+                })
+                .addIngredient(nom, cat, unit, prix)
+        }
+
+        function ingDelete(id) {
+            if (!confirm('Supprimer cet ingrédient ?')) return
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgIng', r.error, 'error'); return }
+                    ingLoadList()
+                })
+                .withFailureHandler(function (e) { showError('msgIng', e) })
+                .deleteIngredient(id)
+        }
+
+
+        // --------------------------------------------------------
+        // SCREEN: Recettes
+        // --------------------------------------------------------
+
+        var recAll = []
+        var recCurrentId = null
+
+        function initRecettes() {
+            recLoadList()
+        }
+
+        function recLoadList() {
+            google.script.run
+                .withSuccessHandler(function (rows) {
+                    recAll = rows
+                    recRenderList(rows)
+                })
+                .withFailureHandler(function (e) { showError('msgRec', e) })
+                .getRecettes()
+        }
+
+        function recRenderList(rows) {
+            var ul = document.getElementById('recList')
+            ul.innerHTML = ''
+            if (rows.length === 0) {
+                ul.innerHTML = '<li style="color:#888;font-size:12px;padding:6px">Aucune recette.</li>'
+                return
+            }
+            rows.forEach(function (rec) {
+                var li = document.createElement('li')
+                li.className = 'listItem'
+                li.innerHTML =
+                    '<span class="listName">' + rec.nom + '</span>' +
+                    '<span class="listMeta">' + rec.nb_portions_base + ' portions · ' + rec.ingredients.length + ' ing.</span>' +
+                    '<button class="btn btnSecondary" style="font-size:11px;padding:4px 8px;" onclick="recOpenDetail(' + rec.id + ')">Éditer</button>' +
+                    '<button class="btn btnDanger" style="margin-left:4px;" onclick="recDelete(' + rec.id + ')">✕</button>'
+                ul.appendChild(li)
+            })
+        }
+
+        function recSubmit() {
+            var nom = document.getElementById('recNom').value.trim()
+            var portions = document.getElementById('recPortions').value
+            var notes = document.getElementById('recNotes').value.trim()
+
+            if (!nom) { showMsg('msgRec', 'Le nom est obligatoire.', 'error'); return }
+
+            var btn = document.getElementById('recSubmitBtn')
+            btn.disabled = true
+            btn.textContent = 'En cours…'
+            hideMsg('msgRec')
+
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    btn.disabled = false
+                    btn.textContent = 'Créer la recette'
+                    if (r.error) { showMsg('msgRec', r.error, 'error'); return }
+                    document.getElementById('recNom').value = ''
+                    document.getElementById('recPortions').value = '20'
+                    document.getElementById('recNotes').value = ''
+                    showMsg('msgRec', '"' + nom + '" créée.', 'success')
+                    recLoadList()
+                })
+                .withFailureHandler(function (e) {
+                    btn.disabled = false
+                    btn.textContent = 'Créer la recette'
+                    showError('msgRec', e)
+                })
+                .addRecette(nom, portions, notes)
+        }
+
+        function recDelete(id) {
+            if (!confirm('Supprimer cette recette et ses ingrédients ?')) return
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgRec', r.error, 'error'); return }
+                    recLoadList()
+                })
+                .withFailureHandler(function (e) { showError('msgRec', e) })
+                .deleteRecette(id)
+        }
+
+        // --- Détail recette ---
+
+        function recOpenDetail(id) {
+            recCurrentId = id
+            var rec = recAll.filter(function (r) { return r.id === id })[0]
+            if (!rec) return
+
+            document.getElementById('recDetail').style.display = 'block'
+            document.getElementById('recDetailTitle').textContent = rec.nom
+            document.getElementById('recList').parentElement.querySelector('h3').style.display = 'none'
+            document.getElementById('recList').style.display = 'none'
+            document.getElementById('recSubmitBtn').parentElement.querySelector('h3') // noop
+
+            // Peupler le select d'ingrédients
+            populateSelect('recIngSelect', ingAll,
+                function (i) { return i.id },
+                function (i) { return i.nom + ' (' + i.unite + ')' }
+            )
+
+            recRenderIngList(rec.ingredients)
+            hideMsg('msgRecDetail')
+        }
+
+        function recCloseDetail() {
+            recCurrentId = null
+            document.getElementById('recDetail').style.display = 'none'
+            document.getElementById('recList').style.display = ''
+            recLoadList()
+        }
+
+        function recRenderIngList(ings) {
+            var ul = document.getElementById('recIngList')
+            ul.innerHTML = ''
+            if (ings.length === 0) {
+                ul.innerHTML = '<li style="color:#888;font-size:12px;padding:6px">Aucun ingrédient.</li>'
+                return
+            }
+            ings.forEach(function (ri) {
+                var li = document.createElement('li')
+                li.className = 'listItem'
+                li.innerHTML =
+                    '<span class="listName">' + ri.nom + '</span>' +
+                    '<span class="listMeta">' + ri.quantite + ' ' + ri.unite + '</span>' +
+                    '<button class="btn btnDanger" onclick="recRemoveIng(' + ri.id + ')">✕</button>'
+                ul.appendChild(li)
+            })
+        }
+
+        function recAddIngredient() {
+            var ingId = parseInt(document.getElementById('recIngSelect').value)
+            var qty = document.getElementById('recIngQty').value
+            if (!ingId) { showMsg('msgRecDetail', 'Choisissez un ingrédient.', 'error'); return }
+            if (!qty || parseFloat(qty) <= 0) { showMsg('msgRecDetail', 'Quantité invalide.', 'error'); return }
+
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgRecDetail', r.error, 'error'); return }
+                    document.getElementById('recIngSelect').value = ''
+                    document.getElementById('recIngQty').value = ''
+                    hideMsg('msgRecDetail')
+                    // Recharger la recette pour mettre à jour la liste
+                    google.script.run
+                        .withSuccessHandler(function (rows) {
+                            recAll = rows
+                            var rec = rows.filter(function (r) { return r.id === recCurrentId })[0]
+                            if (rec) recRenderIngList(rec.ingredients)
+                        })
+                        .getRecettes()
+                })
+                .withFailureHandler(function (e) { showError('msgRecDetail', e) })
+                .addIngredientToRecette(recCurrentId, ingId, qty)
+        }
+
+        function recRemoveIng(riId) {
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgRecDetail', r.error, 'error'); return }
+                    google.script.run
+                        .withSuccessHandler(function (rows) {
+                            recAll = rows
+                            var rec = rows.filter(function (r) { return r.id === recCurrentId })[0]
+                            if (rec) recRenderIngList(rec.ingredients)
+                        })
+                        .getRecettes()
+                })
+                .withFailureHandler(function (e) { showError('msgRecDetail', e) })
+                .removeIngredientFromRecette(riId)
+        }
+
+
+        // --------------------------------------------------------
+        // SCREEN: Événement
+        // --------------------------------------------------------
+
+        var evtAll = []
+        var evtCurrentId = null
+        var evtCurrentData = null
+
+        function initEvenement() {
+            evtLoadList()
+        }
+
+        function evtLoadList() {
+            google.script.run
+                .withSuccessHandler(function (rows) {
+                    evtAll = rows
+                    evtRenderList(rows)
+                })
+                .withFailureHandler(function (e) { showError('msgEvt', e) })
+                .getEvenements()
+        }
+
+        function evtRenderList(rows) {
+            var ul = document.getElementById('evtList')
+            ul.innerHTML = ''
+            if (rows.length === 0) {
+                ul.innerHTML = '<li style="color:#888;font-size:12px;padding:6px">Aucun événement.</li>'
+                return
+            }
+            rows.forEach(function (evt) {
+                var li = document.createElement('li')
+                li.className = 'listItem'
+                var dates = evt.date_debut ? evt.date_debut + (evt.date_fin ? ' → ' + evt.date_fin : '') : ''
+                li.innerHTML =
+                    '<span class="listName">' + evt.nom + '</span>' +
+                    '<span class="listMeta">' + dates + '</span>' +
+                    '<button class="btn btnSecondary" style="font-size:11px;padding:4px 8px;" onclick="evtOpenDetail(' + evt.id + ')">Éditer</button>' +
+                    '<button class="btn btnDanger" style="margin-left:4px;" onclick="evtDelete(' + evt.id + ')">✕</button>'
+                ul.appendChild(li)
+            })
+        }
+
+        function evtSubmit() {
+            var nom = document.getElementById('evtNom').value.trim()
+            var debut = document.getElementById('evtDebut').value
+            var fin = document.getElementById('evtFin').value
+            if (!nom) { showMsg('msgEvt', 'Le nom est obligatoire.', 'error'); return }
+
+            var btn = document.getElementById('evtSubmitBtn')
+            btn.disabled = true; btn.textContent = 'En cours…'
+            hideMsg('msgEvt')
+
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    btn.disabled = false; btn.textContent = "Créer l'événement"
+                    if (r.error) { showMsg('msgEvt', r.error, 'error'); return }
+                    document.getElementById('evtNom').value = ''
+                    document.getElementById('evtDebut').value = ''
+                    document.getElementById('evtFin').value = ''
+                    showMsg('msgEvt', '"' + nom + '" créé.', 'success')
+                    evtLoadList()
+                })
+                .withFailureHandler(function (e) {
+                    btn.disabled = false; btn.textContent = "Créer l'événement"
+                    showError('msgEvt', e)
+                })
+                .addEvenement(nom, debut, fin)
+        }
+
+        function evtDelete(id) {
+            if (!confirm('Supprimer cet événement et tous ses jours/services ?')) return
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgEvt', r.error, 'error'); return }
+                    evtLoadList()
+                })
+                .withFailureHandler(function (e) { showError('msgEvt', e) })
+                .deleteEvenement(id)
+        }
+
+        // --- Détail événement ---
+
+        function evtOpenDetail(id) {
+            evtCurrentId = id
+            document.getElementById('evtListView').style.display = 'none'
+            document.getElementById('evtDetailView').style.display = 'block'
+            evtRefreshDetail()
+        }
+
+        function evtCloseDetail() {
+            evtCurrentId = null
+            document.getElementById('evtDetailView').style.display = 'none'
+            document.getElementById('evtListView').style.display = 'block'
+            evtLoadList()
+        }
+
+        function evtRefreshDetail() {
+            google.script.run
+                .withSuccessHandler(function (data) {
+                    if (data.error) { showMsg('msgJour', data.error, 'error'); return }
+                    evtCurrentData = data
+                    document.getElementById('evtDetailTitle').textContent = data.nom
+                    evtRenderJours(data.jours || [])
+                })
+                .withFailureHandler(function (e) { showError('msgJour', e) })
+                .getEvenementComplet(evtCurrentId)
+        }
+
+        // --- Jours ---
+
+        function jourAdd() {
+            var date = document.getElementById('jourDate').value
+            var label = document.getElementById('jourLabel').value.trim()
+            if (!date && !label) { showMsg('msgJour', 'Date ou label obligatoire.', 'error'); return }
+            hideMsg('msgJour')
+
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgJour', r.error, 'error'); return }
+                    document.getElementById('jourDate').value = ''
+                    document.getElementById('jourLabel').value = ''
+                    evtRefreshDetail()
+                })
+                .withFailureHandler(function (e) { showError('msgJour', e) })
+                .addJour(evtCurrentId, date, label || date)
+        }
+
+        function jourDelete(id) {
+            if (!confirm('Supprimer ce jour et ses services ?')) return
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgJour', r.error, 'error'); return }
+                    evtRefreshDetail()
+                })
+                .withFailureHandler(function (e) { showError('msgJour', e) })
+                .deleteJour(id)
+        }
+
+        function evtRenderJours(jours) {
+            var container = document.getElementById('jourList')
+            container.innerHTML = ''
+            if (jours.length === 0) {
+                container.innerHTML = '<p style="color:#888;font-size:12px;">Aucun jour. Ajoutez-en un ci-dessus.</p>'
+                return
+            }
+            jours.forEach(function (jour) {
+                var div = document.createElement('div')
+                div.style.cssText = 'border:1px solid #e0e0e0;border-radius:6px;padding:8px;margin-bottom:8px;'
+
+                var header = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+                    + '<strong style="font-size:12px;">' + (jour.label || jour.date) + '</strong>'
+                    + '<button class="btn btnDanger" onclick="jourDelete(' + jour.id + ')">✕</button>'
+                    + '</div>'
+
+                var services = (jour.services || []).map(function (srv) {
+                    var recNoms = srv.recettes.map(function (r) { return r.nom }).join(', ') || '—'
+                    return '<div class="listItem" style="font-size:11px;flex-wrap:wrap;gap:4px;">'
+                        + '<span class="listName">' + srv.slot + '</span>'
+                        + '<span class="listMeta">' + srv.nb_couverts + ' couverts</span>'
+                        + '<span class="listMeta" style="flex-basis:100%;color:#555;">' + recNoms + '</span>'
+                        + '<button class="btn btnSecondary" style="font-size:10px;padding:3px 6px;" onclick="srvOpenEdit(' + jour.id + ',' + srv.id + ')">Modifier</button>'
+                        + '<button class="btn btnDanger" onclick="srvDelete(' + srv.id + ')">✕</button>'
+                        + '</div>'
+                }).join('')
+
+                var addSrv = '<div style="margin-top:6px;">'
+                    + '<div class="row">'
+                    + '<select id="srvSlot_' + jour.id + '">'
+                    + '<option value="">— Slot —</option>'
+                    + ['Petit-déjeuner','Déjeuner','Dîner','Collation'].map(function(s){ return '<option>' + s + '</option>' }).join('')
+                    + '</select>'
+                    + '<input type="number" id="srvNb_' + jour.id + '" placeholder="couverts" min="0" style="width:70px;" />'
+                    + '<button class="addBtn" onclick="srvAdd(' + jour.id + ')">＋</button>'
+                    + '</div>'
+                    + '</div>'
+
+                div.innerHTML = header + services + addSrv
+                container.appendChild(div)
+            })
+        }
+
+        // --- Services ---
+
+        function srvAdd(jourId) {
+            var slot = document.getElementById('srvSlot_' + jourId).value
+            var nb = document.getElementById('srvNb_' + jourId).value
+            if (!slot) { showMsg('msgJour', 'Choisissez un slot.', 'error'); return }
+            hideMsg('msgJour')
+
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgJour', r.error, 'error'); return }
+                    evtRefreshDetail()
+                })
+                .withFailureHandler(function (e) { showError('msgJour', e) })
+                .addService(jourId, slot, nb || 0)
+        }
+
+        function srvDelete(id) {
+            if (!confirm('Supprimer ce service ?')) return
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    if (r.error) { showMsg('msgJour', r.error, 'error'); return }
+                    evtRefreshDetail()
+                })
+                .withFailureHandler(function (e) { showError('msgJour', e) })
+                .deleteService(id)
+        }
+
+        function srvOpenEdit(jourId, srvId) {
+            // Trouver le service
+            var jour = (evtCurrentData.jours || []).filter(function (j) { return j.id === jourId })[0]
+            if (!jour) return
+            var srv = (jour.services || []).filter(function (s) { return s.id === srvId })[0]
+            if (!srv) return
+
+            var nb = prompt('Nombre de couverts pour ' + srv.slot + ' :', srv.nb_couverts)
+            if (nb === null) return
+
+            var recNom = prompt('Ajouter une recette (nom exact) ou laisser vide :')
+
+            // Mettre à jour les couverts
+            google.script.run
+                .withSuccessHandler(function () {
+                    if (!recNom || !recNom.trim()) { evtRefreshDetail(); return }
+                    // Trouver la recette par nom
+                    var rec = recAll.filter(function (r) { return r.nom.toLowerCase() === recNom.trim().toLowerCase() })[0]
+                    if (!rec) { showMsg('msgJour', 'Recette "' + recNom + '" introuvable.', 'error'); evtRefreshDetail(); return }
+                    google.script.run
+                        .withSuccessHandler(function (r) {
+                            if (r.error) { showMsg('msgJour', r.error, 'error') }
+                            evtRefreshDetail()
+                        })
+                        .withFailureHandler(function (e) { showError('msgJour', e) })
+                        .addRecetteToService(srvId, rec.id)
+                })
+                .withFailureHandler(function (e) { showError('msgJour', e) })
+                .updateServiceCouverts(srvId, nb)
+        }
+
+        // --- Génération ---
+
+        function evtGenerer() {
+            hideMsg('msgGen')
+            var btn = document.querySelector('#evtDetailView .btn.btnPrimary')
+            btn.disabled = true; btn.textContent = 'Génération…'
+
+            google.script.run
+                .withSuccessHandler(function (r) {
+                    btn.disabled = false; btn.textContent = 'Générer Courses + Budget'
+                    if (r.error) { showMsg('msgGen', r.error, 'error'); return }
+                    showMsg('msgGen', r.message, 'success')
+                })
+                .withFailureHandler(function (e) {
+                    btn.disabled = false; btn.textContent = 'Générer Courses + Budget'
+                    showError('msgGen', e)
+                })
+                .genererCoursesEtBudget(evtCurrentId)
+        }
+    </script>
+</body>
+</html>

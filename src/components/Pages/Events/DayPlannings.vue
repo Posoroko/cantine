@@ -57,9 +57,7 @@ function openNewPlanning() {
                 class="pointer"
             >
                 <template #icon>
-                    <Icon>
-                        {{ planning.slot?.icon || 'event_note' }}
-                    </Icon>
+                    {{ planning.slot?.icon || 'event_note' }}
                 </template>
 
                 <template #text>
@@ -69,28 +67,16 @@ function openNewPlanning() {
 
             <ListItem
                 @click="openNewPlanning"
-                class="pointer"
+                layout="createButton"
             >
                 <template #icon>
-                    <Icon>
-                        add
-                    </Icon>
+                    add
                 </template>
 
                 <template #text>
-                    planning
+                    prep list
                 </template>
             </ListItem>
         </div>
     </div>
 </template>
-
-<style scoped>
-
-.prepContainer {
-    padding: 20px 0;
-    color: var(--beige);
-    text-align: center;
-}
-
-</style>

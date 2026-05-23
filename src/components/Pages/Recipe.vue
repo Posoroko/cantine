@@ -6,7 +6,7 @@ import { appAssetStore } from '@/composables/appAssets'
 
 type RecipeWithIngredients = Item_Recipe & {
     ingredients: (Item_RecipeIngredient & {
-        ingredient: { id: number; name: string } | null
+        ingredient: { id: number; name: string; unit: string | null } | null
     })[]
 }
 
@@ -33,7 +33,8 @@ async function getRecipe() {
                 '*',
                 'ingredients.*',
                 'ingredients.ingredient.id',
-                'ingredients.ingredient.name'
+                'ingredients.ingredient.name',
+                'ingredients.ingredient.unit'
             ].join()
         }
     })
@@ -105,10 +106,10 @@ onMounted(async () => {
                     </span>
 
                     <span 
-                        v-if="ri.unit"
+                        v-if="ri.ingredient?.unit"
                         class="tableColumn"
                     >
-                        {{ getUnitText(ri.unit) }}
+                        {{ getUnitText(ri.ingredient.unit) }}
                     </span>
                 </div>
 

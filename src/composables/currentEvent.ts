@@ -50,6 +50,7 @@ async function loadCurrentEvent(eventId: number) {
                 'days.services.meals.recipe.ingredients.*',
                 'days.services.meals.recipe.ingredients.ingredient.id',
                 'days.services.meals.recipe.ingredients.ingredient.name',
+                'days.services.meals.recipe.ingredients.ingredient.unit',
                 'days.services.meals.recipe.ingredients.ingredient.prepLess',
                 'days.services.meals.targetDiets.id',
                 'days.services.meals.targetDiets.dietCount',
@@ -59,6 +60,7 @@ async function loadCurrentEvent(eventId: number) {
                 'days.plannings.*',
                 'days.plannings.slot.*',
                 'days.plannings.missions.*',
+                'days.plannings.missions.meal',
                 'days.plannings.missions.ingredient.*',
                 'days.plannings.missions.ingredient.ingredient.id',
                 'days.plannings.missions.ingredient.ingredient.name',
@@ -74,7 +76,8 @@ async function loadCurrentEvent(eventId: number) {
                 'meals.recipe.instructions',
                 'meals.recipe.ingredients.*',
                 'meals.recipe.ingredients.ingredient.id',
-                'meals.recipe.ingredients.ingredient.name'
+                'meals.recipe.ingredients.ingredient.name',
+                'meals.recipe.ingredients.ingredient.unit'
             ].join(),
             deep: JSON.stringify({
                 days: {
@@ -89,7 +92,7 @@ async function loadCurrentEvent(eventId: number) {
     currentEventStore.value = event
 }
 
-type ExpandedIngredient = Item_RecipeIngredient<Pick<Item_Ingredient, 'id' | 'name' | 'prepLess'> | null>
+type ExpandedIngredient = Item_RecipeIngredient<Pick<Item_Ingredient, 'id' | 'name' | 'unit' | 'defaultPrice' | 'prepLess'> | null>
 
 type ExpandedRecipe = Pick<Item_Recipe, 'id' | 'name' | 'servings' | 'instructions'> & {
     ingredients: ExpandedIngredient[]

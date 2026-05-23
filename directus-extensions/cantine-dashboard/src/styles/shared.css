@@ -1,0 +1,120 @@
+/* Shared layout */
+.viewContent {
+    padding: 24px var(--content-padding, 32px);
+    max-width: 1000px;
+}
+
+/* Section blocks */
+.section {
+    margin-top: 32px;
+}
+
+.sectionTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--foreground-normal);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border-normal);
+}
+
+/* Meta row (label + value pairs) */
+.metaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 16px;
+    background: var(--background-subdued);
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.metaItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.metaItem .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--foreground-subdued);
+}
+
+.metaItem .value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--foreground-normal);
+}
+
+/* Category groupings */
+.categoryBlock {
+    margin-bottom: 32px;
+}
+
+.categoryTitle {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--foreground-subdued);
+    margin-bottom: 8px;
+}
+
+/* Ingredient table */
+.ingredientTable {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-normal);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ingredientRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-subdued);
+}
+
+.ingredientRow:last-child {
+    border-bottom: none;
+}
+
+.ingredientRow:nth-child(even) {
+    background: var(--background-subdued);
+}
+
+.ingName {
+    flex: 1;
+    color: var(--foreground-normal);
+}
+
+.ingQty {
+    font-weight: 600;
+    color: var(--foreground-normal);
+    white-space: nowrap;
+}
+
+.ingNotes {
+    font-size: 12px;
+    color: var(--foreground-subdued);
+    font-style: italic;
+}
+
+/* Empty state */
+.empty {
+    padding: 16px;
+    color: var(--foreground-subdued);
+    font-style: italic;
+    text-align: center;
+}
+
+/* Instructions body */
+.instructions {
+    line-height: 1.7;
+    color: var(--foreground-normal);
+    white-space: pre-wrap;
+}

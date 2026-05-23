@@ -1,13 +1,11 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import Private from '@/components/Architecture/Layouts/Private.vue'
-import TitleWIthCreateButton from '@/components/Text/TitleWithCreateButton.vue'
-import NewBasicIngredient from '@/components/Architecture/Overlay/Modal/NewBasicIngredient.vue'
-import { useModal } from '@/composables/modal'
+import ListItem from '@/components/Cards/ListItem.vue'
+import Icon from '@/components/Icon/Main.vue'
 import { dbGet } from '@/composables/fetch'
 import { appAssetStore } from '@/composables/appAssets'
 
-const { showModal } = useModal()
 const ingredients = ref([])
 const categories = ref([])
 const selectedTypeId = ref(null)
@@ -34,7 +32,7 @@ async function fetchIngredients() {
     const data = await dbGet({
         endpoint: '/items/ingredients',
         query: {
-            fields: '*,category.*'
+            fields: '*,category.*,unit.*'
         }
     })
     ingredients.value = data.sort((a, b) => a.name.localeCompare(b.name))
@@ -45,19 +43,6 @@ onMounted(async () => {
     categories.value = appAssetStore.value.ingredientCategories || []
 })
 
-async function createNew() {
-    const result = await showModal(NewBasicIngredient)
-    
-    if (result) {
-        await fetchIngredients()
-    }
-}
-
-function openIngredient(ingredient) {
-    // TODO: Open ingredient detail modal
-    console.log('Opened ingredient:', ingredient)
-}
-
 function filterByType(typeId) {
     selectedTypeId.value = typeId
 }
@@ -67,11 +52,7 @@ function filterByType(typeId) {
 <template>
     <Private>
         <template #title>
-            <TitleWIthCreateButton
-                @createNew="createNew"
-            >
-                Ingrédients
-            </TitleWIthCreateButton>
+            <h1>Ingrédients</h1>
         </template>
 
         <template #main>
@@ -115,14 +96,23 @@ function filterByType(typeId) {
                         flex column gap10
                     "
                 >
-                    <div
+                <ListItem
                         v-for="ingredient in filteredIngredients"
                         :key="ingredient.id"
-                        @click="openIngredient(ingredient)"
-                        class="ingredient"
                     >
-                        {{ ingredient.name }}
-                    </div>
+                        <template #icon>
+                            <Icon>grocery</Icon>
+                        </template>
+
+                        <template #text>
+                            {{ ingredient.name }}
+                        </template>
+
+                        <template #details>
+                            <span v-if="ingredient.defaultPrice != null">{{ ingredient.defaultPrice }} € / </span>
+                            <span v-if="ingredient.unit">{{ ingredient.unit.singular }}</span>
+                        </template>
+                    </ListItem>
                 </div>
             </div>
         </template>
@@ -172,13 +162,5 @@ function filterByType(typeId) {
 }
 .ingredientList {
     overflow-y: scroll;
-}
-.ingredient {
-    padding: 15px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    cursor: pointer;
-    color: var(--beige);
-    font-weight: 500;
 }
 </style>

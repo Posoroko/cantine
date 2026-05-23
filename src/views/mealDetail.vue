@@ -4,10 +4,15 @@ import { useRoute, useRouter } from 'vue-router'
 
 import Private from '@/components/Architecture/Layouts/Private.vue'
 import Icon from '@/components/Icon/Main.vue'
+import IngredientMissionState from '@/components/Icon/ingredientMissionState.vue'
 import Loading from '@/components/Loading/Main.vue'
 import EventBar from '@/components/Architecture/Bars/EventBar.vue'
-import { currentEventStore } from '@/composables/currentEvent'
+import ListItem from '@/components/Cards/ListItem.vue'
+
+import { currentEventStore, loadCurrentEvent } from '@/composables/currentEvent'
 import { appAssetStore } from '@/composables/appAssets'
+
+import { getSlotOrder } from '@/config/slotOrder'
 
 const route = useRoute()
 const router = useRouter()
@@ -56,6 +61,29 @@ const scaleFactor = computed(() => {
     if (!rec?.servings || !mealGuestCount.value) return 1
     return mealGuestCount.value / rec.servings
 })
+
+const ingredientsWithPrep = computed<any[]>(() => {
+    if (!recipe.value?.ingredients) return []
+    return recipe.value.ingredients.filter((ri: any) => !ri.ingredient?.prepLess)
+})
+
+function missionStateFor(ri: any): 'prepLess' | 'created' | 'none' {
+    if (ri.ingredient?.prepLess) return 'prepLess'
+
+    const days = currentEventStore.value?.days || []
+    for (const day of days) {
+        for (const planning of (day.plannings || [])) {
+            for (const mission of (planning.missions || [])) {
+                const missionRiId = typeof mission.ingredient === 'object'
+                    ? mission.ingredient?.id
+                    : mission.ingredient
+                if (missionRiId === ri.id && mission.meal === mealId.value) return 'created'
+            }
+        }
+    }
+
+    return 'none'
+}
 
 function scaledQuantity(quantity: string | null): string {
     if (!quantity) return ''
@@ -157,56 +185,32 @@ function goBack() {
                 <div class="flex column gap10">
                     <h3>Ingrédients</h3>
 
-                    <div
-                        v-for="ri in recipe.ingredients" :key="ri.id"
-                        class="
-                            ingredientRow
-                            flex alignCenter justifyBetween
-                        "
+                    <ListItem
+                        v-for="ri in recipe.ingredients"
+                        :key="ri.id"
+                        layout="slim"
                     >
-                        <div
-                            class="
-                                flex gap10 alignCenter
-                            "
-                        >
-                            <div
-                                class="
-                                    quantityBox
-                                    flex gap5
-                                "
-                            >
-                                <span
-                                    v-if="ri.quantity"
-                                    class="quantity"
-                                >
-                                    {{ scaledQuantity(ri.quantity) }}
-                                </span>
+                        <template #icon>
+                            <IngredientMissionState :state="missionStateFor(ri)" />
+                        </template>
 
-                                <span
-                                    v-if="ri.unit"
-                                    class="unit"
-                                >
-                                    {{ getUnitText(ri.unit) }}
-                                </span>
-                            </div>
+                        <template #text>
+                            {{ ri.ingredient?.name || '—' }}
+                        </template>
 
-                            <span class="ingredientName">
-                                {{ ri.ingredient?.name || '—' }}
+                        <template #details>
+                            <span v-if="ri.quantity || ri.ingredient?.unit">
+                                {{ scaledQuantity(ri.quantity) }}
+                                {{ getUnitText(ri.ingredient?.unit) }}
                             </span>
-                        </div>
-
-                        <button
-                            class="
-                                missionButton
-                                flex alignCenter gap5
-                            "
-                            title="Créer une mission"
-                        >
-                            <Icon size="sm">
-                                add_task
-                            </Icon>
-                        </button>
-                    </div>
+                            <span
+                                v-if="ri.ingredient?.prepLess"
+                                class="prepLessTag"
+                            >
+                                sans préparation
+                            </span>
+                        </template>
+                    </ListItem>
                 </div>
 
                 <div
@@ -215,6 +219,12 @@ function goBack() {
                 >
                     <h3>Instructions</h3>
                     <pre class="instructionsText">{{ recipe.instructions }}</pre>
+                </div>
+
+                <div>
+                    <h2>Coût</h2>
+
+                    <!-- here, we need to compute the price -->
                 </div>
             </div>
 
@@ -250,39 +260,26 @@ function goBack() {
     font-size: 14px;
 }
 
-.ingredientRow {
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.quantityBox {
-    min-width: 100px;
-}
-
-.quantity {
-    font-weight: 600;
-}
-
-.unit {
-    opacity: 0.7;
-}
-
-.ingredientName {
-    text-transform: capitalize;
-}
-
-.missionButton {
+.missionsAllBtn {
     background: transparent;
     color: var(--beige);
-    opacity: 0.4;
+    border: 1px solid var(--beige);
     border-radius: 8px;
-    padding: 4px 8px;
+    padding: 4px 10px;
+    font-size: 13px;
     cursor: pointer;
+    opacity: 0.7;
     transition: opacity 0.2s;
 }
 
-.missionButton:hover {
+.missionsAllBtn:hover {
     opacity: 1;
+}
+
+.prepLessTag {
+    color: rgba(181, 159, 122, 0.5);
+    font-size: 12px;
+    font-style: italic;
 }
 
 .instructionsText {

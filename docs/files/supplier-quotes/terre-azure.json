@@ -1,0 +1,406 @@
+{
+    "supplier": "Terre Azure",
+    "quoteDate": "2026-05",
+    "items": [
+        {
+            "ref": "0324821",
+            "name": "Filet de lieu noir",
+            "unit": "kg",
+            "pricePerUnit": 11.95,
+            "colisWeight": 3.0,
+            "foodCategory": "Poisson",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0104884",
+            "name": "Pomme de terre Agata grenaille",
+            "unit": "kg",
+            "pricePerUnit": 1.59,
+            "colisWeight": 12.5,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0222160",
+            "name": "Concombre",
+            "unit": "pièce",
+            "pricePerUnit": 1.10,
+            "colisWeight": 0.45,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0317031",
+            "name": "Tomate ronde",
+            "unit": "kg",
+            "pricePerUnit": 1.99,
+            "colisWeight": 6.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0102337",
+            "name": "Oignon jaune émincé",
+            "unit": "kg",
+            "pricePerUnit": 4.20,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0149543",
+            "name": "Oignon blanc cébette",
+            "unit": "botte",
+            "pricePerUnit": 1.59,
+            "colisWeight": 0.3,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0106535",
+            "name": "Oignon rouge",
+            "unit": "kg",
+            "pricePerUnit": 1.80,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0107455",
+            "name": "Courgette",
+            "unit": "kg",
+            "pricePerUnit": 1.99,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0108007",
+            "name": "Poivron rouge",
+            "unit": "kg",
+            "pricePerUnit": 3.95,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0108100",
+            "name": "Poivron jaune",
+            "unit": "kg",
+            "pricePerUnit": 3.95,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0107926",
+            "name": "Poivron vert",
+            "unit": "kg",
+            "pricePerUnit": 3.95,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0113269",
+            "name": "Salade cœur de romaine",
+            "unit": "sachet",
+            "pricePerUnit": 2.89,
+            "colisWeight": 0.68,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0329709",
+            "name": "Salade batavia blonde",
+            "unit": "pièce",
+            "pricePerUnit": 1.15,
+            "colisWeight": null,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0329708",
+            "name": "Salade feuille de chêne rouge",
+            "unit": "pièce",
+            "pricePerUnit": 1.15,
+            "colisWeight": null,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0330553",
+            "name": "Roquette jeune pousse",
+            "unit": "kg",
+            "pricePerUnit": 6.95,
+            "colisWeight": 1.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0249607",
+            "name": "Carotte",
+            "unit": "kg",
+            "pricePerUnit": 1.05,
+            "colisWeight": 10.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0200719",
+            "name": "Betterave rouge crue",
+            "unit": "kg",
+            "pricePerUnit": 2.50,
+            "colisWeight": 6.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0263325",
+            "name": "Betterave épluchée",
+            "unit": "poche",
+            "pricePerUnit": 0.85,
+            "colisWeight": 0.5,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0104128",
+            "name": "Céleri-rave",
+            "unit": "kg",
+            "pricePerUnit": 1.89,
+            "colisWeight": 1.25,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0131993",
+            "name": "Chou blanc",
+            "unit": "pièce",
+            "pricePerUnit": 2.99,
+            "colisWeight": 1.67,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0291390",
+            "name": "Chou-rave",
+            "unit": "pièce",
+            "pricePerUnit": 2.79,
+            "colisWeight": 1.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0106783",
+            "name": "Aubergine",
+            "unit": "kg",
+            "pricePerUnit": 1.99,
+            "colisWeight": 5.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0195823",
+            "name": "Basilic frais",
+            "unit": "sachet",
+            "pricePerUnit": 2.50,
+            "colisWeight": 0.1,
+            "foodCategory": "Herbes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0110270",
+            "name": "Coriandre fraîche",
+            "unit": "sachet",
+            "pricePerUnit": 2.50,
+            "colisWeight": 0.1,
+            "foodCategory": "Herbes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0110495",
+            "name": "Persil plat frais",
+            "unit": "sachet",
+            "pricePerUnit": 1.85,
+            "colisWeight": 0.1,
+            "foodCategory": "Herbes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0110330",
+            "name": "Estragon frais",
+            "unit": "sachet",
+            "pricePerUnit": 3.95,
+            "colisWeight": 0.1,
+            "foodCategory": "Herbes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0110061",
+            "name": "Menthe fraîche",
+            "unit": "sachet",
+            "pricePerUnit": 2.50,
+            "colisWeight": 0.1,
+            "foodCategory": "Herbes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0106921",
+            "name": "Champignons de Paris blancs",
+            "unit": "kg",
+            "pricePerUnit": 4.30,
+            "colisWeight": 3.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0297442",
+            "name": "Piment oiseau",
+            "unit": "bouquet",
+            "pricePerUnit": 4.95,
+            "colisWeight": 0.1,
+            "foodCategory": "Épices",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0107032",
+            "name": "Champignons shiitake",
+            "unit": "kg",
+            "pricePerUnit": 11.50,
+            "colisWeight": 2.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0124935",
+            "name": "Citron jaune",
+            "unit": "kg",
+            "pricePerUnit": 2.89,
+            "colisWeight": 6.0,
+            "foodCategory": "Fruits",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0151265",
+            "name": "Citron vert",
+            "unit": "kg",
+            "pricePerUnit": 3.95,
+            "colisWeight": 4.5,
+            "foodCategory": "Fruits",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0330526",
+            "name": "Épinard jeune pousse",
+            "unit": "kg",
+            "pricePerUnit": 6.95,
+            "colisWeight": 1.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0330581",
+            "name": "Mâche",
+            "unit": "kg",
+            "pricePerUnit": 6.95,
+            "colisWeight": 1.0,
+            "foodCategory": "Légumes",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0148460",
+            "name": "Gingembre",
+            "unit": "kg",
+            "pricePerUnit": 4.65,
+            "colisWeight": 5.0,
+            "foodCategory": "Épices",
+            "supplyCategory": "Frais",
+            "prepLess": false
+        },
+        {
+            "ref": "0149481",
+            "name": "Pulpe de gingembre",
+            "unit": "lot",
+            "pricePerUnit": 6.95,
+            "colisWeight": 0.45,
+            "foodCategory": "Épices",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0123434",
+            "name": "Banane",
+            "unit": "kg",
+            "pricePerUnit": 2.79,
+            "colisWeight": 5.0,
+            "foodCategory": "Fruits",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0268561",
+            "name": "Pomme Gala",
+            "unit": "kg",
+            "pricePerUnit": 2.95,
+            "colisWeight": 7.0,
+            "foodCategory": "Fruits",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0139720",
+            "name": "Pêche jaune",
+            "unit": "kg",
+            "pricePerUnit": 4.60,
+            "colisWeight": 4.0,
+            "foodCategory": "Fruits",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        },
+        {
+            "ref": "0140067",
+            "name": "Nectarine jaune",
+            "unit": "kg",
+            "pricePerUnit": 5.49,
+            "colisWeight": 4.0,
+            "foodCategory": "Fruits",
+            "supplyCategory": "Frais",
+            "prepLess": true
+        }
+    ]
+}

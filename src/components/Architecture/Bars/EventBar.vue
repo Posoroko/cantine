@@ -58,7 +58,7 @@ function goToTab(tab) {
             </h2>
         </div>
 
-        <div class="flex">
+        <div class="flex gap5">
             <button
                 @click="goToTab('informations')"
                 :class="{ active: activeTab === 'informations' }"
@@ -146,6 +146,7 @@ function goToTab(tab) {
 
 .slideButton {
     background-color: transparent;
+    padding: 5px 8px;
     color: var(--beige);
     border-radius: 8px;
     transition: all 0.2s;

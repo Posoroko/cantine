@@ -1,5 +1,4 @@
 <script setup>
-import Button from '@/components/Buttons/SubmitForm.vue'
 import Icon from '@/components/Icon/Main.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -55,13 +54,14 @@ async function handleLogin() {
             >
                 email
             </label>
+
             <input 
                 id="userEmail"
                 v-model="email"
                 name="email"
                 type="email"
                 autocomplete="email"
-                class="w100"
+                class="defaultInputStyles w100"
             />
         </div>
 
@@ -81,7 +81,7 @@ async function handleLogin() {
                     name="password"
                     :type="!showPassword ? 'password' : 'text'"
                     autocomplete="current-password"
-                    class="w100"
+                    class="defaultInputStyles w100"
                 />
 
                 <div

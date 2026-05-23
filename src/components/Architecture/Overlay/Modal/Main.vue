@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useModal } from '@/composables/modal'
 import { provide } from 'vue'
-import ConfirmationModal from '@/components/Architecture/Overlay/Modal/ConfirmationModal.vue'
 
 const { 
     modalState, 

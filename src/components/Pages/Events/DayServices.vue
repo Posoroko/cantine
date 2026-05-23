@@ -8,6 +8,8 @@ import { useModal } from '@/composables/modal'
 import Icon from '@/components/Icon/Main.vue'
 import NewService from '@/components/Architecture/Overlay/Modal/NewService.vue'
 
+import ListItem from '@/components/Cards/ListItem.vue'
+
 const props = defineProps<{
     day: Item_Day<Item_Service>
 }>()
@@ -61,70 +63,43 @@ const handleAddService = async () => {
                 flex column gap10
             "
         >
-            <button
+            <ListItem
                 v-for="service in services"
                 :key="service.id"
                 @click="handleServiceClick(service)"
-                class="
-                    serviceTile active
-                    flex alignCenter gap30
-                "
             >
-                <Icon 
-                    size="xl" 
-                    class="serviceIcon"
-                >
+                <template #icon>
                     {{ service.icon }}
-                </Icon>
+                </template>
+                
 
-                <span class="serviceLabel">
-                    {{ service.text }}
-                </span>
-            </button>
+                <template #text>
+                    <span class="serviceLabel">
+                        {{ service.text }}
+                    </span>
+                </template>
+            </ListItem>
 
-            <button
+            <ListItem
                 @click="handleAddService"
-                class="
-                    serviceTile empty
-                    flex alignCenter gap30
-                "
+                layout="createButton"
             >
-                <Icon 
-                    size="xl" 
-                    class="serviceIcon"
-                >
-                    add
-                </Icon>
+                <template #icon>
+                    <Icon 
+                        size="xl" 
+                    >
+                        add
+                    </Icon>
+                </template>
 
-                <span 
-                    class="serviceLabel"
-                >
+                <template #text>
                     Ajouter un service
-                </span>
-            </button>
+                </template>
+            </ListItem>
         </div>
     </div>
 </template>
 
 <style scoped>
-.serviceTile {
-    padding: 20px;
-    border-radius: 20px;
-    border: 1px solid var(--beige);
-
-    background: transparent;
-    cursor: pointer;
-    transition: all 200ms;
-}
-
-.serviceIcon {
-    font-size: 32px;
-}
-
-.serviceLabel {
-    font-size: 24px;
-    font-weight: 700;
-    text-transform: capitalize;
-}
 
 </style>

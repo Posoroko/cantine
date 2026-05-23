@@ -35,33 +35,28 @@ const appAssetStore = ref<{
 })
 
 async function loadAppAssets() {
-    try {
-        const [
-            tagsRes, 
-            dietsRes, 
-            categoriesRes, 
-            unitsRes, 
-            planningRes, 
-            serviceRes
-        ] = await Promise.all([
-            dbGet<RecipeTag[]>({ endpoint: '/items/recipe_tags' }),
-            dbGet<Diet[]>({ endpoint: '/items/diets' }),
-            dbGet<IngredientCategory[]>({ endpoint: '/items/ingredient_categories' }),
-            dbGet<Unit[]>({ endpoint: '/items/units' }),
-            dbGet<PlanningSlot[]>({ endpoint: '/items/planning_slots?sort=sort' }),
-            dbGet<ServiceSlot[]>({ endpoint: '/items/service_slots?sort=sort' })
-        ])
+    const [
+        tagsRes, 
+        dietsRes, 
+        categoriesRes, 
+        unitsRes, 
+        planningRes, 
+        serviceRes
+    ] = await Promise.allSettled([
+        dbGet<RecipeTag[]>({ endpoint: '/items/recipe_tags' }),
+        dbGet<Diet[]>({ endpoint: '/items/diets' }),
+        dbGet<IngredientCategory[]>({ endpoint: '/items/ingredient_categories' }),
+        dbGet<Unit[]>({ endpoint: '/items/units' }),
+        dbGet<PlanningSlot[]>({ endpoint: '/items/planning_slots?sort=sort' }),
+        dbGet<ServiceSlot[]>({ endpoint: '/items/service_slots?sort=sort' })
+    ])
 
-        appAssetStore.value.recipeTags = tagsRes || []
-        appAssetStore.value.diets = dietsRes || []
-        appAssetStore.value.ingredientCategories = categoriesRes || []
-        appAssetStore.value.units = unitsRes || []
-        appAssetStore.value.planningSlots = planningRes || []
-        appAssetStore.value.serviceSlots = serviceRes || []
-    } catch (err) {
-        console.error('Failed to load app assets:', err)
-        throw err
-    }
+    appAssetStore.value.recipeTags = tagsRes.status === 'fulfilled' ? tagsRes.value || [] : []
+    appAssetStore.value.diets = dietsRes.status === 'fulfilled' ? dietsRes.value || [] : []
+    appAssetStore.value.ingredientCategories = categoriesRes.status === 'fulfilled' ? categoriesRes.value || [] : []
+    appAssetStore.value.units = unitsRes.status === 'fulfilled' ? unitsRes.value || [] : []
+    appAssetStore.value.planningSlots = planningRes.status === 'fulfilled' ? planningRes.value || [] : []
+    appAssetStore.value.serviceSlots = serviceRes.status === 'fulfilled' ? serviceRes.value || [] : []
 }
 
 type RecipeTag = {
