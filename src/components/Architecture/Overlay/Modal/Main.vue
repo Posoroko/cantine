@@ -33,17 +33,6 @@ provide('modal', { confirm, cancel })
                 @cancel="cancel"
                 class="modalComponent"
             />
-            
-            <!-- Confirmation modal with separate rendering -->
-            <ConfirmationModal
-                v-if="modalState.modalType === 'confirmation'"
-                :title="modalState.confirmationProps?.title"
-                :message="modalState.confirmationProps?.message"
-                :confirmText="modalState.confirmationProps?.confirmText"
-                :cancelText="modalState.confirmationProps?.cancelText"
-                @confirm="confirm"
-                @cancel="cancel"
-            />
         </div>
     </div>
 </template>

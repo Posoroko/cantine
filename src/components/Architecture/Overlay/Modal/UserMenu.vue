@@ -3,7 +3,6 @@ import { useUserState } from '@/composables/userState'
 import { useAuth } from '@/composables/auth'
 import { useModal } from '@/composables/modal'
 import { useRouter } from 'vue-router'
-import Title from '@/components/Architecture/Overlay/Modal/Title.vue'
 import Icon from '@/components/Icon/Main.vue'
 
 const me = useUserState()
@@ -20,9 +19,9 @@ async function handleLogout() {
 </script>
 <template>
     <div class="full flex column gap20">
-        <Title>
+        <h1>
             Profil
-        </Title>
+        </h1>
 
         <div class="infoBox flex gap10">
             <Icon>email</Icon>

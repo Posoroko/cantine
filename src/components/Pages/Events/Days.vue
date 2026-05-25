@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import DayCard from '@/components/Cards/DayCard.vue'
 import { useEvents } from '@/composables/events'
 
@@ -14,8 +14,6 @@ const { getEventById } = useEvents()
 
 const event = ref(null)
 const isLoading = ref(false)
-const openMenuId = ref(null)
-
 const days = computed(() => event.value?.days || [])
 
 const loadEvent = async () => {
@@ -30,17 +28,8 @@ const loadEvent = async () => {
     }
 }
 
-const toggleMenu = (dayId) => {
-    openMenuId.value = openMenuId.value === dayId ? null : dayId
-}
-
-const closeMenu = () => {
-    openMenuId.value = null
-}
-
 onMounted(() => {
     loadEvent()
-    document.addEventListener('click', closeMenu)
 })
 </script>
 
@@ -63,9 +52,6 @@ onMounted(() => {
                 v-for="day in days"
                 :key="day.id"
                 :day="day"
-                :isMenuOpen="openMenuId === day.id"
-                @toggle-menu="toggleMenu"
-                @close-menu="closeMenu"
             />
         </div>
 

@@ -44,18 +44,7 @@ function goToTab(tab) {
                 flex alignCenter gap20
             "
         >
-            <div
-                v-if="imageUrl(event.image)"
-                class="eventImage"
-            >
-                <img
-                    :src="imageUrl(event.image)"
-                    :alt="event.name"
-                />
-            </div>
-            <h2 class="eventTitle">
-                {{ event.name }}
-            </h2>
+            
         </div>
 
         <div class="flex gap5">
@@ -118,6 +107,16 @@ function goToTab(tab) {
                     restaurant
                 </Icon>
             </button>
+
+            <div
+                v-if="imageUrl(event.image)"
+                class="eventImage"
+            >
+                <img
+                    :src="imageUrl(event.image)"
+                    :alt="event.name"
+                />
+            </div>
         </div>
     </div>
 </template>

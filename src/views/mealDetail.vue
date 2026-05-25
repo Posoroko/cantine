@@ -4,100 +4,82 @@ import { useRoute, useRouter } from 'vue-router'
 
 import Private from '@/components/Architecture/Layouts/Private.vue'
 import Icon from '@/components/Icon/Main.vue'
-import IngredientMissionState from '@/components/Icon/ingredientMissionState.vue'
 import Loading from '@/components/Loading/Main.vue'
 import EventBar from '@/components/Architecture/Bars/EventBar.vue'
-import ListItem from '@/components/Cards/ListItem.vue'
 
-import { currentEventStore, loadCurrentEvent } from '@/composables/currentEvent'
+import { currentEventStore } from '@/composables/currentEvent'
 import { appAssetStore } from '@/composables/appAssets'
-
-import { getSlotOrder } from '@/config/slotOrder'
 
 const route = useRoute()
 const router = useRouter()
 
-const previousPage = computed(() => {
-    return route.query.previousPage || route.path
-})
+const previousPage = computed(() => route.query.previousPage || route.path)
 
 const mealId = computed(() => parseInt(route.params.mealId as string))
 
 const meal = computed(() => {
     if (!currentEventStore.value) return null
-
     for (const day of currentEventStore.value.days) {
         for (const service of day.services) {
-            const found = service.meals.find(m => m.id === mealId.value)
+            const found = service.meals.find((m: any) => m.id === mealId.value)
             if (found) return { ...found, service, day }
         }
     }
-
-    const eventMeal = currentEventStore.value.meals?.find(m => m.id === mealId.value)
-    return eventMeal || null
+    return null
 })
 
 const recipe = computed(() => (meal.value?.recipe || null) as any)
-
-const serviceDietCounts = computed(() => {
-    if (!meal.value?.service || typeof meal.value.service === 'number') return []
-    const service = meal.value.service as any
-    if (!service.dietCounts) return []
-    return service.dietCounts
-})
-
-const mealGuestCount = computed(() => {
-    const targetIds = meal.value?.targetDiets?.map(td => td.dietCount) || []
-    if (!targetIds.length) {
-        return serviceDietCounts.value.reduce((sum: number, dc: any) => sum + dc.count, 0)
-    }
-    return serviceDietCounts.value
-        .filter((dc: any) => targetIds.includes(dc.id))
-        .reduce((sum: number, dc: any) => sum + dc.count, 0)
-})
-
-const scaleFactor = computed(() => {
-    const rec = recipe.value as any
-    if (!rec?.servings || !mealGuestCount.value) return 1
-    return mealGuestCount.value / rec.servings
-})
-
-const ingredientsWithPrep = computed<any[]>(() => {
-    if (!recipe.value?.ingredients) return []
-    return recipe.value.ingredients.filter((ri: any) => !ri.ingredient?.prepLess)
-})
-
-function missionStateFor(ri: any): 'prepLess' | 'created' | 'none' {
-    if (ri.ingredient?.prepLess) return 'prepLess'
-
-    const days = currentEventStore.value?.days || []
-    for (const day of days) {
-        for (const planning of (day.plannings || [])) {
-            for (const mission of (planning.missions || [])) {
-                const missionRiId = typeof mission.ingredient === 'object'
-                    ? mission.ingredient?.id
-                    : mission.ingredient
-                if (missionRiId === ri.id && mission.meal === mealId.value) return 'created'
-            }
-        }
-    }
-
-    return 'none'
-}
-
-function scaledQuantity(quantity: string | null): string {
-    if (!quantity) return ''
-    const num = parseFloat(quantity)
-    if (isNaN(num)) return quantity
-    const scaled = num * scaleFactor.value
-    return scaled % 1 === 0 ? String(scaled) : scaled.toFixed(1)
-}
 
 function getUnitText(unitKey: string | null): string {
     if (!unitKey) return ''
     const unit = appAssetStore.value.units.find(u => u.key === unitKey)
     return unit?.singular || unitKey
 }
+
+function formatQty(value: number): string {
+    if (value % 1 === 0) return String(value)
+    return parseFloat(value.toFixed(2)).toString()
+}
+
+function formatPrice(price: number): string {
+    return price.toFixed(2) + ' €'
+}
+
+// c5t: ingredient rows — qty shown as total for meal when servingCount is set, else per 1 portion
+const ingredientRows = computed(() => {
+    if (!recipe.value?.ingredients) return []
+    const servings: number | null = recipe.value.servings || null
+    const servingCount: number | null = meal.value?.servingCount ?? null
+    return (recipe.value.ingredients as any[]).map(ri => {
+        const qty: number | null = ri.quantity ?? null
+        const defaultPrice: number | null = ri.ingredient?.defaultPrice ?? null
+        const qtyPerPortion = (qty !== null && servings) ? qty / servings : null
+        const pricePerPortion = (qtyPerPortion !== null && defaultPrice !== null) ? qtyPerPortion * defaultPrice : null
+        const qtyDisplay = (qtyPerPortion !== null)
+            ? (servingCount ? qtyPerPortion * servingCount : qtyPerPortion)
+            : null
+        return {
+            id: ri.id as number,
+            name: (ri.ingredient?.name as string | null) || '—',
+            unit: getUnitText(ri.ingredient?.unit ?? null),
+            qtyDisplay,
+            pricePerPortion,
+        }
+    })
+})
+
+// c5t: sum of all per-portion ingredient prices
+const totalPricePerPortion = computed(() => {
+    const priced = ingredientRows.value.filter(r => r.pricePerPortion !== null)
+    if (!priced.length) return null
+    return priced.reduce((sum, r) => sum + r.pricePerPortion!, 0)
+})
+
+// c5t: only shown when meal.servingCount is set (not nullish)
+const totalPriceForMeal = computed(() => {
+    if (!totalPricePerPortion.value || !meal.value?.servingCount) return null
+    return totalPricePerPortion.value * meal.value.servingCount
+})
 
 function goBack() {
     router.push(previousPage.value as string)
@@ -115,10 +97,7 @@ function goBack() {
 
             <div
                 v-else-if="meal"
-                class="
-                    flex alignCenter gap10
-                    pad10
-                "
+                class="flex alignCenter gap10 pad10"
             >
                 <Icon
                     @click="goBack"
@@ -128,20 +107,18 @@ function goBack() {
                     arrow_back
                 </Icon>
 
-                <h1 class="title">
+                <h1 class="title grow">
                     {{ recipe?.name || 'Sans recette' }}
                 </h1>
 
                 <span
-                    v-if="mealGuestCount"
-                    class="
-                        flex alignCenter gap4
-                    "
+                    v-if="meal.servingCount"
+                    class="flex alignCenter gap5 shrink0"
                 >
                     <Icon size="sm">
-                        {{ mealGuestCount === 1 ? 'person' : 'group' }}
+                        {{ meal.servingCount === 1 ? 'person' : 'group' }}
                     </Icon>
-                    {{ mealGuestCount }}
+                    {{ meal.servingCount }}
                 </span>
             </div>
 
@@ -159,72 +136,70 @@ function goBack() {
         <template #main>
             <div
                 v-if="recipe"
-                class="
-                    content
-                    flex column gap20
-                    pad10
-                "
+                class="content flex column gap20 pad10"
             >
-                <div
-                    v-if="recipe.servings && mealGuestCount"
-                    class="
-                        scaleBanner
-                        flex alignCenter gap10
-                    "
+                <!-- recipe type -->
+                <span
+                    v-if="recipe.type"
+                    class="recipeType fS12 uppercase weight6"
                 >
-                    <Icon size="sm">
-                        calculate
-                    </Icon>
-                    <span>
-                        Recette pour {{ recipe.servings }}
-                        — adapté à {{ mealGuestCount }} convives
-                        (×{{ scaleFactor.toFixed(2) }})
-                    </span>
-                </div>
+                    {{ recipe.type }}
+                </span>
 
-                <div class="flex column gap10">
-                    <h3>Ingrédients</h3>
+                <!-- ingredients -->
+                <div class="flex column gap5">
+                    <h3 class="sectionTitle">Ingrédients</h3>
 
-                    <ListItem
-                        v-for="ri in recipe.ingredients"
-                        :key="ri.id"
-                        layout="slim"
+                    <div
+                        v-for="row in ingredientRows"
+                        :key="row.id"
+                        class="ingredientRow flex alignCenter gap10 pad10 rounded10"
                     >
-                        <template #icon>
-                            <IngredientMissionState :state="missionStateFor(ri)" />
-                        </template>
+                        <span class="grow">{{ row.name }}</span>
 
-                        <template #text>
-                            {{ ri.ingredient?.name || '—' }}
-                        </template>
+                        <span
+                            v-if="row.qtyDisplay !== null"
+                            class="fS14"
+                        >
+                            {{ formatQty(row.qtyDisplay) }} {{ row.unit }}
+                        </span>
 
-                        <template #details>
-                            <span v-if="ri.quantity || ri.ingredient?.unit">
-                                {{ scaledQuantity(ri.quantity) }}
-                                {{ getUnitText(ri.ingredient?.unit) }}
-                            </span>
-                            <span
-                                v-if="ri.ingredient?.prepLess"
-                                class="prepLessTag"
-                            >
-                                sans préparation
-                            </span>
-                        </template>
-                    </ListItem>
+                        <span
+                            v-if="row.pricePerPortion !== null"
+                            class="fS14 weight6 priceCell"
+                        >
+                            {{ formatPrice(row.pricePerPortion) }}
+                        </span>
+                    </div>
                 </div>
 
+                <!-- instructions -->
                 <div
                     v-if="recipe.instructions"
                     class="flex column gap10"
                 >
-                    <h3>Instructions</h3>
-                    <pre class="instructionsText">{{ recipe.instructions }}</pre>
+                    <h3 class="sectionTitle">Instructions</h3>
+                    <p class="whiteSpacePreWrap instructionsText">{{ recipe.instructions }}</p>
                 </div>
 
-                <div>
-                    <h2>Coût</h2>
+                <!-- price summary -->
+                <div
+                    v-if="totalPricePerPortion !== null"
+                    class="priceSummary flex column gap10 pad15 rounded10"
+                >
+                    <div class="flex justifyBetween alignCenter">
+                        <span class="fS14">Prix par personne</span>
+                        <span class="weight7">{{ formatPrice(totalPricePerPortion) }}</span>
+                    </div>
 
-                    <!-- here, we need to compute the price -->
+                    <template v-if="totalPriceForMeal !== null">
+                        <span class="fS14 dimmed">× {{ meal!.servingCount }} convives</span>
+
+                        <div class="flex justifyBetween alignCenter">
+                            <span class="fS14">Total</span>
+                            <span class="weight7">{{ formatPrice(totalPriceForMeal) }}</span>
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -255,38 +230,39 @@ function goBack() {
     width: 100%;
 }
 
-.scaleBanner {
-    opacity: 0.6;
-    font-size: 14px;
+.recipeType {
+    opacity: 0.5;
+    letter-spacing: 0.08em;
 }
 
-.missionsAllBtn {
-    background: transparent;
+.sectionTitle {
+    margin-bottom: 4px;
     color: var(--beige);
-    border: 1px solid var(--beige);
-    border-radius: 8px;
-    padding: 4px 10px;
-    font-size: 13px;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s;
 }
 
-.missionsAllBtn:hover {
-    opacity: 1;
+.ingredientRow {
+    background: color-mix(in srgb, var(--beige) 6%, transparent);
+    color: var(--beige);
 }
 
-.prepLessTag {
-    color: rgba(181, 159, 122, 0.5);
-    font-size: 12px;
-    font-style: italic;
+.dimmed {
+    opacity: 0.5;
+}
+
+.priceCell {
+    min-width: 64px;
+    text-align: right;
+    flex-shrink: 0;
 }
 
 .instructionsText {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font: inherit;
-    opacity: 0.8;
+    line-height: 1.6;
+    color: var(--beige);
+}
+
+.priceSummary {
+    background: color-mix(in srgb, var(--beige) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--beige) 20%, transparent);
 }
 
 .noRecipe {

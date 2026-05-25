@@ -1,29 +1,28 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Item_DietCount } from '@/types/directusDataModel'
 import { appAssetStore } from '@/composables/appAssets'
 
 const props = defineProps<{
     baseGuestCount: number
-    dietCounts: Item_DietCount[]
+    dietCounts: any[]
 }>()
 
 const specialDietCounts = computed(() =>
-    props.dietCounts.filter(dc =>
-        !dc.diets.some(d => d.diet === 'default')
+    props.dietCounts.filter((dc: any) =>
+        !dc.diets.some((d: any) => d.diet === 'default')
     )
 )
 
 const standardDietCount = computed(() => {
-    const defaultEntry = props.dietCounts.find(dc =>
-        dc.diets.some(d => d.diet === 'default')
+    const defaultEntry = props.dietCounts.find((dc: any) =>
+        dc.diets.some((d: any) => d.diet === 'default')
     )
     if (defaultEntry) return defaultEntry.count
 
     if (props.dietCounts.length === 0) return props.baseGuestCount
 
     const specialDietTotal = specialDietCounts.value.reduce(
-        (sum: number, dietCount: Item_DietCount) => sum + dietCount.count,
+        (sum: number, dietCount: any) => sum + dietCount.count,
         0
     )
 

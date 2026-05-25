@@ -12,7 +12,6 @@
  */
 
 import { ref } from 'vue'
-import ConfirmationModal from '@/components/Architecture/Overlay/Modal/ConfirmationModal.vue'
 
 export {
     modalState,
@@ -22,7 +21,6 @@ export {
 const modalState = ref<ModalState>({
     visible: false,
     modal: undefined,
-    confirmationProps: undefined,
     resolveFn: undefined,
     rejectFn: undefined
 })
@@ -86,28 +84,6 @@ function useModal() {
     }
 
     /**
-     * Show a confirmation modal with title, message, and buttons
-     * @param props - Configuration object with title, message, confirmText, cancelText
-     * @returns Promise that resolves when confirm is clicked
-     */
-    const showConfirmationModal = (props: ConfirmationModalProps) => {
-        if (resetTimeout) {
-            clearTimeout(resetTimeout)
-            resetTimeout = undefined
-        }
-
-        modalState.value.modal = ConfirmationModal
-        modalState.value.modalType = 'confirmation'
-        modalState.value.confirmationProps = props
-        modalState.value.visible = true
-
-        return new Promise((resolve, reject) => {
-            modalState.value.resolveFn = resolve
-            modalState.value.rejectFn = reject
-        })
-    }
-
-    /**
      * Reset modal state after closing
      */
     const resetModalState = () => {
@@ -115,7 +91,6 @@ function useModal() {
             modalState.value.modal = undefined
             modalState.value.modalType = undefined
             modalState.value.data = undefined
-            modalState.value.confirmationProps = undefined
             modalState.value.resolveFn = undefined
             modalState.value.rejectFn = undefined
         }, 300)
@@ -124,25 +99,16 @@ function useModal() {
     return {
         modalState,
         showModal,
-        showConfirmationModal,
         confirm,
         cancel
     }
 }
 
-interface ConfirmationModalProps {
-    title: string
-    message: string
-    confirmText?: string
-    cancelText?: string
-}
-
 interface ModalState {
     visible: boolean
     modal: any
-    modalType?: 'confirmation' | 'custom'
+    modalType?: 'custom'
     data?: Record<string, any>
-    confirmationProps?: ConfirmationModalProps
     resolveFn?: (value: any) => void
     rejectFn?: (reason?: any) => void
 }

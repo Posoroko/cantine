@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { currentEventStore } from '@/composables/currentEvent'
 import { useModal } from '@/composables/modal'
-import NewPlanning from '@/components/Architecture/Overlay/Modal/NewPlanning.vue'
 import ListItem from '@/components/Cards/ListItem.vue'
 import Icon from '@/components/Icon/Main.vue'
 

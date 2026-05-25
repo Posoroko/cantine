@@ -1,5 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import BottomBar from '@/components/Architecture/Bars/BottomBar.vue'
+
+defineSlots<{
+    topBar?: () => any
+    title?: () => any
+    main?: () => any
+    bottomBarLinks?: () => any
+}>()
 </script>
 
 <template>

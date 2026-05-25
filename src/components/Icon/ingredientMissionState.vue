@@ -1,7 +1,7 @@
 <script setup lang="ts">
 type MissionState = 'none' | 'created' | 'prepLess'
 
-const props = defineProps<{
+const { state } = defineProps<{
     state: MissionState
 }>()
 

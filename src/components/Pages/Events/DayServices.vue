@@ -2,33 +2,26 @@
 import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
-import type { Item_Day, Item_Service } from '@/types/directusDataModel'
-
-import { useModal } from '@/composables/modal'
-import Icon from '@/components/Icon/Main.vue'
-import NewService from '@/components/Architecture/Overlay/Modal/NewService.vue'
-
 import ListItem from '@/components/Cards/ListItem.vue'
 
 const props = defineProps<{
-    day: Item_Day<Item_Service>
+    day: any
 }>()
 
 const router = useRouter()
 const route = useRoute()
-const { showModal } = useModal()
 
 const services = computed(() => {
     if (!props.day.services?.length) return []
 
-    return props.day.services.map(service => ({
+    return props.day.services.map((service: any) => ({
         ...service,
         text: (service.slot as any)?.text || '',
         icon: (service.slot as any)?.icon || ''
     }))
 })
 
-const handleServiceClick = (service: Item_Service) => {
+const handleServiceClick = (service: any) => {
     router.push({
         query: {
             ...route.query,
@@ -37,20 +30,6 @@ const handleServiceClick = (service: Item_Service) => {
             previousPage: route.fullPath
         }
     })
-}
-
-const handleAddService = async () => {
-    const existingSlotKeys = props.day.services
-        ?.map(s => typeof s.slot === 'string' ? s.slot : (s.slot as any)?.key)
-        .filter(Boolean) || []
-
-    await showModal(
-        NewService, 
-        { 
-            dayId: props.day.id,
-            existingSlotKeys
-        }
-    )
 }
 
 </script>
@@ -77,23 +56,6 @@ const handleAddService = async () => {
                     <span class="serviceLabel">
                         {{ service.text }}
                     </span>
-                </template>
-            </ListItem>
-
-            <ListItem
-                @click="handleAddService"
-                layout="createButton"
-            >
-                <template #icon>
-                    <Icon 
-                        size="xl" 
-                    >
-                        add
-                    </Icon>
-                </template>
-
-                <template #text>
-                    Ajouter un service
                 </template>
             </ListItem>
         </div>

@@ -5,9 +5,6 @@ import type {
     Item_Day,
     Item_Service,
     Item_Meal,
-    Item_Mission,
-    Item_Planning,
-    Item_PlanningSlot,
     Item_Recipe,
     Item_RecipeIngredient,
     Item_Ingredient
@@ -24,8 +21,7 @@ export type {
     ExpandedMeal,
     ExpandedRecipe,
     ExpandedIngredient,
-    ExpandedPlanning,
-    ExpandedMission
+    ExpandedService,
 }
 
 const currentEventStore = ref<CurrentEvent | null>(null)
@@ -39,10 +35,8 @@ async function loadCurrentEvent(eventId: number) {
                 'contacts.*',
                 'days.*',
                 'days.services.*',
-                'days.services.day.date',
-                'days.services.slot.*',
-                'days.services.meals.id',
-                'days.services.meals.status',
+                'days.services.meals.*',
+                'days.services.meals.type',
                 'days.services.meals.recipe.id',
                 'days.services.meals.recipe.name',
                 'days.services.meals.recipe.servings',
@@ -51,41 +45,9 @@ async function loadCurrentEvent(eventId: number) {
                 'days.services.meals.recipe.ingredients.ingredient.id',
                 'days.services.meals.recipe.ingredients.ingredient.name',
                 'days.services.meals.recipe.ingredients.ingredient.unit',
+                'days.services.meals.recipe.ingredients.ingredient.defaultPrice',
                 'days.services.meals.recipe.ingredients.ingredient.prepLess',
-                'days.services.meals.targetDiets.id',
-                'days.services.meals.targetDiets.dietCount',
-                'days.services.dietCounts.*',
-                'days.services.dietCounts.diets.id',
-                'days.services.dietCounts.diets.diet',
-                'days.plannings.*',
-                'days.plannings.slot.*',
-                'days.plannings.missions.*',
-                'days.plannings.missions.meal',
-                'days.plannings.missions.ingredient.*',
-                'days.plannings.missions.ingredient.ingredient.id',
-                'days.plannings.missions.ingredient.ingredient.name',
-                'cooks.*',
-                'meals.*',
-                'meals.service.*',
-                'meals.service.slot.*',
-                'meals.service.day.id',
-                'meals.service.day.date',
-                'meals.recipe.id',
-                'meals.recipe.name',
-                'meals.recipe.servings',
-                'meals.recipe.instructions',
-                'meals.recipe.ingredients.*',
-                'meals.recipe.ingredients.ingredient.id',
-                'meals.recipe.ingredients.ingredient.name',
-                'meals.recipe.ingredients.ingredient.unit'
             ].join(),
-            deep: JSON.stringify({
-                days: {
-                    services: {
-                        _sort: 'slot.sort'
-                    }
-                }
-            })
         }
     })
 
@@ -98,20 +60,8 @@ type ExpandedRecipe = Pick<Item_Recipe, 'id' | 'name' | 'servings' | 'instructio
     ingredients: ExpandedIngredient[]
 }
 
-type ExpandedMeal = Item_Meal & {
-    recipe: ExpandedRecipe | null
-}
+type ExpandedMeal = Item_Meal<ExpandedRecipe | null>
 
-type ExpandedMission = Item_Mission<ExpandedIngredient | null>
+type ExpandedService = Item_Service<ExpandedMeal>
 
-type ExpandedPlanning = Item_Planning<Item_PlanningSlot | null, ExpandedMission[]>
-
-type CurrentEvent = Item_Event & {
-    contacts: Item_Contact[]
-    meals: ExpandedMeal[]
-    days: (Item_Day<Item_Service, ExpandedPlanning> & {
-        services: (Item_Service & {
-            meals: ExpandedMeal[]
-        })[]
-    })[]
-}
+type CurrentEvent = Item_Event<Item_Contact, Item_Day<ExpandedService>>
