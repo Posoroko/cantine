@@ -34,7 +34,7 @@ const appState = useAppState()
                     />
                 </RouterLink>
 
-                <RouterLink
+                <!-- <RouterLink
                     to="/catalogue-ingredients"
                 >
                     <MenuCard
@@ -51,8 +51,7 @@ const appState = useAppState()
                         iconKey="group"
                         title="Cuistots"
                     />
-                </RouterLink>
-                
+                </RouterLink> -->
             </div>
         </template>
 
