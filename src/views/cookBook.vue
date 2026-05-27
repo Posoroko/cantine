@@ -40,13 +40,9 @@ type Recipe = {
 }
 
 const recipes = ref<Recipe[]>([])
-const tags = ref<RecipeTag[]>([])
-const diets = ref<RecipeDiet[]>([])
 const selectedTagKeys = ref<string[]>([])
 const selectedDietKeys = ref<string[]>([])
 const searchQuery = ref('')
-const showTags = ref(false)
-const showDiets = ref(false)
 const expandedRecipeIds = ref<number[]>([])
 
 const filteredRecipes = computed(() => {
@@ -160,27 +156,7 @@ async function fetchRecipes() {
 
 onMounted(async () => {
     await fetchRecipes()
-    tags.value = appAssetStore.value.recipeTags || []
-    diets.value = appAssetStore.value.diets || []
 })
-
-function toggleTag(tagKey: string) {
-    const index = selectedTagKeys.value.indexOf(tagKey)
-    if (index > -1) {
-        selectedTagKeys.value.splice(index, 1)
-    } else {
-        selectedTagKeys.value.push(tagKey)
-    }
-}
-
-function toggleDiet(dietKey: string) {
-    const index = selectedDietKeys.value.indexOf(dietKey)
-    if (index > -1) {
-        selectedDietKeys.value.splice(index, 1)
-    } else {
-        selectedDietKeys.value.push(dietKey)
-    }
-}
 </script>
 
 <template>
@@ -205,7 +181,7 @@ function toggleDiet(dietKey: string) {
                 <div
                     class="scrollBox"
                 >
-                    <div>
+                    <!-- <div>
                         <div
                             @click="showTags = !showTags"
                             class="
@@ -234,8 +210,8 @@ function toggleDiet(dietKey: string) {
                                 {{ tag.text }}
                             </button>
                         </div>
-                    </div>
-                    <div
+                    </div> -->
+                    <!-- <div
                         @click="showDiets = !showDiets"
                         class="
                             filterHeader
@@ -248,23 +224,7 @@ function toggleDiet(dietKey: string) {
                         <Icon size="sm">
                             {{ showDiets ? 'expand_less' : 'expand_more' }}
                         </Icon>
-                    </div>
-                    <div
-                        v-if="showDiets"
-                        class="filters flex wrap gap10"
-                    >
-                        <button
-                            v-for="diet in diets"
-                            :key="diet.key"
-                            @click.prevent.stop="toggleDiet(diet.key)"
-                            class="filterTag"
-                            :class="[selectedDietKeys.includes(diet.key) ? 'active' : '']"
-                        >
-                            {{ diet.text }}
-                        </button>
-                    </div>
-
-
+                    </div> -->
                     <div
                         class="
                             flex column gap5 marTop20
@@ -279,13 +239,21 @@ function toggleDiet(dietKey: string) {
                             <div class="flex alignCenter justifyBetween gap10">
                                 <h2 class="recipeTitle grow">{{ recipe.name || 'Sans nom' }}</h2>
 
-                                <div class="flex alignCenter gap10 shrink0">
+                                <div class="flex alignCenter gap20 shrink0">
                                     <span
                                         v-if="recipe.servings"
                                         class="servingsBadge flex alignCenter gap5"
                                     >
-                                        <Icon size="sm">group</Icon>
+                                        <Icon size="sm">groups</Icon>
                                         {{ recipe.servings }}
+                                    </span>
+
+                                    <span
+                                        v-if="recipe.totalPricePerPerson !== null"
+                                        class="recipePrice fS14 weight6 flex alignCenter gap5"
+                                    > 
+                                        <Icon size="sm">person</Icon>
+                                        {{ formatPrice(recipe.totalPricePerPerson) }}
                                     </span>
 
                                     <button
@@ -438,6 +406,10 @@ function toggleDiet(dietKey: string) {
 
 .servingsBadge {
     opacity: 0.85;
+}
+
+.recipePrice {
+    opacity: 0.95;
 }
 
 .expandButton {

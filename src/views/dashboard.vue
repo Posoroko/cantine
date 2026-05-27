@@ -34,7 +34,7 @@ const appState = useAppState()
                     />
                 </RouterLink>
 
-                <!-- <RouterLink
+                <RouterLink
                     to="/catalogue-ingredients"
                 >
                     <MenuCard
@@ -44,7 +44,7 @@ const appState = useAppState()
                 </RouterLink>
                 
 
-                <RouterLink
+                <!-- <RouterLink
                     to="/cuistots"
                 >
                     <MenuCard

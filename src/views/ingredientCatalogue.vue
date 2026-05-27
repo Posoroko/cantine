@@ -1,60 +1,62 @@
-<script setup>
-import { ref, onMounted, computed } from 'vue'
-import Private from '@/components/Architecture/Layouts/Private.vue'
-import ListItem from '@/components/Cards/ListItem.vue'
-import Icon from '@/components/Icon/Main.vue'
-import { dbGet } from '@/composables/fetch'
-import { appAssetStore } from '@/composables/appAssets'
+<script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 
-const ingredients = ref([])
-const categories = ref([])
-const selectedTypeId = ref(null)
+import Private from '@/components/Architecture/Layouts/Private.vue'
+import { dbGet } from '@/composables/fetch'
+
+type Unit = {
+    singular: string | null
+}
+
+type Ingredient = {
+    id: number
+    name: string | null
+    defaultPrice: number | null
+    unit: Unit | null
+}
+
+const ingredients = ref<Ingredient[]>([])
 const searchQuery = ref('')
 
+// c5t: ingredient search filters by case-insensitive name match
 const filteredIngredients = computed(() => {
-    let results = ingredients.value
-    
-    // Filter by category
-    if (selectedTypeId.value) {
-        results = results.filter(ing => ing.category?.key === selectedTypeId.value)
-    }
-    
-    // Filter by search query
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        results = results.filter(ing => ing.name.toLowerCase().includes(query))
-    }
-    
-    return results
+    if (!searchQuery.value) return ingredients.value
+
+    const query = searchQuery.value.toLowerCase()
+    return ingredients.value.filter((ingredient) => {
+        const name = (ingredient.name || '').toLowerCase()
+        return name.includes(query)
+    })
 })
 
+function formatPrice(value: number | null): string {
+    if (value === null) return 'Prix indisponible'
+    return value.toFixed(2) + ' €'
+}
+
 async function fetchIngredients() {
-    const data = await dbGet({
+    const data = await dbGet<Ingredient[]>({
         endpoint: '/items/ingredients',
         query: {
-            fields: '*,category.*,unit.*'
+            fields: [
+                'id',
+                'name',
+                'defaultPrice',
+                'unit',
+            ].join(),
         }
     })
-    ingredients.value = data.sort((a, b) => a.name.localeCompare(b.name))
+
+    ingredients.value = data.sort((a, b) => (a.name || '').localeCompare(b.name || ''))
 }
 
 onMounted(async () => {
     await fetchIngredients()
-    categories.value = appAssetStore.value.ingredientCategories || []
 })
-
-function filterByType(typeId) {
-    selectedTypeId.value = typeId
-}
-
 </script>
 
 <template>
     <Private>
-        <template #title>
-            <h1>Ingrédients</h1>
-        </template>
-
         <template #main>
             <div 
                 class="
@@ -67,100 +69,66 @@ function filterByType(typeId) {
                     v-model="searchQuery"
                     type="text"
                     placeholder="Rechercher un ingrédient..."
-                    class="searchInput"
+                    class="defaultInputStyles"
                 />
-
-                <div class="filters flex wrap gap5">
-                    <button
-                        @click.prevent.stop="filterByType(null)"
-                        class="filterTag"
-                        :class="[!selectedTypeId ? 'active' : '']"
-                    >
-                        Voir tout
-                    </button>
-                    
-                    <button
-                        v-for="type in categories"
-                        :key="type.key"
-                        @click.prevent.stop="filterByType(type.key)"
-                        class="filterTag"
-                        :class="[selectedTypeId === type.key ? 'active' : '']"
-                    >
-                        {{ type.text }}
-                    </button>
-                </div>
 
                 <div
                     class="
-                        ingredientList
-                        flex column gap10
+                        scrollBox
+                        flex column gap5
                     "
                 >
-                <ListItem
+                    <article
                         v-for="ingredient in filteredIngredients"
                         :key="ingredient.id"
+                        class="ingredientCard flex alignCenter justifyBetween gap15 pad15 rounded10"
                     >
-                        <template #icon>
-                            <Icon>grocery</Icon>
-                        </template>
-
-                        <template #text>
+                        <h2 class="ingredientName grow">
                             {{ ingredient.name }}
-                        </template>
+                        </h2>
 
-                        <template #details>
-                            <span v-if="ingredient.defaultPrice != null">{{ ingredient.defaultPrice }} € / </span>
-                            <span v-if="ingredient.unit">{{ ingredient.unit.singular }}</span>
-                        </template>
-                    </ListItem>
+                        <span class="ingredientPrice shrink0">
+                            {{ formatPrice(ingredient.defaultPrice) }}
+                            <template v-if="ingredient.unit"> / {{ ingredient.unit }}</template>
+                        </span>
+                    </article>
+
+                    <p
+                        v-if="!filteredIngredients.length"
+                        class="emptyText"
+                    >
+                        Aucun ingrédient trouvé
+                    </p>
                 </div>
             </div>
-        </template>
-
-        <template #bottomBar>
-
         </template>
     </Private>
 </template>
 
 <style scoped>
-.searchInput {
-    padding: 10px 15px;
-    border: none;
-    border-bottom: 2px solid var(--beige);
-    border-radius: 0;
-    background-color: transparent;
-    color: var(--beige);
-    font-size: 14px;
-    transition: all 0.2s ease;
-}
-
-.searchInput::placeholder {
-    color: rgba(181, 159, 122, 0.5);
-}
-
-.searchInput:focus {
-    outline: none;
-    border-bottom-color: rgba(181, 159, 122, 0.8);
-}
-
-.filterTag {
-    padding: 8px 16px;
-    border: 2px solid var(--beige);
-    border-radius: 20px;
-    background-color: transparent;
-    color: var(--beige);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.filterTag.active {
-    background-color: var(--beige);
-    color: var(--green);
-}
-.ingredientList {
+.scrollBox {
     overflow-y: scroll;
+}
+
+.ingredientCard {
+    background: color-mix(in srgb, var(--beige) 6%, transparent);
+    color: var(--beige);
+}
+
+.ingredientName {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.ingredientPrice {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.9;
+    text-align: right;
+}
+
+.emptyText {
+    opacity: 0.6;
 }
 </style>
