@@ -4,6 +4,8 @@ import { currentEventStore } from '@/composables/currentEvent'
 import { dbGet, dbPatch } from '@/composables/fetch'
 import Icon from '@/components/Icon/Main.vue'
 
+const directusUrl = import.meta.env.VITE_DIRECTUS_URL as string
+
 const meals = ref<any[]>([])
 const eventSuppliers = ref<any[]>([])
 
@@ -49,6 +51,7 @@ onMounted(async () => {
                 'id',
                 '*',
                 'name',
+                'logo',
                 'events.event',
                 'supplyCategories.supplyCategory.value',
                 'supplyCategories.supplyCategory.text',
@@ -298,26 +301,59 @@ watch(supplierOverrides, saveShoppingList)
 		<div
 			v-for="group in bySupplier"
 			:key="group.supplier.id"
-			class="supplierGroup flex column gap6"
+			class="supplierGroup flex column"
 		>
-			<div class="supplierHeader flex alignCenter gap10">
-				<p class="sectionTitle flex1">{{ group.supplier.name }} ({{ group.items.length }})</p>
-				<span class="supplierGroupTotal">{{ formatPrice(supplierTotal(group.items)) }}</span>
-				<button
-					class="collapseBtn"
-					:class="{ collapsed: collapsedSuppliers.has(group.supplier.id) }"
-					@click="toggleSupplier(group.supplier.id)"
-				>
-					<Icon>arrow_drop_down</Icon>
-				</button>
+			<!-- supplier header -->
+			<div
+				class="supplierHeader flex alignCenter  justifyBetween gap10"
+				@click="toggleSupplier(group.supplier.id)"
+			>
+				<div
+                    class="flex gap10 alignCenter"
+                >
+                    <img
+                        v-if="group.supplier.logo"
+                        class="supplierLogo"
+                        :src="`${directusUrl}/assets/${group.supplier.logo}`"
+                        :alt="group.supplier.name"
+                    />
+                    <div
+                        v-else
+                        class="supplierLogoPlaceholder flex alignCenter justifyCenter"
+                    >
+                        {{ group.supplier.name?.[0]?.toUpperCase() }}
+                    </div>
+
+                    <div class="flex column flex1">
+                        <span class="supplierName">{{ group.supplier.name }}</span>
+                        <span class="supplierMeta">{{ group.items.length }} article{{ group.items.length > 1 ? 's' : '' }}</span>
+                        
+                    </div>
+                </div>
+
+				<div>
+                    <span class="supplierGroupTotal">{{ formatPrice(supplierTotal(group.items)) }}</span>
+				
+                    <button
+                        class="collapseBtn"
+                        :class="{ collapsed: collapsedSuppliers.has(group.supplier.id) }"
+                        @click.stop="toggleSupplier(group.supplier.id)"
+                    >
+                        <Icon>expand_less</Icon>
+                    </button>
+                </div>
 			</div>
 
+			<!-- ingredient rows -->
 			<div
 				v-if="!collapsedSuppliers.has(group.supplier.id)"
-				v-for="ing in group.items"
-				:key="ing.id"
-				class="ingRow flex column gap4"
+				class="supplierIngList flex column"
 			>
+				<div
+					v-for="ing in group.items"
+					:key="ing.id"
+					class="ingRow flex column gap4"
+				>
 				<div class="flex gap10 alignCenter">
 					<span class="ingName">{{ ing.name }}</span>
 					<span class="ingQty">{{ formatQty(ing.totalQuantity) }} {{ ing.unit }}</span>
@@ -345,6 +381,7 @@ watch(supplierOverrides, saveShoppingList)
 						@click="selectSupplier(ing.id, sup)"
 					>{{ sup.name }}</button>
 					<span v-if="!ing.possibleSuppliers.length" class="noSupplier">Aucun fournisseur</span>
+				</div>
 				</div>
 			</div>
 		</div>
@@ -395,9 +432,53 @@ watch(supplierOverrides, saveShoppingList)
 }
 
 .supplierGroup {
-	border: 1px solid color-mix(in srgb, var(--beige) 20%, transparent);
+	background: color-mix(in srgb, var(--beige) 5%, transparent);
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.supplierHeader {
+	cursor: pointer;
+	padding: 14px 16px;
+	transition: background 0.15s;
+}
+
+.supplierHeader:hover {
+	background: color-mix(in srgb, var(--beige) 8%, transparent);
+}
+
+.supplierLogo {
 	border-radius: 10px;
-	padding: 10px;
+	height: 44px;
+	object-fit: contain;
+	width: 44px;
+}
+
+.supplierLogoPlaceholder {
+	background: color-mix(in srgb, var(--beige) 15%, transparent);
+	border-radius: 10px;
+	color: var(--beige);
+	font-size: 1.2em;
+	font-weight: 700;
+	height: 44px;
+	width: 44px;
+}
+
+.supplierName {
+	color: var(--beige);
+	font-size: 1.5em;
+	font-weight: 700;
+}
+
+.supplierMeta {
+	color: var(--beige);
+	font-size: 0.8em;
+	opacity: 0.5;
+}
+
+.supplierIngList {
+	border-top: 1px solid color-mix(in srgb, var(--beige) 10%, transparent);
+	padding: 0 16px;
 }
 
 .attention {
@@ -409,8 +490,8 @@ watch(supplierOverrides, saveShoppingList)
 }
 
 .ingRow {
-	border-bottom: 1px solid color-mix(in srgb, var(--beige) 10%, transparent);
-	padding-bottom: 6px;
+	border-bottom: 1px solid color-mix(in srgb, var(--beige) 8%, transparent);
+	padding: 10px 0;
 }
 
 .ingName {
@@ -517,10 +598,6 @@ watch(supplierOverrides, saveShoppingList)
 
 .expandBtn.open {
 	opacity: 0.9;
-}
-
-.supplierHeader {
-	cursor: pointer;
 }
 
 .supplierGroupTotal {
