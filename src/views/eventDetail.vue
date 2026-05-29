@@ -8,9 +8,9 @@ import Informations from '@/components/Pages/Events/Informations.vue'
 import Cooks from '@/components/Pages/Events/Cooks.vue'
 import Days from '@/components/Pages/Events/Days.vue'
 import Meals from '@/components/Pages/Events/Meals.vue'
+import ShoppingList from '@/components/Pages/Events/ShoppingList.vue'
 import DayDetails from '@/components/Pages/Events/DayDetails.vue'
 import ServiceDetails from '@/components/Pages/Events/ServiceDetails.vue'
-import PlanningDetails from '@/components/Pages/Events/PlanningDetails.vue'
 import { currentEventStore, loadCurrentEvent } from '@/composables/currentEvent'
 
 const route = useRoute()
@@ -87,6 +87,10 @@ function onContactCreated() {
                         :eventId="event.id"
                     />
 
+                    <ShoppingList
+                        v-if="activeTab === 'shoppingList'"
+                    />
+
                     <DayDetails
                         v-if="activeTab === 'dayDetails'"
                     />
@@ -95,9 +99,6 @@ function onContactCreated() {
                         v-if="activeTab === 'serviceDetails'"
                     />
 
-                    <PlanningDetails
-                        v-if="activeTab === 'planningDetails'"
-                    />
                 </div>
             </div>
         </template>

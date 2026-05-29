@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import type { Item_Recipe, Item_RecipeIngredient } from '@/types/directusDataModel'
 import { dbGet } from '@/composables/fetch'
-import { appAssetStore } from '@/composables/appAssets'
 
 type RecipeWithIngredients = Item_Recipe & {
     ingredients: (Item_RecipeIngredient & {
@@ -20,9 +19,7 @@ const props = withDefaults(defineProps<{
 const recipe = ref<RecipeWithIngredients | null>(null)
 
 function getUnitText(unitKey: string | null): string {
-    if (!unitKey) return ''
-    const unit = appAssetStore.value.units.find(u => u.key === unitKey)
-    return unit?.singular || unitKey
+    return unitKey || ''
 }
 
 async function getRecipe() {

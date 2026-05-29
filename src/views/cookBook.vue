@@ -4,7 +4,6 @@ import { computed, onMounted, ref } from 'vue'
 import Private from '@/components/Architecture/Layouts/Private.vue'
 import Icon from '@/components/Icon/Main.vue'
 import { dbGet } from '@/composables/fetch'
-import { appAssetStore } from '@/composables/appAssets'
 
 type RecipeTag = {
     key: string
@@ -75,9 +74,7 @@ const filteredRecipes = computed(() => {
 })
 
 function getUnitText(unitKey: string | null): string {
-    if (!unitKey) return ''
-    const unit = appAssetStore.value.units.find((u: any) => u.key === unitKey)
-    return unit?.singular || unitKey
+    return unitKey || ''
 }
 
 function formatQty(value: number): string {

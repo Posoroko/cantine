@@ -8,7 +8,6 @@ import Loading from '@/components/Loading/Main.vue'
 import EventBar from '@/components/Architecture/Bars/EventBar.vue'
 
 import { currentEventStore } from '@/composables/currentEvent'
-import { appAssetStore } from '@/composables/appAssets'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,9 +30,7 @@ const meal = computed(() => {
 const recipe = computed(() => (meal.value?.recipe || null) as any)
 
 function getUnitText(unitKey: string | null): string {
-    if (!unitKey) return ''
-    const unit = appAssetStore.value.units.find(u => u.key === unitKey)
-    return unit?.singular || unitKey
+    return unitKey || ''
 }
 
 function formatQty(value: number): string {

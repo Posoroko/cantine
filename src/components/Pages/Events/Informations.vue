@@ -22,17 +22,17 @@ const props = defineProps({
             <div class="infoLabel flex alignCenter gap5">
                 <Icon>location_on</Icon>
 
-                <p class="infoValue">{{ event.description }}</p>
+                <h3 class="infoValue">{{ event.description }}</h3>
             </div>
         </div>
 
         <div class="infoItem">
             <div class="infoLabel flex alignCenter gap5">
                 <Icon>calendar_today</Icon>
-                <p class="infoValue">
+                <h3 class="infoValue">
                     {{ event.days?.length || 0 }}
                     <span>jour</span><span v-if="event?.days?.length > 1">s</span>
-                </p>
+                </h3>
             </div>
         </div>
 
@@ -41,7 +41,7 @@ const props = defineProps({
             <div class="flex">
                 <div class="infoLabel flex alignCenter gap5">
                     <Icon>contacts</Icon>
-                    <span>Contacts</span>
+                    <h3>Contacts</h3>
                 </div>
             </div>
 
@@ -108,6 +108,14 @@ const props = defineProps({
             <p v-else class="infoValue">Aucun contact</p>
         </div>
 
+        <div class="infoItem">
+            <div class="flex">
+                <div class="infoLabel flex alignCenter gap5">
+                    <Icon>shopping_cart</Icon>
+                    <h3>Fournisseurs</h3>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 

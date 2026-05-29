@@ -3,8 +3,16 @@ export type {
     Item_Day,
     Item_Service,
     Item_Meal,
+    Item_Diet,
+    Item_DietCount,
+    Item_SpecialMeal,
     Item_Contact,
     Item_Supplier,
+    Item_EventSupplier,
+    Item_CookEvent,
+    Item_WorkDay,
+    Item_SupplierFoodCategory,
+    Item_SupplierSupplyCategory,
     Item_FoodCategory,
     Item_SupplyCategory,
     Item_Ingredient,
@@ -16,6 +24,8 @@ export type {
 type Item_Event<
     TContacts = number | Item_Contact,
     TDays = number | Item_Day,
+    TCooks = string,
+    TSuppliers = number | Item_Supplier,
 > = {
     id: number
     status: string | null
@@ -27,14 +37,17 @@ type Item_Event<
     description: string | null
     image: string | null
     notes: string | null
+    shoppingList: any | null
     contacts: TContacts[]
     days: TDays[]
-    cooks: any[]
+    cooks: TCooks[]
+    suppliers: TSuppliers[]
 }
 
 // c5t: day — a single day within an event, contains services
 type Item_Day<
     TServices = number | Item_Service,
+    TCooks = string,
 > = {
     id: number
     status: string | null
@@ -49,13 +62,15 @@ type Item_Day<
     servingFood: boolean | null
     showDay: boolean | null
     services: TServices[]
-    cooks: any[]
+    cooks: TCooks[]
 }
 
 // c5t: service — a meal slot within a day (e.g. lunch, supper)
 // guestCount is the total headcount for this service
 type Item_Service<
     TMeals = number | Item_Meal,
+    TDiets = number,
+    TSpecialMeals = number,
 > = {
     id: number
     user_created: string | null
@@ -67,8 +82,8 @@ type Item_Service<
     note: string | null
     day: number | null
     meals: TMeals[]
-    diets: any[]
-    specialMeals: any[]
+    diets: TDiets[]
+    specialMeals: TSpecialMeals[]
 }
 
 // c5t: meal — a recipe assigned to a service, with an optional serving count override
@@ -84,8 +99,42 @@ type Item_Meal<
     date_updated: string | null
     servingCount: number | null
     type: string | null
-    recipe: TRecipe
+    recipe: TRecipe | null
     service: number | null
+}
+
+// c5t: diet entry used by services and special meals
+type Item_Diet = {
+    value: string
+    text: string | null
+    details: string | null
+}
+
+// c5t: service-level or meal-level diet count rows
+type Item_DietCount<
+    TDiet = string | Item_Diet,
+    TService = number | Item_Service,
+    TMeal = number | Item_Meal,
+> = {
+    id: number
+    diet: TDiet | null
+    service: TService | null
+    count: number | null
+    meal: TMeal | null
+}
+
+// c5t: special meal row tied to a diet and service
+type Item_SpecialMeal<
+    TDiet = string | Item_Diet,
+    TRecipe = number | Item_Recipe,
+    TService = number | Item_Service,
+> = {
+    id: number
+    servingCount: number | null
+    diet: TDiet | null
+    recipe: TRecipe | null
+    service: TService | null
+    details: string | null
 }
 
 // c5t: contact — a person linked to an event or a supplier
@@ -106,6 +155,9 @@ type Item_Contact = {
 // c5t: supplier — a vendor that provides ingredients
 type Item_Supplier<
     TContacts = number | Item_Contact,
+    TEvents = number,
+    TFoodCategories = string,
+    TSupplyCategories = string,
 > = {
     id: number
     status: string | null
@@ -118,13 +170,53 @@ type Item_Supplier<
     telephone: string | null
     notes: string | null
     location: string | null
+    logo: string | null
     contacts: TContacts[]
+    events: TEvents[]
+    foodCategories: TFoodCategories[]
+    supplyCategories: TSupplyCategories[]
+}
+
+// c5t: m2m row linking events and suppliers
+type Item_EventSupplier = {
+    id: number
+    event: number | null
+    supplier: number | null
+}
+
+// c5t: m2m row linking directus users to events
+type Item_CookEvent = {
+    id: number
+    cook: string | null
+    event: number | null
+}
+
+// c5t: m2m row linking directus users to days
+type Item_WorkDay = {
+    id: number
+    cook: string | null
+    day: number | null
+}
+
+// c5t: supplier ↔ food category junction row
+type Item_SupplierFoodCategory = {
+    id: number
+    suppliers: number | null
+    foodCategories: string | null
+}
+
+// c5t: supplier ↔ supply category junction row
+type Item_SupplierSupplyCategory = {
+    id: number
+    suppliers: number | null
+    supplyCategories: string | null
 }
 
 // c5t: ingredient — a base food item used in recipes
 type Item_Ingredient<
-    TFoodCategory = number | Item_FoodCategory,
-    TSupplyCategory = number | Item_SupplyCategory,
+    TFoodCategory = string,
+    TSupplyCategory = string,
+    TRecipes = number,
 > = {
     id: number
     name: string | null
@@ -133,41 +225,61 @@ type Item_Ingredient<
     supplyCategory: TSupplyCategory | null
     foodCategory: TFoodCategory | null
     unit: string | null
-    recipes: (number | Item_RecipeIngredient)[]
+    recipes: TRecipes[]
 }
 
 // c5t: food category — what kind of food the ingredient is (e.g. Légumes, Poisson, Épices)
-type Item_FoodCategory = {
+type Item_FoodCategory<
+    TIngredients = number,
+    TSuppliers = number,
+> = {
     value: string
     sort: number | null
+    user_created: string | null
+    date_created: string | null
+    user_updated: string | null
+    date_updated: string | null
     text: string | null
+    ingredients: TIngredients[]
+    suppliers: TSuppliers[]
 }
 
 // c5t: supply category — how the ingredient is supplied (e.g. Sec, Frais, Surgelé, Conserve, Liquide)
-type Item_SupplyCategory = {
+type Item_SupplyCategory<
+    TIngredients = number,
+    TSuppliers = number,
+> = {
     value: string
     sort: number | null
+    user_created: string | null
+    date_created: string | null
+    user_updated: string | null
+    date_updated: string | null
     text: string | null
+    ingredients: TIngredients[]
+    suppliers: TSuppliers[]
 }
 
 // c5t: recipe — a dish with a list of recipe ingredients
 type Item_Recipe<
-    TIngredients = number | Item_RecipeIngredient,
+    TIngredients = number,
+    TMeals = number,
 > = {
     id: number
     name: string | null
     instructions: string | null
     servings: number | null
     ingredients: TIngredients[]
-    meals: (number | Item_Meal)[]
+    meals: TMeals[]
 }
 
 // c5t: junction row for the recipes ↔ ingredients O2M relationship
 type Item_RecipeIngredient<
-    TIngredient = number | Item_Ingredient,
+    TIngredient = number,
+    TRecipe = number,
 > = {
     id: number
-    recipe: number | null
-    ingredient: TIngredient
     quantity: number | null
+    recipe: TRecipe | null
+    ingredient: TIngredient | null
 }

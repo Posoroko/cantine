@@ -1,13 +1,9 @@
 <script setup>
 import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import { currentEventStore } from '@/composables/currentEvent'
 import { useModal } from '@/composables/modal'
 import ListItem from '@/components/Cards/ListItem.vue'
-import Icon from '@/components/Icon/Main.vue'
 
-const route = useRoute()
-const router = useRouter()
 const { showModal } = useModal()
 
 const props = defineProps({
@@ -27,17 +23,6 @@ const existingSlotKeys = computed(() =>
     plannings.value.map(p => typeof p.slot === 'object' && p.slot ? p.slot.key : p.slot).filter(Boolean)
 )
 
-function handlePlanningClick(planning) {
-    router.push({
-        query: {
-            ...route.query,
-            slide: 'planningDetails',
-            planning: planning.id,
-            previousPage: route.fullPath
-        }
-    })
-}
-
 function openNewPlanning() {
     showModal(NewPlanning, {
         dayId: props.day.id,
@@ -52,8 +37,6 @@ function openNewPlanning() {
             <ListItem
                 v-for="planning in plannings"
                 :key="planning.id"
-                @click="handlePlanningClick(planning)"
-                class="pointer"
             >
                 <template #icon>
                     {{ planning.slot?.icon || 'event_note' }}

@@ -30,7 +30,7 @@ const standardDietCount = computed(() => {
 })
 
 const getDietTextFromAppAssetStore = (dietKey: string): string => {
-    const diet = appAssetStore.value.diets.find(d => d.key === dietKey)
+    const diet = appAssetStore.value.diets.find(d => d.value === dietKey)
     return diet?.text || dietKey
 }
 </script>

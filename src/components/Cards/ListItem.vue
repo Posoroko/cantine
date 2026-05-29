@@ -87,7 +87,6 @@ function handleOption(option: MenuOption) {
         >
             <slot name="extraContent" />
 
-            <!-- Legacy slot-based menu (PlanningDetails compat) -->
             <button
                 v-if="showMenuButton"
                 @click.stop.prevent="emit('toggleMenu')"
