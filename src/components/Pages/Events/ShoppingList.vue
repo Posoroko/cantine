@@ -88,6 +88,22 @@ const supplierOverrides = reactive(new Map<number, any>())
 // c5t: tracks which ingredient rows have their supplier chips expanded
 const expandedIds = reactive(new Set<number>())
 
+// c5t: supplier groups are expanded by default; collapsed when id is in this set
+const collapsedSuppliers = reactive(new Set<number>())
+
+function toggleSupplier(supplierId: number) {
+    if (collapsedSuppliers.has(supplierId)) collapsedSuppliers.delete(supplierId)
+    else collapsedSuppliers.add(supplierId)
+}
+
+function supplierTotal(items: any[]): number {
+    let total = 0
+    for (const ing of items) {
+        if (ing.defaultPrice != null) total += ing.totalQuantity * ing.defaultPrice
+    }
+    return total
+}
+
 function toggleExpand(ingId: number) {
     if (expandedIds.has(ingId)) expandedIds.delete(ingId)
     else expandedIds.add(ingId)
@@ -284,9 +300,20 @@ watch(supplierOverrides, saveShoppingList)
 			:key="group.supplier.id"
 			class="supplierGroup flex column gap6"
 		>
-			<p class="sectionTitle">{{ group.supplier.name }} ({{ group.items.length }})</p>
+			<div class="supplierHeader flex alignCenter gap10">
+				<p class="sectionTitle flex1">{{ group.supplier.name }} ({{ group.items.length }})</p>
+				<span class="supplierGroupTotal">{{ formatPrice(supplierTotal(group.items)) }}</span>
+				<button
+					class="collapseBtn"
+					:class="{ collapsed: collapsedSuppliers.has(group.supplier.id) }"
+					@click="toggleSupplier(group.supplier.id)"
+				>
+					<Icon>arrow_drop_down</Icon>
+				</button>
+			</div>
 
 			<div
+				v-if="!collapsedSuppliers.has(group.supplier.id)"
 				v-for="ing in group.items"
 				:key="ing.id"
 				class="ingRow flex column gap4"
@@ -303,12 +330,12 @@ watch(supplierOverrides, saveShoppingList)
 						:class="{ open: expandedIds.has(ing.id) }"
 						@click="toggleExpand(ing.id)"
 					>
-                        <Icon>edit</Icon>
-                    </button>
+						<Icon>arrow_drop_down</Icon>
+					</button>
 				</div>
 				<div
 					v-if="expandedIds.has(ing.id)"
-					class="flex gap6 wrap"
+					class="flex gap5 wrap"
 				>
 					<button
 						v-for="sup in ing.possibleSuppliers"
@@ -407,19 +434,19 @@ watch(supplierOverrides, saveShoppingList)
 
 .supplierChip {
 	background: transparent;
-	border: 1px solid color-mix(in srgb, var(--beige) 20%, transparent);
+	border: 1px solid color-mix(in srgb, var(--beige) 50%, transparent);
 	border-radius: 20px;
 	color: var(--beige);
 	cursor: pointer;
 	font-size: 0.9em;
 	min-height: 36px;
-	opacity: 0.35;
-	padding: 6px 16px;
+	opacity: 0.7;
+	padding: 0px 16px;
 	transition: opacity 0.15s, background 0.15s, border-color 0.15s;
 }
 
 .supplierChip:hover {
-	opacity: 0.7;
+	opacity: 1;
 }
 
 .supplierChip.active {
@@ -481,17 +508,45 @@ watch(supplierOverrides, saveShoppingList)
 	border: none;
 	color: var(--beige);
 	cursor: pointer;
-	font-size: 1.3em;
 	min-height: 40px;
 	min-width: 40px;
 	opacity: 0.4;
 	padding: 0;
-	rotate: 90deg;
-	transition: opacity 0.15s, rotate 0.2s;
+	transition: opacity 0.15s;
 }
 
 .expandBtn.open {
 	opacity: 0.9;
-	rotate: 270deg;
+}
+
+.supplierHeader {
+	cursor: pointer;
+}
+
+.supplierGroupTotal {
+	color: var(--beige);
+	font-size: 1em;
+	font-weight: 700;
+	opacity: 0.85;
+}
+
+.collapseBtn {
+	background: none;
+	border: none;
+	color: var(--beige);
+	cursor: pointer;
+	min-height: 36px;
+	min-width: 36px;
+	opacity: 0.5;
+	padding: 0;
+	transition: opacity 0.15s, rotate 0.2s;
+}
+
+.collapseBtn:hover {
+	opacity: 1;
+}
+
+.collapseBtn.collapsed {
+	rotate: 180deg;
 }
 </style>
