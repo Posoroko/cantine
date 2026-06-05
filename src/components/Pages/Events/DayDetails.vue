@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { currentEventStore } from '@/composables/currentEvent'
 import Icon from '@/components/Icon/Main.vue'
 import Loading from '@/components/Loading/Main.vue'
@@ -8,6 +8,7 @@ import DayCard from '@/components/Cards/DayCard.vue'
 import Meal from '@/components/Cards/Meal.vue'
 
 const route = useRoute()
+const router = useRouter()
 
 // c5t: find the day in the current event that matches the route query param
 const day = computed(() => {
@@ -88,6 +89,12 @@ const servicePricePerPerson = computed(() => {
     }
     return hasPrice ? total : null
 })
+
+
+function navigateToPrepList() {
+    if (!selectedService.value) return
+    router.push({ name: 'ServicePrepList', query: { service: selectedService.value.id } })
+}
 </script>
 
 <template>
@@ -127,6 +134,61 @@ const servicePricePerPerson = computed(() => {
 
             <div
                 v-if="selectedService"
+                class="flex jaugeBox"
+            >
+                <p
+                    class="grow flex alignCenter gap10"
+                >
+                    <Icon
+                        size="XL"
+                    >
+                        groups
+                    </Icon>
+
+                    <h3>
+                        : {{ selectedService.guestCount }}
+                    </h3>
+                </p>
+
+                <ul
+                    class="grow"
+                >
+                    <p
+                        class="marTop10 textXl fontWeightBold"
+                    >
+                        Régimes spéciaux
+                    </p>
+                    <div
+                        class="liBox"
+                    >
+                        <li
+                            v-for="diet in selectedService.diets"
+                        >
+                            {{ diet.diet.text }}: {{ diet.count }}
+                        </li>
+                    </div>
+                </ul>
+            </div>
+
+
+            <div
+                class="flex justifyEnd"
+            >
+                <button
+                    @click="navigateToPrepList"
+                    class="beigeCardGreenText flex alignCenter gap10 pad10 rounded5"
+                >
+                    <Icon color="var(--green)">receipt</Icon>
+                    <span
+                        class="textLg fontWeightBold"
+                    >
+                         Voir la prep liste
+                    </span>                   
+                </button>
+            </div>
+
+            <div
+                v-if="selectedService"
                 class="mealsList flex column gap10"
             >
                 <template v-if="mealsByType.length">
@@ -137,6 +199,7 @@ const servicePricePerPerson = computed(() => {
                         <p class="mealTypeLabel">
                             {{ group.label }}
                         </p>
+
                         <Meal
                             v-for="meal in group.meals"
                             :key="meal.id"
@@ -165,6 +228,10 @@ const servicePricePerPerson = computed(() => {
 
 <style scoped>
 
+.jaugeBox{
+    padding: 10px 30px;
+    border: 3px solid var(--beige);
+}
 .noData {
     text-align: center;
     color: var(--beige);
@@ -218,5 +285,7 @@ const servicePricePerPerson = computed(() => {
     border: 1px solid color-mix(in srgb, var(--beige) 20%, transparent);
     color: var(--beige);
 }
-
+.liBox {
+    padding-left: 20px;
+}
 </style>

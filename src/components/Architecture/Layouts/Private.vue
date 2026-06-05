@@ -12,14 +12,15 @@ defineSlots<{
 <template>
     <div 
         class="
+            box
             full
             flex column justifyBetween
         "
     >
-        <div>
+        <!-- <div>
             
         </div>
-        
+         -->
         <div
             class="grow relative"
         >
@@ -62,5 +63,8 @@ defineSlots<{
 h2 {
     font-size: 36px;
     padding: 0 20px;
+}
+.mainSlotBox {
+    overflow: scroll;
 }
 </style>

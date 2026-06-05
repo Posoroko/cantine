@@ -29,53 +29,71 @@ const meal = computed(() => {
 
 const recipe = computed(() => (meal.value?.recipe || null) as any)
 
-function getUnitText(unitKey: string | null): string {
-    return unitKey || ''
+const mealServingCount = computed(() => {
+
+    if(meal.value?.servingCount) {
+        return meal.value.servingCount
+    }
+    if(meal.value?.service.guestCount) {
+        return meal.value.service.guestCount
+    }
+
+    return null
+})
+
+const recipeBaseServingCount = computed(() => {
+    return meal.value?.recipe?.servings || null
+})
+
+
+function getTotalIngredientQuantity(baseQuantity: number) {
+    if(!mealServingCount.value || !recipeBaseServingCount.value) return
+
+    return parseFloat(((baseQuantity / recipeBaseServingCount.value) * mealServingCount.value).toFixed(2))
 }
 
-function formatQty(value: number): string {
-    if (value % 1 === 0) return String(value)
-    return parseFloat(value.toFixed(2)).toString()
+function getingredientQuantityPerPlate(baseQuantity: number) {
+    if(!recipeBaseServingCount.value) return null
+
+    return (baseQuantity / recipeBaseServingCount.value)
 }
 
-function formatPrice(price: number): string {
-    return price.toFixed(2) + ' €'
+function getIngredientPricePerPlate(baseQuantity: number, pricePerUnit: number) {
+    if(!recipeBaseServingCount.value) return null
+
+    const quantity = (baseQuantity / recipeBaseServingCount.value)
+
+    return parseFloat((quantity * pricePerUnit).toFixed(2))
 }
 
-// c5t: ingredient rows — qty shown as total for meal when servingCount is set, else per 1 portion
-const ingredientRows = computed(() => {
-    if (!recipe.value?.ingredients) return []
-    const servings: number | null = recipe.value.servings || null
-    const servingCount: number | null = meal.value?.servingCount ?? null
-    return (recipe.value.ingredients as any[]).map(ri => {
+
+const totalPricePerPLate = computed(() => {
+    if (!recipe.value?.ingredients || !recipeBaseServingCount.value) return null
+    let total = 0
+    let hasPrice = false
+    for (const ri of recipe.value.ingredients) {
         const qty: number | null = ri.quantity ?? null
-        const defaultPrice: number | null = ri.ingredient?.defaultPrice ?? null
-        const qtyPerPortion = (qty !== null && servings) ? qty / servings : null
-        const pricePerPortion = (qtyPerPortion !== null && defaultPrice !== null) ? qtyPerPortion * defaultPrice : null
-        const qtyDisplay = (qtyPerPortion !== null)
-            ? (servingCount ? qtyPerPortion * servingCount : qtyPerPortion)
-            : null
-        return {
-            id: ri.id as number,
-            name: (ri.ingredient?.name as string | null) || '—',
-            unit: getUnitText(ri.ingredient?.unit ?? null),
-            qtyDisplay,
-            pricePerPortion,
-        }
-    })
+        const price: number | null = ri.ingredient?.defaultPrice ?? null
+        if (qty === null || price === null) continue
+        total += (qty / recipeBaseServingCount.value) * price
+        hasPrice = true
+    }
+    return hasPrice ? parseFloat(total.toFixed(2)) : null
 })
 
-// c5t: sum of all per-portion ingredient prices
-const totalPricePerPortion = computed(() => {
-    const priced = ingredientRows.value.filter(r => r.pricePerPortion !== null)
-    if (!priced.length) return null
-    return priced.reduce((sum, r) => sum + r.pricePerPortion!, 0)
-})
 
-// c5t: only shown when meal.servingCount is set (not nullish)
-const totalPriceForMeal = computed(() => {
-    if (!totalPricePerPortion.value || !meal.value?.servingCount) return null
-    return totalPricePerPortion.value * meal.value.servingCount
+const totalPrice = computed(() => {
+    if (!recipe.value?.ingredients || !recipeBaseServingCount.value || !mealServingCount.value) return null
+    let total = 0
+    let hasPrice = false
+    for (const ri of recipe.value.ingredients) {
+        const qty: number | null = ri.quantity ?? null
+        const price: number | null = ri.ingredient?.defaultPrice ?? null
+        if (qty === null || price === null) continue
+        total += (qty / recipeBaseServingCount.value) * mealServingCount.value * price
+        hasPrice = true
+    }
+    return hasPrice ? parseFloat(total.toFixed(2)) : null
 })
 
 function goBack() {
@@ -108,6 +126,21 @@ function goBack() {
                     {{ recipe?.name || 'Sans recette' }}
                 </h1>
 
+                <div
+                    class="flex alignCenter gap10"
+                >
+                    <Icon
+                        size="Lg"
+                    >
+                        groups
+                    </Icon>
+                    <p
+                        class="textLg fontWeightBold"
+                    >
+                        {{ meal.service.guestCount }}
+                    </p>
+                </div>
+
                 <span
                     v-if="meal.servingCount"
                     class="flex alignCenter gap5 shrink0"
@@ -135,38 +168,60 @@ function goBack() {
                 v-if="recipe"
                 class="content flex column gap20 pad10"
             >
-                <!-- recipe type -->
-                <span
-                    v-if="recipe.type"
-                    class="recipeType fS12 uppercase weight6"
-                >
-                    {{ recipe.type }}
-                </span>
-
                 <!-- ingredients -->
                 <div class="flex column gap5">
                     <h3 class="sectionTitle">Ingrédients</h3>
 
                     <div
-                        v-for="row in ingredientRows"
-                        :key="row.id"
-                        class="ingredientRow flex alignCenter gap10 pad10 rounded10"
+                        v-for="ingredient in meal?.recipe?.ingredients"
+                        :key="ingredient.id"
+                        class="ingredientRow pad10 rounded10"
                     >
-                        <span class="grow">{{ row.name }}</span>
-
-                        <span
-                            v-if="row.qtyDisplay !== null"
-                            class="fS14"
+                        <div
+                            class=" flex justifyBetween"
                         >
-                            {{ formatQty(row.qtyDisplay) }} {{ row.unit }}
-                        </span>
+                            <p
+                                class="textXl fontWeightBold beigeCardGreenText pad5 rounded5"
+                            >
+                                {{ ingredient?.ingredient?.name }}
+                            </p>
 
-                        <span
-                            v-if="row.pricePerPortion !== null"
-                            class="fS14 weight6 priceCell"
+                            <div
+                                class="flex gap5 textXl fontWeightBold  beigeCardGreenText pad5 rounded5"
+                            >
+                                <span>
+                                    {{ getTotalIngredientQuantity(ingredient.quantity) }}
+                                </span>
+
+                                <span>
+                                    {{ ingredient.ingredient.unit }}
+                                </span>
+                            </div>
+                        </div>
+
+
+                        <div
+                            class="flex justifyEnd alignCenter gap20 marTop10"
                         >
-                            {{ formatPrice(row.pricePerPortion) }}
-                        </span>
+                            <Icon
+                                size="md"
+                            >
+                                person
+                            </Icon>
+
+                            <span
+                                class=""
+                            >
+                                {{ getingredientQuantityPerPlate(ingredient.quantity) }}
+                                {{ ingredient.ingredient.unit }}
+                            </span>
+
+                            <span
+                                class=""
+                            >
+                                {{ getIngredientPricePerPlate(ingredient.quantity, ingredient.ingredient?.defaultPrice) }} €
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -180,23 +235,35 @@ function goBack() {
                 </div>
 
                 <!-- price summary -->
+
+
+                <h2>Prix</h2>
                 <div
-                    v-if="totalPricePerPortion !== null"
-                    class="priceSummary flex column gap10 pad15 rounded10"
+                    class="priceSummary flex  justifyBetween pad15 rounded10"
                 >
-                    <div class="flex justifyBetween alignCenter">
-                        <span class="fS14">Prix par personne</span>
-                        <span class="weight7">{{ formatPrice(totalPricePerPortion) }}</span>
-                    </div>
+                    <p>
+                        Total par assiette: 
+                    </p>
 
-                    <template v-if="totalPriceForMeal !== null">
-                        <span class="fS14 dimmed">× {{ meal!.servingCount }} convives</span>
+                    <p
+                        class="textLg fontWeightBold"
+                    >
+                        {{ totalPricePerPLate }}€
+                    </p>
+                </div>
 
-                        <div class="flex justifyBetween alignCenter">
-                            <span class="fS14">Total</span>
-                            <span class="weight7">{{ formatPrice(totalPriceForMeal) }}</span>
-                        </div>
-                    </template>
+                <div
+                    class="priceSummary flex  justifyBetween pad15 rounded10"
+                >
+                    <p>
+                        Total: 
+                    </p>
+
+                    <p
+                        class="textLg fontWeightBold"
+                    >
+                        {{ totalPrice }}€
+                    </p>
                 </div>
             </div>
 
@@ -219,42 +286,6 @@ function goBack() {
     font-size: 24px;
     font-weight: 700;
     text-transform: capitalize;
-}
-
-.content {
-    max-width: 800px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-.recipeType {
-    opacity: 0.5;
-    letter-spacing: 0.08em;
-}
-
-.sectionTitle {
-    margin-bottom: 4px;
-    color: var(--beige);
-}
-
-.ingredientRow {
-    background: color-mix(in srgb, var(--beige) 6%, transparent);
-    color: var(--beige);
-}
-
-.dimmed {
-    opacity: 0.5;
-}
-
-.priceCell {
-    min-width: 64px;
-    text-align: right;
-    flex-shrink: 0;
-}
-
-.instructionsText {
-    line-height: 1.6;
-    color: var(--beige);
 }
 
 .priceSummary {

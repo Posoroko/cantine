@@ -3,7 +3,8 @@ import { dbGet } from '@/composables/fetch'
 
 export {
     appAssetStore,
-    loadAppAssets
+    loadAppAssets,
+    TIME_SLOT_CONFIG
 }
 
 export type {
@@ -11,9 +12,16 @@ export type {
     FoodCategory,
     SupplyCategory,
     SupplierFoodCategoryLink,
-    SupplierSupplyCategoryLink,
+    SupplierSupplyCategoryLink
 }
 
+const TIME_SLOT_CONFIG: Record<string, { label: string; icon: string; order: number }> = {
+    breakfast: { label: 'Petit-déj',  icon: 'breakfast_dining', order: 1 },
+    lunch:     { label: 'Déjeuner',   icon: 'lunch_dining',     order: 2 },
+    snackPm:   { label: 'Goûter',     icon: 'bakery_dining',    order: 3 },
+    aperoPm:   { label: 'Apéro',      icon: 'wine_bar',         order: 4 },
+    supper:    { label: 'Souper',     icon: 'dinner_dining',    order: 5 },
+}
 
 //* 
 //* c5t_specs_01 

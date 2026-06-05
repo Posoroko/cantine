@@ -43,6 +43,7 @@ function openMeal() {
         <span class="mealLabel grow">
             {{ meal.recipe?.name || 'Sans recette' }}
         </span>
+        
 
         <span
             v-if="pricePerPortion !== null"

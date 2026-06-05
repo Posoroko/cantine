@@ -7,6 +7,7 @@ import IngredientCatalogue from '@/views/ingredientCatalogue.vue'
 import CookBook from '@/views/cookBook.vue'
 import Cooks from '@/views/cooks.vue'
 import MealDetail from '@/views/mealDetail.vue'
+import ServicePrepList from '@/views/servicePrepList.vue'
 import { useUserState, useAppInitialized } from '@/composables/userState'
 import { useLastRoute } from '@/composables/useLastRoute'
 
@@ -59,6 +60,12 @@ const router = createRouter({
             path: '/plats/:mealId',
             name: 'MealDetail',
             component: MealDetail,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/prep-liste',
+            name: 'ServicePrepList',
+            component: ServicePrepList,
             meta: { requiresAuth: true }
         },
     ]
