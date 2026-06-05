@@ -140,7 +140,7 @@ function navigateToPrepList() {
                     class="grow flex alignCenter gap10"
                 >
                     <Icon
-                        size="XL"
+                        size="xl"
                     >
                         groups
                     </Icon>
@@ -162,9 +162,9 @@ function navigateToPrepList() {
                         class="liBox"
                     >
                         <li
-                            v-for="diet in selectedService.diets"
+                            v-for="diet in (selectedService.diets as any[])"
                         >
-                            {{ diet.diet.text }}: {{ diet.count }}
+                            {{ diet.diet?.text }}: {{ diet.count }}
                         </li>
                     </div>
                 </ul>
@@ -178,7 +178,7 @@ function navigateToPrepList() {
                     @click="navigateToPrepList"
                     class="beigeCardGreenText flex alignCenter gap10 pad10 rounded5"
                 >
-                    <Icon color="var(--green)">receipt</Icon>
+                    <Icon color="green">receipt</Icon>
                     <span
                         class="textLg fontWeightBold"
                     >

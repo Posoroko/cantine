@@ -130,7 +130,7 @@ function goBack() {
                     class="flex alignCenter gap10"
                 >
                     <Icon
-                        size="Lg"
+                        size="lg"
                     >
                         groups
                     </Icon>
@@ -190,11 +190,11 @@ function goBack() {
                                 class="flex gap5 textXl fontWeightBold  beigeCardGreenText pad5 rounded5"
                             >
                                 <span>
-                                    {{ getTotalIngredientQuantity(ingredient.quantity) }}
+                                    {{ getTotalIngredientQuantity(ingredient.quantity!) }}
                                 </span>
 
                                 <span>
-                                    {{ ingredient.ingredient.unit }}
+                                    {{ ingredient.ingredient?.unit }}
                                 </span>
                             </div>
                         </div>
@@ -212,14 +212,14 @@ function goBack() {
                             <span
                                 class=""
                             >
-                                {{ getingredientQuantityPerPlate(ingredient.quantity) }}
-                                {{ ingredient.ingredient.unit }}
+                                {{ getingredientQuantityPerPlate(ingredient.quantity!) }}
+                                {{ ingredient.ingredient?.unit }}
                             </span>
 
                             <span
                                 class=""
                             >
-                                {{ getIngredientPricePerPlate(ingredient.quantity, ingredient.ingredient?.defaultPrice) }} €
+                                {{ getIngredientPricePerPlate(ingredient.quantity!, ingredient.ingredient?.defaultPrice) }} €
                             </span>
                         </div>
                     </div>

@@ -111,7 +111,7 @@ function printList() {
                     class="marTop20 beigeCardGreenText pad5 rounded5 flex alignCenter gap10"
                 >
                     <Icon
-                        color="var(--green)"
+                        color="green"
                     >
                         print
                     </Icon>
@@ -210,7 +210,7 @@ function printList() {
                         @click="printList"
                         class="pad10 rounded5 beigeCardGreenText flex alignCenter gap5"
                     >
-                        <Icon color="var(--green)">print</Icon>
+                        <Icon color="green">print</Icon>
                         Imprimer
                     </button>
                 </div>
