@@ -58,8 +58,8 @@ function getingredientQuantityPerPlate(baseQuantity: number) {
     return (baseQuantity / recipeBaseServingCount.value)
 }
 
-function getIngredientPricePerPlate(baseQuantity: number, pricePerUnit: number) {
-    if(!recipeBaseServingCount.value) return null
+function getIngredientPricePerPlate(baseQuantity: number, pricePerUnit: number | null | undefined) {
+    if(!recipeBaseServingCount.value || pricePerUnit == null) return null
 
     const quantity = (baseQuantity / recipeBaseServingCount.value)
 
