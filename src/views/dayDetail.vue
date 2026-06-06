@@ -110,7 +110,7 @@ function navigateToPrepList() {
 
             <div
                 v-else
-                class="titleArrowBox flex alignCenter justifyBetween gap30"
+                class="titleArrowBox flex alignCenter justifyEvenly gap10"
             >
                 <Icon
                     @click="prevDay && goToDay(prevDay.id)"
@@ -179,7 +179,7 @@ function navigateToPrepList() {
                     v-if="selectedService?.diets?.length"
                     class="jaugeBox gap20"
                 >
-                    <p class="textLg fontWeightBold">Régimes spéciaux</p>
+                    <!-- <p class="textLg fontWeightBold">Régimes spéciaux</p> -->
 
                     <ul class="dietBox marTop10">
                         
@@ -260,12 +260,12 @@ function navigateToPrepList() {
 
 <style scoped>
 .titleArrowBox {
-    padding: 10px 40px;
+    padding: 10px 0;
 }
 .dayTitle {
+    font-size: clamp(20px, 5vw, 30px);
     padding: 3px 20px;
     text-transform: capitalize;
-
 }
 
 .dimmed {
@@ -273,9 +273,6 @@ function navigateToPrepList() {
     cursor: default;
 }
 
-.jaugeBox {
-    padding: 10px 30px;
-}
 .dietBox {
     padding: 10px 10px;
     border: 1px solid var(--beige);
