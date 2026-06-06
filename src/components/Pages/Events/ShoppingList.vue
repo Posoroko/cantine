@@ -94,8 +94,9 @@ const supplierOverrides = reactive(new Map<number, any>())
 // c5t: tracks which ingredient rows have their supplier chips expanded
 const expandedIds = reactive(new Set<number>())
 
-// c5t: supplier groups are expanded by default; collapsed when id is in this set
+// c5t: supplier groups are collapsed by default
 const collapsedSuppliers = reactive(new Set<number>())
+
 
 function toggleSupplier(supplierId: number) {
     if (collapsedSuppliers.has(supplierId)) collapsedSuppliers.delete(supplierId)
@@ -199,6 +200,13 @@ const bySupplier = computed(() => {
     }
 
     return [...map.values()]
+})
+
+// c5t: seed collapsedSuppliers once after all data and overrides are restored
+const stopWatchSuppliers = watch(isRestoring, (restoring) => {
+    if (restoring) return
+    for (const group of bySupplier.value) collapsedSuppliers.add(group.supplier.id)
+    stopWatchSuppliers()
 })
 
 function formatQty(qty: number): string {
