@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useCooks } from '@/composables/cooks'
+import { dbGet } from '@/composables/fetch'
 import appConfig from '@/composables/appConfig'
+import Loading from '@/components/Loading/Main.vue'
+import Icon from '@/components/Icon/Main.vue'
 
 const props = defineProps({
     eventId: {
@@ -10,68 +12,104 @@ const props = defineProps({
     }
 })
 
-const { getHiredCooks } = useCooks()
+const cooks = ref([])
+const isLoading = ref(true)
 
-const hiredCooks = ref([])
-const isLoading = ref(false)
+onMounted(async () => {
+    const result = await dbGet({
+        endpoint: '/items/cooks_events',
+        query: {
+            'filter[event][_eq]': props.eventId,
+            fields: [
+                'id',
+                'event',
+                'cook.id',
+                'cook.first_name',
+                'cook.last_name',
+                'cook.email',
+                'cook.telephone',
+                'cook.avatar',
+            ].join(',')
+        }
+    })
+    cooks.value = Array.isArray(result) ? result.map(r => r.cook).filter(Boolean) : []
+    isLoading.value = false
+})
 
-const getImageUrl = (imageId) => {
+function getImageUrl(imageId) {
     if (!imageId) return null
     return `${appConfig.dbUrl}/assets/${imageId}`
 }
-
-const loadHiredCooks = async () => {
-    isLoading.value = true
-    try {
-        const cooks = await getHiredCooks(props.eventId)
-        hiredCooks.value = cooks
-    } catch (error) {
-        console.error('Error loading hired cooks:', error)
-    } finally {
-        isLoading.value = false
-    }
-}
-
-onMounted(() => {
-    loadHiredCooks()
-})
 </script>
 
 <template>
-    <div class="scrollBox grow flex column">
-        <h2>Cuisiniers</h2>
+    <div class="scrollBox grow flex column gap10">
+        <Loading v-if="isLoading" />
 
-        <div v-if="isLoading" class="loadingText">
-            Chargement...
-        </div>
-
-        <div 
-            v-else-if="hiredCooks.length > 0" 
-            class="cooksList"
+        <div
+            v-else-if="cooks.length > 0"
+            class="cooksList flex column gap10"
         >
-            <div 
-                v-for="cook in hiredCooks" 
-                :key="cook.id" 
-                class="cookItem"
+            <div
+                v-for="cook in cooks"
+                :key="cook.id"
+                class="cookItem pad15 rounded10 flex alignCenter gap15"
             >
-                <div class="cookHeader flex alignCenter gap15">
-                    <div v-if="cook.avatar" class="cookAvatar">
-                        <img :src="getImageUrl(cook.avatar)" :alt="cook.name" />
-                    </div>
-                    <div class="cookInfo flex column grow">
-                        <span class="cookName">{{ cook.name }}</span>
-                        <div v-if="cook.telephone" class="cookDetail">
-                            <span>Tél:</span> {{ cook.telephone }}
-                        </div>
-                        <div v-if="cook.email" class="cookDetail">
-                            <span>Email:</span> {{ cook.email }}
-                        </div>
+                <img
+                    v-if="cook.avatar"
+                    :src="getImageUrl(cook.avatar)"
+                    :alt="cook.name"
+                    class="cookAvatar rounded10"
+                />
+
+                <div class="flex column gap5 grow textLg">
+                    <span class="cookName fontWeightBold textXl">{{ cook.first_name }} {{ cook.last_name }}</span>
+                    <div
+                        class="flex column  gap10"
+                    >
+                        <a
+                            :href="`tel:${cook.telephone}`"
+                            v-if="cook.telephone"
+                            class="cookDetail beigeCardGreenText contactActionButton"
+                        >
+                            <Icon
+                                color="var(--beige)"
+                            >
+                                call
+                            </Icon>
+                            <span
+                                class="fontWeightBold textLg"
+                            >
+                                {{ cook.telephone }}
+                            </span>
+                        </a>
+                        
+                        <a
+                            :href="`mailto:${cook.email}`" 
+                            v-if="cook.email" 
+                            class="cookDetail beigeCardGreenText contactActionButton"
+                        
+                        >
+                            <Icon
+                                color="var(--beige)"
+                            >
+                                email
+                            </Icon>
+                            <span
+                                class="cookName fontWeightBold textLg"
+                            >
+                                {{ cook.email }}
+                            </span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <p v-else class="noCooksText">
+        <p
+            v-else
+            class="noCooks"
+        >
             Pas de cuistots pour cet événement
         </p>
     </div>
@@ -79,65 +117,31 @@ onMounted(() => {
 
 <style scoped>
 .scrollBox {
-    overflow: scroll;
-}
-
-.loadingText,
-.noCooksText {
-    text-align: center;
-    color: var(--beige);
-    font-size: 14px;
-}
-
-.cooksList {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    overflow-y: scroll;
 }
 
 .cookItem {
-    padding: 12px;
-    background: rgba(169, 169, 132, 0.1);
-    border-radius: 4px;
-    border-left: 2px solid var(--gold);
-}
-
-.cookHeader {
-    width: 100%;
+    background: color-mix(in srgb, var(--beige) 8%, transparent);
 }
 
 .cookAvatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid var(--beige);
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
     flex-shrink: 0;
 }
 
-.cookAvatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.noCooks {
+    text-align: center;
+    opacity: 0.5;
 }
 
-.cookInfo {
-    min-width: 0;
-}
-
-.cookName {
-    color: var(--beige);
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.cookDetail {
-    color: rgba(169, 169, 132, 0.9);
-    font-size: 12px;
-    margin-top: 2px;
-}
-
-.grow {
-    flex: 1;
+.contactActionButton {
+    padding: 5px 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
 }
 </style>
