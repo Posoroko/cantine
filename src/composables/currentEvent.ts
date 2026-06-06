@@ -1,127 +1,49 @@
 import { ref } from 'vue'
-import type {
-    Item_Event,
-    Item_Contact,
-    Item_Day,
-    Item_Service,
-    Item_Meal,
-    Item_Recipe,
-    Item_RecipeIngredient,
-    Item_Ingredient,
-    Item_Supplier,
-} from '@/types/directusDataModel'
 import { dbGet } from '@/composables/fetch'
 
 export {
-    currentEventStore,
-    loadCurrentEvent
+    eventDaysStore,
+    loadEventDays,
 }
 
-export type {
-    CurrentEvent,
-    ExpandedMeal,
-    ExpandedRecipe,
-    ExpandedIngredient,
-    ExpandedService,
-}
+// c5t: cached days with full service/meal/ingredient data for the currently viewed event
+// only fetches from directus if not already loaded for the same eventId
+const eventDaysStore = ref<any[] | null>(null)
+let loadedForEventId: number | null = null
 
-const currentEventStore = ref<CurrentEvent | null>(null)
-
-async function loadCurrentEvent(eventId: number) {
-    const event = await dbGet<CurrentEvent>({
-        endpoint: `/items/events/${eventId}`,
+async function loadEventDays(eventId: number) {
+    if (loadedForEventId === eventId && eventDaysStore.value !== null) return
+    const result = await dbGet<any[]>({
+        endpoint: '/items/days',
         query: {
+            'filter[event][_eq]': eventId,
+            sort: 'date',
             fields: [
                 'id',
-                'status',
-                'name',
-                'description',
-                'image',
-                'notes',
-                'shoppingList',
-                'contacts.id',
-                'contacts.name',
-                'contacts.telephone',
-                'contacts.email',
-                'contacts.notes',
-                'contacts.event',
-                'contacts.supplier',
-                'days.id',
-                'days.status',
-                'days.sort',
-                'days.notes',
-                'days.event',
-                'days.date',
-                'days.servingFood',
-                'days.showDay',
-                'days.services.id',
-                'days.services.timeSlot',
-                'days.services.guestCount',
-                'days.services.diets.count',
-                'days.services.diets.diet.value',
-                'days.services.diets.diet.text',
-                'days.services.note',
-                'days.services.day.id',
-                'days.services.day.date',
-                'days.services.meals.id',
-                'days.services.meals.servingCount',
-                'days.services.meals.service.guestCount',
-                'days.services.meals.recipe.id',
-                'days.services.meals.recipe.name',
-                'days.services.meals.recipe.servings',
-                'days.services.meals.recipe.instructions',
-                'days.services.meals.type',
-                'days.services.meals.recipe.ingredients.id',
-                'days.services.meals.recipe.ingredients.quantity',
-                'days.services.meals.recipe.ingredients.recipe',
-                'days.services.meals.recipe.ingredients.ingredient.id',
-                'days.services.meals.recipe.ingredients.ingredient.name',
-                'days.services.meals.recipe.ingredients.ingredient.unit',
-                'days.services.meals.recipe.ingredients.ingredient.foodCategory.value',
-                'days.services.meals.recipe.ingredients.ingredient.foodCategory.text',
-                'days.services.meals.recipe.ingredients.ingredient.supplyCategory.value',
-                'days.services.meals.recipe.ingredients.ingredient.supplyCategory.text',
-                'days.services.meals.recipe.ingredients.ingredient.defaultPrice',
-                'days.services.meals.recipe.ingredients.ingredient.prepLess',
-                'suppliers',
-                'suppliers.supplier.id',
-                'suppliers.supplier.name',
-                'suppliers.supplier.foodCategories.foodCategory',
-                'suppliers.supplier.foodCategories.foodCategory.value',
-                'suppliers.supplier.foodCategories.foodCategory.text',
-                'suppliers.supplier.supplyCategories.supplyCategory',
-                'suppliers.supplier.supplyCategories.supplyCategory.value',
-                'suppliers.supplier.supplyCategories.supplyCategory.text',
-
-            ].join(),
+                'date',
+                'event',
+                'services.id',
+                'services.timeSlot',
+                'services.guestCount',
+                'services.note',
+                'services.diets.count',
+                'services.diets.diet.value',
+                'services.diets.diet.text',
+                'services.meals.id',
+                'services.meals.type',
+                'services.meals.servingCount',
+                'services.meals.recipe.id',
+                'services.meals.recipe.name',
+                'services.meals.recipe.servings',
+                'services.meals.recipe.ingredients.id',
+                'services.meals.recipe.ingredients.quantity',
+                'services.meals.recipe.ingredients.ingredient.id',
+                'services.meals.recipe.ingredients.ingredient.name',
+                'services.meals.recipe.ingredients.ingredient.unit',
+                'services.meals.recipe.ingredients.ingredient.defaultPrice',
+            ].join()
         }
     })
-
-    currentEventStore.value = event
+    eventDaysStore.value = Array.isArray(result) ? result : []
+    loadedForEventId = eventId
 }
-
-type ExpandedIngredient = Item_RecipeIngredient<
-    (Pick<Item_Ingredient, 'id' | 'name' | 'unit' | 'defaultPrice' | 'prepLess'> & {
-        foodCategory: { value: string; text: string | null } | null
-        supplyCategory: { value: string; text: string | null } | null
-    }) | null
->
-
-type ExpandedRecipe = Pick<Item_Recipe, 'id' | 'name' | 'servings' | 'instructions'> & {
-    ingredients: ExpandedIngredient[]
-}
-
-type ExpandedMeal = Item_Meal<ExpandedRecipe | null>
-
-type ExpandedService = Item_Service<ExpandedMeal>
-
-type ExpandedSupplier = Pick<Item_Supplier, 'id' | 'name'> & {
-    foodCategories?: Array<{ foodCategory: { value: string; text: string | null } }>
-    supplyCategories?: Array<{ supplyCategory: { value: string; text: string | null } }>
-}
-
-type ExpandedEventSupplierRow = {
-    supplier: ExpandedSupplier
-}
-
-type CurrentEvent = Item_Event<Item_Contact, Item_Day<ExpandedService>, string, ExpandedEventSupplierRow>

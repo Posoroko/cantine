@@ -1,27 +1,13 @@
 <script setup>
-import { useRouter, useRoute } from 'vue-router'
 import Icon from '@/components/Icon/Main.vue'
 import Date from '@/components/Text/Date.vue'
 
-const router = useRouter()
-const route = useRoute()
-
-const props = defineProps({
+defineProps({
     day: {
         type: Object,
         required: true
     }
 })
-
-const goToDayDetails = () => {
-    router.push({
-        query: {
-            slide: 'dayDetails',
-            day: props.day.id,
-            previousPage: route.fullPath
-        }
-    })
-}
 </script>
 
 <template>
@@ -33,7 +19,6 @@ const goToDayDetails = () => {
     >
 
         <Date
-            @click="goToDayDetails"
             :timestamp="day.date"
             format="textNoMonth"
             class="

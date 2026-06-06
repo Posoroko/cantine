@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import Private from '@/components/Architecture/Layouts/Private.vue'
 import Loading from '@/components/Loading/Main.vue'
@@ -9,26 +9,45 @@ import Cooks from '@/components/Pages/Events/Cooks.vue'
 import Days from '@/components/Pages/Events/Days.vue'
 import Meals from '@/components/Pages/Events/Meals.vue'
 import ShoppingList from '@/components/Pages/Events/ShoppingList.vue'
-import DayDetails from '@/components/Pages/Events/DayDetails.vue'
-import ServiceDetails from '@/components/Pages/Events/ServiceDetails.vue'
-import { currentEventStore, loadCurrentEvent } from '@/composables/currentEvent'
+import { dbGet } from '@/composables/fetch'
 
 const route = useRoute()
 
 const activeTab = computed(() => route.query.slide || 'informations')
-const event = computed(() => currentEventStore.value)
+const event = ref(null)
 
-onMounted(() => {
-    if (!event.value) {
-        const eventId = parseInt(route.params.eventId)
-        loadCurrentEvent(eventId)
-    }
+onMounted(async () => {
+    const eventId = parseInt(route.params.eventId)
+    const result = await dbGet({
+        endpoint: `/items/events/${eventId}`,
+        query: {
+            fields: [
+                'id',
+                'name',
+                'description',
+                'image',
+                'notes',
+                'shoppingList',
+                'contacts.id',
+                'contacts.name',
+                'contacts.telephone',
+                'contacts.email',
+                'contacts.notes',
+                'contacts.supplier',
+                'days.id',
+                'days.date',
+                'days.status',
+                'days.sort',
+                'days.event',
+                'days.servingFood',
+                'days.showDay',
+            ].join()
+        }
+    })
+    event.value = result
 })
 
-function onContactCreated() {
-    const eventId = parseInt(route.params.eventId)
-    loadCurrentEvent(eventId)
-}
+const days = computed(() => event.value?.days)
 </script>
 
 <template>
@@ -69,7 +88,6 @@ function onContactCreated() {
                     <Informations 
                         v-if="activeTab === 'informations'" 
                         :event="event"
-                        @contact-created="onContactCreated"
                     />
 
                     <Cooks
@@ -79,7 +97,7 @@ function onContactCreated() {
 
                     <Days
                         v-if="activeTab === 'days'"
-                        :eventId="event.id"
+                        :days="days ?? []"
                     />
 
                     <Meals
@@ -90,15 +108,6 @@ function onContactCreated() {
                     <ShoppingList
                         v-if="activeTab === 'shoppingList'"
                     />
-
-                    <DayDetails
-                        v-if="activeTab === 'dayDetails'"
-                    />
-
-                    <ServiceDetails
-                        v-if="activeTab === 'serviceDetails'"
-                    />
-
                 </div>
             </div>
         </template>

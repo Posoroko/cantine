@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import Private from '@/components/Architecture/Layouts/Private.vue'
 import Icon from '@/components/Icon/Main.vue'
 import { useEvents } from '@/composables/events'
-import { loadCurrentEvent } from '@/composables/currentEvent'
+import { loadEventDays } from '@/composables/currentEvent'
 import appConfig from '@/composables/appConfig'
 import DateParser from '@/components/Text/Date.vue'
 
@@ -29,7 +29,7 @@ async function loadEvents() {
 
 function getImageUrl(imageId) {
     if (!imageId) return null
-    return `${appConfig.dbUrl}/assets/${imageId}`
+    return `${appConfig.dbUrl}/assets/${imageId}?key=event-card-lg`
 }
 
 function getDateRange(days) {
@@ -48,7 +48,7 @@ function getDateRange(days) {
 }
 
 function goToEvent(eventId) {
-    loadCurrentEvent(eventId)
+    loadEventDays(eventId)
     router.push(`/evenements/${eventId}?slide=days`)
 }
 

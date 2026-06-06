@@ -8,6 +8,7 @@ import CookBook from '@/views/cookBook.vue'
 import Cooks from '@/views/cooks.vue'
 import MealDetail from '@/views/mealDetail.vue'
 import ServicePrepList from '@/views/servicePrepList.vue'
+import DayDetail from '@/views/dayDetail.vue'
 import { useUserState, useAppInitialized } from '@/composables/userState'
 import { useLastRoute } from '@/composables/useLastRoute'
 
@@ -63,7 +64,13 @@ const router = createRouter({
             meta: { requiresAuth: true }
         },
         {
-            path: '/prep-liste',
+            path: '/evenements/:eventId/jours/:dayId/:serviceId?',
+            name: 'DayDetail',
+            component: DayDetail,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/evenements/:eventId/jours/:dayId/:serviceId/prep-liste',
             name: 'ServicePrepList',
             component: ServicePrepList,
             meta: { requiresAuth: true }

@@ -7,7 +7,7 @@ import Icon from '@/components/Icon/Main.vue'
 import Loading from '@/components/Loading/Main.vue'
 import EventBar from '@/components/Architecture/Bars/EventBar.vue'
 
-import { currentEventStore } from '@/composables/currentEvent'
+import { eventDaysStore } from '@/composables/currentEvent'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,8 +17,8 @@ const previousPage = computed(() => route.query.previousPage || route.path)
 const mealId = computed(() => parseInt(route.params.mealId as string))
 
 const meal = computed(() => {
-    if (!currentEventStore.value) return null
-    for (const day of currentEventStore.value.days) {
+    if (!eventDaysStore.value) return null
+    for (const day of eventDaysStore.value) {
         for (const service of day.services) {
             const found = service.meals.find((m: any) => m.id === mealId.value)
             if (found) return { ...found, service, day }
@@ -104,11 +104,11 @@ function goBack() {
 <template>
     <Private>
         <template #topBar>
-            <EventBar v-if="currentEventStore" />
+            <EventBar v-if="eventDaysStore" />
         </template>
 
         <template #title>
-            <Loading v-if="!currentEventStore" />
+            <Loading v-if="!eventDaysStore" />
 
             <div
                 v-else-if="meal"

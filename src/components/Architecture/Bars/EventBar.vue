@@ -1,29 +1,40 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import Icon from '@/components/Icon/Main.vue'
-import { currentEventStore } from '@/composables/currentEvent'
+import { dbGet } from '@/composables/fetch'
 import appConfig from '@/composables/appConfig'
 
 const route = useRoute()
 const router = useRouter()
 
-const event = computed(() => currentEventStore.value)
+const event = ref(null)
 
-const eventPath = computed(() => {
-    if (!event.value) return null
-    return `/evenements/${event.value.id}`
-})
+// c5t: resolve eventId from route — works on /evenements/:eventId and all nested routes
+const eventId = computed(() => route.params.eventId ? parseInt(route.params.eventId) : null)
+
+async function fetchEvent() {
+    if (!eventId.value) return
+    event.value = await dbGet({
+        endpoint: `/items/events/${eventId.value}`,
+        query: { fields: 'id,name,image' }
+    })
+}
+
+onMounted(fetchEvent)
+watch(eventId, fetchEvent)
+
+const eventPath = computed(() => event.value ? `/evenements/${event.value.id}` : null)
 
 const activeTab = computed(() => {
-    if (route.path !== eventPath.value) return null
-    return route.query.slide || 'informations'
+    if (!eventPath.value || !route.path.startsWith(eventPath.value)) return null
+    return route.query.slide || null
 })
 
 function imageUrl(imageId) {
     if (!imageId) return null
-    return `${appConfig.dbUrl}/assets/${imageId}`
+    return `${appConfig.dbUrl}/assets/${imageId}?key=event-thumbnail`
 }
 
 function goToTab(tab) {

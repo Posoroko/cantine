@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { currentEventStore } from '@/composables/currentEvent'
+import { useRoute } from 'vue-router'
 import { dbGet, dbPatch } from '@/composables/fetch'
 import Icon from '@/components/Icon/Main.vue'
 
-const directusUrl = import.meta.env.VITE_DIRECTUS_URL as string
+import appConfig from '@/composables/appConfig'
+
+const route = useRoute()
+const eventId = computed(() => parseInt(route.params.eventId as string))
+const directusUrl = appConfig.dbUrl
 
 const meals = ref<any[]>([])
 const eventSuppliers = ref<any[]>([])
@@ -13,8 +17,6 @@ const eventSuppliers = ref<any[]>([])
 const isRestoring = ref(false)
 
 onMounted(async () => {
-    const eventId = currentEventStore.value?.id
-
     meals.value = await dbGet<any[]>({
         endpoint: '/items/meals',
         query: {
@@ -36,7 +38,7 @@ onMounted(async () => {
                 service: {
                     day: {
                         event: {
-                            _eq: eventId,
+                            _eq: eventId.value,
                         },
                     },
                 },
@@ -61,7 +63,7 @@ onMounted(async () => {
             filter: {
                 events: {
                     event: {
-                        _eq: eventId,
+                        _eq: eventId.value,
                     },
                 },
             },
@@ -71,7 +73,8 @@ onMounted(async () => {
     // c5t: restore saved supplier selections from the event's shoppingList
     // new computed data wins (qty, categories), only supplier assignment is preserved
     isRestoring.value = true
-    const saved = currentEventStore.value?.shoppingList
+    const eventData = await dbGet<any>({ endpoint: `/items/events/${eventId.value}`, query: { fields: 'shoppingList' } })
+    const saved = eventData?.shoppingList
     if (Array.isArray(saved)) {
         for (const savedIng of saved) {
             if (!savedIng.supplierId) continue
@@ -217,8 +220,8 @@ const totalCost = computed(() => {
 
 async function saveShoppingList() {
     if (isRestoring.value) return
-    const eventId = currentEventStore.value?.id
-    if (!eventId) return
+    const eventIdVal = eventId.value
+    if (!eventIdVal) return
 
     const payload = groupedIngredients.value.map(ing => ({
         ingredientId: ing.id,
@@ -235,7 +238,7 @@ async function saveShoppingList() {
 
     try {
         const res = await dbPatch({
-            endpoint: `/items/events/${eventId}`,
+            endpoint: `/items/events/${eventIdVal}`,
             body: { shoppingList: payload },
         })
         console.log('[saveShoppingList] ✓ saved', res)

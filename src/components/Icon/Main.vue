@@ -23,7 +23,7 @@ withDefaults(defineProps<{
 
 <template>
     <span
-        class="material-symbols-outlined"
+        class="material-symbols-rounded"
         :class="[
             `sizeIcon${size.toUpperCase()}`,
             color
@@ -34,8 +34,8 @@ withDefaults(defineProps<{
 </template>
 
 <style scoped>
-.material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
   font-weight: normal;
   font-style: normal;
   display: inline-block;

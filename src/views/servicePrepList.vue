@@ -11,9 +11,11 @@ const route = useRoute()
 
 const service = ref<any>(null)
 
+const hidePrepLessIngredients = ref(false)
+
 onMounted(async () => {
     const result = await dbGet<any[]>({
-        endpoint: `/items/services/${route.query.service}`,
+        endpoint: `/items/services/${route.params.serviceId}`,
         query: {
             fields: [
                 'id',
@@ -31,6 +33,7 @@ onMounted(async () => {
                 'meals.recipe.ingredients.ingredient.name',
                 'meals.recipe.ingredients.ingredient.unit',
                 'meals.recipe.ingredients.ingredient.defaultPrice',
+                'meals.recipe.ingredients.ingredient.prepLess',
             ].join()
         }
     })
@@ -126,7 +129,7 @@ function printList() {
 
         <template #main>
             <div class="">
-                <!-- {{ service }} -->
+
             </div>
             <div>
                 <div

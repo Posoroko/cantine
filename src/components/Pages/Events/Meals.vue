@@ -1,7 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { currentEventStore, loadCurrentEvent } from '@/composables/currentEvent'
-import { dbDelete } from '@/composables/fetch'
+import { ref, onMounted } from 'vue'
+import { dbGet, dbDelete } from '@/composables/fetch'
 import Icon from '@/components/Icon/Main.vue'
 import MealCard from '@/components/Cards/Meal.vue'
 
@@ -15,11 +14,31 @@ const props = defineProps({
 const showNewMealForm = ref(false)
 const openMealId = ref(null)
 const openMenuMealId = ref(null)
+const meals = ref([])
 
-const meals = computed(() => {
-    if (!currentEventStore.value?.meals?.length) return []
-    return currentEventStore.value.meals
-})
+async function fetchMeals() {
+    const result = await dbGet({
+        endpoint: '/items/meals',
+        query: {
+            fields: [
+                'id',
+                'type',
+                'servingCount',
+                'recipe.id',
+                'recipe.name',
+                'service.id',
+                'service.timeSlot',
+                'service.guestCount',
+                'service.day.id',
+                'service.day.date',
+            ].join(','),
+            filter: { service: { day: { event: { _eq: props.eventId } } } }
+        }
+    })
+    meals.value = Array.isArray(result) ? result : []
+}
+
+onMounted(fetchMeals)
 
 const toggleMeal = (mealId) => {
     openMealId.value = openMealId.value === mealId ? null : mealId
@@ -32,16 +51,16 @@ const toggleMealMenu = (mealId) => {
 
 async function deleteMeal(mealId) {
     await dbDelete({ endpoint: `/items/meals/${mealId}` })
-    await loadCurrentEvent(props.eventId)
+    await fetchMeals()
 }
 
 async function onMealCreated() {
     showNewMealForm.value = false
-    await loadCurrentEvent(props.eventId)
+    await fetchMeals()
 }
 
 async function refreshMeal() {
-    await loadCurrentEvent(props.eventId)
+    await fetchMeals()
 }
 
 </script>

@@ -1,36 +1,24 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import DayCard from '@/components/Cards/DayCard.vue'
-import { useEvents } from '@/composables/events'
+import { loadEventDays } from '@/composables/currentEvent'
 
-const props = defineProps({
-    eventId: {
-        type: Number,
+const route = useRoute()
+const router = useRouter()
+
+defineProps({
+    days: {
+        type: Array,
         required: true
     }
 })
 
-const { getEventById } = useEvents()
+onMounted(() => loadEventDays(parseInt(route.params.eventId)))
 
-const event = ref(null)
-const isLoading = ref(false)
-const days = computed(() => event.value?.days || [])
-
-const loadEvent = async () => {
-    isLoading.value = true
-    try {
-        const data = await getEventById(props.eventId)
-        event.value = data
-    } catch (error) {
-        console.error('Error loading event:', error)
-    } finally {
-        isLoading.value = false
-    }
+function goToDay(dayId) {
+    router.push(`/evenements/${route.params.eventId}/jours/${dayId}`)
 }
-
-onMounted(() => {
-    loadEvent()
-})
 </script>
 
 <template>
@@ -40,18 +28,16 @@ onMounted(() => {
             flex column justifyCenter pad10
         "
     >
-        <div v-if="isLoading" class="loadingText">
-            Chargement...
-        </div>
-
         <div 
-            v-else-if="days.length > 0" 
+            v-if="days.length > 0" 
             class="daysList flex column gap10"
         >
             <DayCard
                 v-for="day in days"
                 :key="day.id"
                 :day="day"
+                class="pointer"
+                @click="goToDay(day.id)"
             />
         </div>
 

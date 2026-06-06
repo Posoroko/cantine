@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon/Main.vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 
 const router = useRouter()
-const route = useRoute()
 
 const props = defineProps({
     meal: { type: Object, required: true },
@@ -26,10 +25,7 @@ const pricePerPortion = computed(() => {
 })
 
 function openMeal() {
-    router.push({
-        path: `/plats/${props.meal.id}`,
-        query: { previousPage: route.fullPath }
-    })
+    router.push(`/plats/${props.meal.id}`)
 }
 </script>
 

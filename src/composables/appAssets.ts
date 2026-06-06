@@ -4,7 +4,8 @@ import { dbGet } from '@/composables/fetch'
 export {
     appAssetStore,
     loadAppAssets,
-    TIME_SLOT_CONFIG
+    TIME_SLOT_CONFIG,
+    MEAL_TYPE_CONFIG
 }
 
 export type {
@@ -18,9 +19,19 @@ export type {
 const TIME_SLOT_CONFIG: Record<string, { label: string; icon: string; order: number }> = {
     breakfast: { label: 'Petit-déj',  icon: 'breakfast_dining', order: 1 },
     lunch:     { label: 'Déjeuner',   icon: 'lunch_dining',     order: 2 },
-    snackPm:   { label: 'Goûter',     icon: 'bakery_dining',    order: 3 },
-    aperoPm:   { label: 'Apéro',      icon: 'wine_bar',         order: 4 },
+    snackAm:   { label: 'Goûter am',     icon: 'local_cafe',    order: 3 },
+    snackPm:   { label: 'Goûter pm',     icon: 'bakery_dining',    order: 3 },
+    aperoMidi:   { label: 'Apéro midi',      icon: 'wine_bar',         order: 4 },
+    aperoSoir:   { label: 'Apéro soir',      icon: 'liquor',         order: 4 },
     supper:    { label: 'Souper',     icon: 'dinner_dining',    order: 5 },
+}
+
+const MEAL_TYPE_CONFIG: Record<string, { label: string; order: number }> = {
+    starter:  { label: 'Entrée',          order: 1 },
+    main:     { label: 'Plat',            order: 2 },
+    side:     { label: 'Accompagnement',  order: 3 },
+    dessert:  { label: 'Dessert',         order: 4 },
+    beverage: { label: 'Boisson',         order: 5 },
 }
 
 //* 

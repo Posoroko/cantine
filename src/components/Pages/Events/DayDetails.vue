@@ -1,37 +1,67 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { currentEventStore } from '@/composables/currentEvent'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { dbGet } from '@/composables/fetch'
 import Icon from '@/components/Icon/Main.vue'
 import Loading from '@/components/Loading/Main.vue'
 import DayCard from '@/components/Cards/DayCard.vue'
 import Meal from '@/components/Cards/Meal.vue'
+import { 
+    TIME_SLOT_CONFIG, 
+    MEAL_TYPE_CONFIG 
+} from '@/composables/appAssets'
 
-const route = useRoute()
+const props = defineProps<{ dayId: number | null }>()
+
 const router = useRouter()
 
-// c5t: find the day in the current event that matches the route query param
-const day = computed(() => {
-    const dayId = parseInt(route.query.day as string)
-    if (!currentEventStore.value || !dayId) return null
-    return currentEventStore.value.days.find(d => d.id === dayId) || null
-})
+const day = ref(null)
 
-const TIME_SLOT_CONFIG: Record<string, { label: string; icon: string; order: number }> = {
-    breakfast: { label: 'Petit-déj',  icon: 'breakfast_dining', order: 1 },
-    lunch:     { label: 'Déjeuner',   icon: 'lunch_dining',     order: 2 },
-    snackPm:   { label: 'Goûter',     icon: 'bakery_dining',    order: 3 },
-    aperoPm:   { label: 'Apéro',      icon: 'wine_bar',         order: 4 },
-    supper:    { label: 'Souper',     icon: 'dinner_dining',    order: 5 },
+async function fetchDay() {
+    if (!props.dayId) return
+    const result = await dbGet({
+        endpoint: `/items/days/${props.dayId}`,
+        query: {
+            fields: [
+                'id',
+                'date',
+                'event',
+                // services
+                'services.id',
+                'services.timeSlot',
+                'services.guestCount',
+                'services.note',
+                // diets per service
+                'services.diets.count',
+                'services.diets.diet.value',
+                'services.diets.diet.text',
+                // meals
+                'services.meals.id',
+                'services.meals.type',
+                'services.meals.servingCount',
+                // recipe basics
+                'services.meals.recipe.id',
+                'services.meals.recipe.name',
+                'services.meals.recipe.servings',
+                // ingredients for price calculation
+                'services.meals.recipe.ingredients.id',
+                'services.meals.recipe.ingredients.quantity',
+                'services.meals.recipe.ingredients.ingredient.id',
+                'services.meals.recipe.ingredients.ingredient.name',
+                'services.meals.recipe.ingredients.ingredient.unit',
+                'services.meals.recipe.ingredients.ingredient.defaultPrice',
+            ].join()
+        }
+    })
+
+    day.value = result
 }
 
+onMounted(fetchDay)
+watch(() => props.dayId, fetchDay)
+
 const services = computed(() => {
-    if (!day.value?.services?.length) return []
-    return [...day.value.services].sort((a, b) => {
-        const orderA = TIME_SLOT_CONFIG[a.timeSlot ?? '']?.order ?? 99
-        const orderB = TIME_SLOT_CONFIG[b.timeSlot ?? '']?.order ?? 99
-        return orderA - orderB
-    })
+    return day.value?.services
 })
 
 const selectedServiceId = ref<number | null>(null)
@@ -44,14 +74,6 @@ const selectedService = computed(() => {
 
 function selectService(id: number) {
     selectedServiceId.value = id
-}
-
-const MEAL_TYPE_CONFIG: Record<string, { label: string; order: number }> = {
-    starter:  { label: 'Entrée',          order: 1 },
-    main:     { label: 'Plat',            order: 2 },
-    side:     { label: 'Accompagnement',  order: 3 },
-    dessert:  { label: 'Dessert',         order: 4 },
-    beverage: { label: 'Boisson',         order: 5 },
 }
 
 // c5t: group and sort meals by type for the selected service
