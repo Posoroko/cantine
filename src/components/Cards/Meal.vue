@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import Icon from '@/components/Icon/Main.vue'
-import { useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { useModal } from '@/composables/modal'
+import MealDetail from '@/views/mealDetail.vue'
 
-const router = useRouter()
+const { showModal } = useModal()
 
 const props = defineProps({
     meal: { type: Object, required: true },
@@ -25,7 +26,7 @@ const pricePerPortion = computed(() => {
 })
 
 function openMeal() {
-    router.push(`/plats/${props.meal.id}`)
+    showModal(MealDetail, { mealId: props.meal.id }).catch(() => {})
 }
 </script>
 

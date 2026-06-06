@@ -29,6 +29,7 @@ provide('modal', { confirm, cancel })
             <component
                 v-if="modalState.modal && modalState.modalType === 'custom'"
                 :is="modalState.modal"
+                v-bind="modalState.data"
                 @confirm="confirm"
                 @cancel="cancel"
                 class="modalComponent"

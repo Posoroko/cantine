@@ -158,13 +158,13 @@ function navigateToPrepList() {
                             </span>
                         </button>
 
-                        <p 
+                        <div 
                             v-if="selectedService.id === service.id"
                             class="flex justifyCenter alignCenter gap5"
                         >
                             <!-- <Icon size="md">groups</Icon> -->
                             <h3 class="beigeCardGreenText pad5 rounded5">{{ selectedService.guestCount }}</h3>
-                        </p>
+                        </div>
                     </div>
                 </div>
 

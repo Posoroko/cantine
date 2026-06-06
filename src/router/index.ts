@@ -6,7 +6,6 @@ import Dashboard from '@/views/dashboard.vue'
 import IngredientCatalogue from '@/views/ingredientCatalogue.vue'
 import CookBook from '@/views/cookBook.vue'
 import Cooks from '@/views/cooks.vue'
-import MealDetail from '@/views/mealDetail.vue'
 import ServicePrepList from '@/views/servicePrepList.vue'
 import DayDetail from '@/views/dayDetail.vue'
 import { useUserState, useAppInitialized } from '@/composables/userState'
@@ -55,12 +54,6 @@ const router = createRouter({
             path: '/cuistots',
             name: 'Cooks',
             component: Cooks,
-            meta: { requiresAuth: true }
-        },
-        {
-            path: '/plats/:mealId',
-            name: 'MealDetail',
-            component: MealDetail,
             meta: { requiresAuth: true }
         },
         {
