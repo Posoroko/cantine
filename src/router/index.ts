@@ -68,6 +68,10 @@ const router = createRouter({
             component: ServicePrepList,
             meta: { requiresAuth: true }
         },
+        {
+            path: '/:pathMatch(.*)*',
+            redirect: '/dashboard'
+        },
     ]
 })
 

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserState } from '@/composables/userState'
 import { useLastRoute } from '@/composables/useLastRoute'
 import SignupForm from '@/components/Pages/Home/SignupForm.vue'
+import Icon from '@/components/Icon/Main.vue'
 
 const router = useRouter()
 const user = useUserState()
@@ -26,6 +27,12 @@ onMounted(() => {
         >
             Cantine
         </h1>
+
+        <Icon
+            size="xl"
+        >
+            chef_hat
+        </Icon>
 
         <SignupForm />
     </div> 
