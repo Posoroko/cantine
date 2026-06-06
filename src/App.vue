@@ -21,9 +21,10 @@ import Overlay from '@/components/Architecture/Overlay/Main.vue'
 <style scoped>
 .appFullViewport {
     width: 100vw;
-    height: 100vh;
+    height: 90vh;
+    height: 100svh;
+    height: 100dvh;
     background-color: var(--green);
-    /* padding: max(2vh, 10px) max(2vh, 10px) */
 }
 .appBox {
     height: 100%;
