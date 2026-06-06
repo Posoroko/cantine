@@ -11,7 +11,6 @@ const route = useRoute()
 
 const service = ref<any>(null)
 
-const hidePrepLessIngredients = ref(false)
 
 onMounted(async () => {
     const result = await dbGet<any[]>({

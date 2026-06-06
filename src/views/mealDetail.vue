@@ -133,7 +133,6 @@ const totalPrice = computed(() => {
                         >
                             <Icon 
                                 size="md"
-                                color="var(--beige)"
                             >
                                 person
                             </Icon>
