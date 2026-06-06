@@ -19,9 +19,21 @@ async function handleLogout() {
 </script>
 <template>
     <div class="full flex column gap20">
-        <h1>
-            Profil
-        </h1>
+        <div
+            class="flex justifyBetween"
+        >
+            <h1>
+                Profil
+            </h1>
+
+            <Icon
+                @click="emit('cancel')"
+                size="xl"
+                class="pointer"
+            >
+                close
+            </Icon>
+        </div>
 
         <div class="infoBox flex gap10">
             <Icon>email</Icon>
