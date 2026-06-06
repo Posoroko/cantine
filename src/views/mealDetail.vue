@@ -70,7 +70,18 @@ const totalPrice = computed(() => {
 <template>
     <div class="full flex column gap20">
         <!-- header -->
-        <div class="flex alignCenter gap10">
+        <div class="flex column  gap10">
+            <div
+                class="flex justifyEnd"
+            >
+                <Icon
+                    @click="emit('cancel')"
+                    class="pointer"
+                    size="lg"
+                >
+                    close
+                </Icon>
+            </div>
             <h2 class="mealTitle grow">{{ recipe?.name || 'Sans recette' }}</h2>
 
             <div
@@ -89,13 +100,7 @@ const totalPrice = computed(() => {
                 </span>
             </div>
 
-            <Icon
-                @click="emit('cancel')"
-                class="pointer"
-                size="lg"
-            >
-                close
-            </Icon>
+            
         </div>
 
         <!-- ingredients -->
@@ -112,20 +117,35 @@ const totalPrice = computed(() => {
                     class="ingredientRow pad10 rounded10"
                 >
                     <div class="flex justifyBetween">
-                        <p class="textXl fontWeightBold beigeCardGreenText pad5 rounded5">
+                        <p class="textXl fontWeightBold  pad5 rounded5">
                             {{ ingredient.ingredient?.name }}
                         </p>
 
-                        <div class="flex gap5 textXl fontWeightBold beigeCardGreenText pad5 rounded5">
+                        <div class="flex gap5 textXl fontWeightBold  pad5 rounded5">
                             <span>{{ getTotalIngredientQuantity(ingredient.quantity!) }}</span>
                             <span>{{ ingredient.ingredient?.unit }}</span>
                         </div>
                     </div>
 
-                    <div class="flex justifyEnd alignCenter gap20 marTop10">
-                        <Icon size="md">person</Icon>
-                        <span>{{ getIngredientQuantityPerPlate(ingredient.quantity!) }} {{ ingredient.ingredient?.unit }}</span>
-                        <span>{{ getIngredientPricePerPlate(ingredient.quantity!, ingredient.ingredient?.defaultPrice) }} €</span>
+                    <div class="flex justifyEnd alignCenter gap20 marTop10  ">
+                        <div
+                            class="flex alignCenter gap10 beigeCardGreenText pad10 rounded10"
+                        >
+                            <Icon 
+                                size="md"
+                                color="var(--beige)"
+                            >
+                                person
+                            </Icon>
+                            |
+                            <span>
+                                {{ getIngredientQuantityPerPlate(ingredient.quantity!) }} {{ ingredient.ingredient?.unit }}
+                            </span>
+                            |
+                            <span>
+                                {{ getIngredientPricePerPlate(ingredient.quantity!, ingredient.ingredient?.defaultPrice) }} €
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
