@@ -32,7 +32,13 @@ function goToDay(id: number) {
     router.push({ name: 'DayDetail', params: { eventId: eventId.value, dayId: id } })
 }
 
-const services = computed(() => day.value?.services ?? [])
+const services = computed(() =>
+    [...(day.value?.services ?? [])].sort((a: any, b: any) => {
+        const orderA = TIME_SLOT_CONFIG[a.timeSlot ?? '']?.order ?? 99
+        const orderB = TIME_SLOT_CONFIG[b.timeSlot ?? '']?.order ?? 99
+        return orderA - orderB
+    })
+)
 
 const selectedService = computed(() => {
     if (!services.value.length) return null
