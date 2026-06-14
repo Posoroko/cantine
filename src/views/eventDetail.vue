@@ -28,6 +28,7 @@ onMounted(async () => {
                 'image',
                 'notes',
                 'shoppingList',
+                'pricePerGuest',
                 'contacts.id',
                 'contacts.name',
                 'contacts.telephone',
@@ -41,6 +42,9 @@ onMounted(async () => {
                 'days.event',
                 'days.servingFood',
                 'days.showDay',
+                'days.services.id',
+                'days.services.timeSlot',
+                'days.services.guestCount',
             ].join()
         }
     })

@@ -11,29 +11,24 @@ const eventId = computed(() => parseInt(route.params.eventId as string))
 const directusUrl = appConfig.dbUrl
 
 const meals = ref<any[]>([])
+const recipes = ref<Map<number, any>>(new Map())
 const eventSuppliers = ref<any[]>([])
 
 // c5t: prevents auto-save from firing while restoring saved overrides
 const isRestoring = ref(false)
 
 onMounted(async () => {
-    meals.value = await dbGet<any[]>({
+    // c5t: fetch meals with only headcount data — recipe is fetched separately to avoid
+    // directus deduplication bug where nested recipe data is collapsed for repeated recipes
+    const mealsRaw = await dbGet<any[]>({
         endpoint: '/items/meals',
         query: {
             fields: [
+                'recipe',
                 'servingCount',
                 'service.guestCount',
-                'recipe.servings',
-                'recipe.ingredients.quantity',
-                'recipe.ingredients.ingredient.id',
-                'recipe.ingredients.ingredient.name',
-                'recipe.ingredients.ingredient.unit',
-                'recipe.ingredients.ingredient.foodCategory.value',
-                'recipe.ingredients.ingredient.foodCategory.text',
-                'recipe.ingredients.ingredient.supplyCategory.value',
-                'recipe.ingredients.ingredient.supplyCategory.text',
-                'recipe.ingredients.ingredient.defaultPrice',
             ].join(','),
+            limit: -1,
             filter: {
                 service: {
                     day: {
@@ -45,6 +40,35 @@ onMounted(async () => {
             },
         },
     })
+    meals.value = mealsRaw ?? []
+
+    console.log("raw meals: ", meals.value)
+
+    // c5t: collect unique recipe ids then fetch them all with full ingredient data
+    const recipeIds = [...new Set(mealsRaw?.map((m: any) => m.recipe).filter(Boolean) ?? [])]
+    if (recipeIds.length) {
+        const recipesRaw = await dbGet<any[]>({
+            endpoint: '/items/recipes',
+            query: {
+                fields: [
+                    'id',
+                    'servings',
+                    'ingredients.quantity',
+                    'ingredients.ingredient.id',
+                    'ingredients.ingredient.name',
+                    'ingredients.ingredient.unit',
+                    'ingredients.ingredient.foodCategory.value',
+                    'ingredients.ingredient.foodCategory.text',
+                    'ingredients.ingredient.supplyCategory.value',
+                    'ingredients.ingredient.supplyCategory.text',
+                    'ingredients.ingredient.defaultPrice',
+                ].join(','),
+                filter: { id: { _in: recipeIds } },
+                limit: -1,
+            },
+        })
+        recipes.value = new Map((recipesRaw ?? []).map((r: any) => [r.id, r]))
+    }
 
     eventSuppliers.value = await dbGet<any[]>({
         endpoint: '/items/suppliers',
@@ -126,18 +150,39 @@ const groupedIngredients = computed(() => {
     const map = new Map<number, any>()
 
     for (const meal of meals.value) {
-        const recipe = meal.recipe
+        const recipe = recipes.value.get(meal.recipe)
         if (!recipe) continue
 
-        const headcount = meal.servingCount ?? meal.service?.guestCount ?? recipe.servings ?? 1
-        const ratio = recipe.servings ? headcount / recipe.servings : 1
+        const headcount = meal.servingCount ?? meal.service?.guestCount ?? null
 
         for (const ri of recipe.ingredients ?? []) {
             const ing = ri.ingredient
             if (!ing) continue
 
-            const qty = (ri.quantity ?? 0) * ratio
             const existing = map.get(ing.id)
+
+            if (headcount === null) {
+                if (existing) {
+                    existing.hasError = true
+                } else {
+                    map.set(ing.id, {
+                        id: ing.id,
+                        name: ing.name,
+                        unit: ing.unit,
+                        foodCategory: ing.foodCategory,
+                        supplyCategory: ing.supplyCategory,
+                        defaultPrice: ing.defaultPrice ?? null,
+                        totalQuantity: 0,
+                        hasError: true,
+                        possibleSuppliers: [] as any[],
+                        selectedSupplier: null as any,
+                    })
+                }
+                continue
+            }
+
+            const ratio = recipe.servings ? headcount / recipe.servings : 1
+            const qty = (ri.quantity ?? 0) * ratio
 
             if (existing) {
                 existing.totalQuantity += qty
@@ -150,6 +195,7 @@ const groupedIngredients = computed(() => {
                     supplyCategory: ing.supplyCategory,
                     defaultPrice: ing.defaultPrice ?? null,
                     totalQuantity: qty,
+                    hasError: false,
                     possibleSuppliers: [] as any[],
                     selectedSupplier: null as any,
                 })
@@ -285,8 +331,7 @@ watch(supplierOverrides, saveShoppingList)
 				class="ingRow flex column gap4"
 			>
 				<div class="flex gap10">
-					<span class="ingName">{{ ing.name }}</span>
-					<span class="ingQty">{{ formatQty(ing.totalQuantity) }} {{ ing.unit }}</span>
+					<span class="ingName">{{ ing.name }}</span>					<span v-if="ing.hasError" class="ingError">ERROR</span>					<span class="ingQty">{{ formatQty(ing.totalQuantity) }} {{ ing.unit }}</span>
 					<span
 						v-if="ing.defaultPrice != null"
 						class="ingPrice"
@@ -367,6 +412,7 @@ watch(supplierOverrides, saveShoppingList)
 				>
 				<div class="flex gap10 alignCenter">
 					<span class="ingName">{{ ing.name }}</span>
+					<span v-if="ing.hasError" class="ingError">ERROR</span>
 					<span class="ingQty">{{ formatQty(ing.totalQuantity) }} {{ ing.unit }}</span>
 					<span
 						v-if="ing.defaultPrice != null"
@@ -593,6 +639,13 @@ watch(supplierOverrides, saveShoppingList)
 	font-size: 0.9em;
 	margin-left: auto;
 	opacity: 0.7;
+}
+
+.ingError {
+	color: #e74c3c;
+	font-size: 0.75em;
+	font-weight: 700;
+	letter-spacing: 0.05em;
 }
 
 .expandBtn {

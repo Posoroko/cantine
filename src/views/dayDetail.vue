@@ -174,6 +174,10 @@ function navigateToPrepList() {
                     </div>
                 </div>
 
+                <div>
+                    <!-- {{ selectedService.diets[0].diets[0].diets.text }} -->
+                </div>
+                
                 <!-- guest count + diets -->
                 <div
                     v-if="selectedService?.diets?.length"
@@ -181,30 +185,36 @@ function navigateToPrepList() {
                 >
                     <!-- <p class="textLg fontWeightBold">Régimes spéciaux</p> -->
 
-                    <ul class="dietBox marTop10">
+                    <div class="dietBox marTop10">
                         
-                        <div class="liBox">
-                            <li 
-                                v-for="diet in (selectedService.diets as any[])"
+                        <div class="liBox flex column gap10">
+                            <div 
+                                v-for="dietCount in (selectedService.diets as any[])"
                                 class="
-                                    textLg fontWeightSemibold*
-                                    flex
+                                    textLg fontWeightSemibold
+                                    flex gap5
                                 "
                             >
-                                <span
-                                    class="grow"
+                                <div
+                                    class="dietCount textLg fontWeightBold"
                                 >
-                                    {{ diet.diet?.text }} : 
-                                </span>
+                                    {{ dietCount.count }}
+                                </div>
 
-                                <span
-                                    class="textLg fontWeightBold grow"
+                                <div
+                                    class="grow flex column"
                                 >
-                                    {{ diet.count }}
-                                </span>
-                            </li>
+                                    <span
+                                        v-for="diet in (dietCount.diets as any[])"
+                                        :key="diet.id ?? diet.diets?.value"
+                                        class="grow"
+                                    >
+                                        {{ diet.diets?.text }}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                    </ul>
+                    </div>
                 </div>
 
                 <!-- prep list button -->
@@ -234,6 +244,7 @@ function navigateToPrepList() {
                                 v-for="meal in group.meals"
                                 :key="meal.id"
                                 :meal="meal"
+                                :serviceGuestCount="selectedService.guestCount"
                             />
                         </template>
                     </template>
@@ -278,6 +289,9 @@ function navigateToPrepList() {
     border: 1px solid var(--beige);
     border-left: 5px solid var(--beige);
     border-radius:  5px;
+}
+.dietCount {
+    width: 48px;
 }
 .serviceTabButton {
     min-width: 64px;

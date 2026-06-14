@@ -59,10 +59,24 @@ async function loadAppAssets() {
         supplierSupplyCategoriesRes,
     ] = await Promise.allSettled([
         dbGet<Diet[]>({ endpoint: '/items/diets' }),
-        dbGet<FoodCategory[]>({ endpoint: '/items/food_categories' }),
-        dbGet<SupplyCategory[]>({ endpoint: '/items/supply_categories' }),
-        dbGet<SupplierFoodCategoryLink[]>({ endpoint: '/items/suppliers_food_categories', query: { fields: 'suppliers,foodCategories' } }),
-        dbGet<SupplierSupplyCategoryLink[]>({ endpoint: '/items/suppliers_supply_categories', query: { fields: 'suppliers,supplyCategories' } }),
+        dbGet<FoodCategory[]>({ 
+            endpoint: '/items/food_categories' 
+        }),
+        dbGet<SupplyCategory[]>({ 
+            endpoint: '/items/supply_categories' 
+        }),
+        dbGet<SupplierFoodCategoryLink[]>({ 
+            endpoint: '/items/suppliers_food_categories', 
+            query: { 
+                fields: 'supplier,foodCategory' 
+            } 
+        }),
+        dbGet<SupplierSupplyCategoryLink[]>({ 
+            endpoint: '/items/suppliers_supply_categories', 
+            query: { 
+                fields: 'supplier,supplyCategory' 
+            } 
+        }),
     ])
 
     appAssetStore.value.diets = dietsRes.status === 'fulfilled' ? dietsRes.value || [] : []
@@ -74,7 +88,7 @@ async function loadAppAssets() {
 
 type Diet = {
     value: string
-    text: string
+    text: string | null
     details: string | null
 }
 

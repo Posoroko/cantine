@@ -5,6 +5,7 @@ export type {
     Item_Meal,
     Item_Diet,
     Item_DietCount,
+    Item_DietCountDiets,
     Item_SpecialMeal,
     Item_Contact,
     Item_Supplier,
@@ -69,7 +70,7 @@ type Item_Day<
 // guestCount is the total headcount for this service
 type Item_Service<
     TMeals = number | Item_Meal,
-    TDiets = number,
+    TDiets = number | Item_DietCount,
     TSpecialMeals = number,
 > = {
     id: number
@@ -104,23 +105,31 @@ type Item_Meal<
 }
 
 // c5t: diet entry used by services and special meals
-type Item_Diet = {
+type Item_Diet<
+    TDietCounts = number,
+> = {
     value: string
     text: string | null
     details: string | null
+    dietCounts: TDietCounts[]
 }
 
-// c5t: service-level or meal-level diet count rows
+// c5t: service-level diet count rows with M2M to diets
 type Item_DietCount<
-    TDiet = string | Item_Diet,
+    TDiets = string | Item_Diet,
     TService = number | Item_Service,
-    TMeal = number | Item_Meal,
 > = {
     id: number
-    diet: TDiet | null
     service: TService | null
     count: number | null
-    meal: TMeal | null
+    diets: TDiets[]
+}
+
+// c5t: m2m row linking diet_counts and diets
+type Item_DietCountDiets = {
+    id: number
+    diet_count: number | null
+    diets: string | null
 }
 
 // c5t: special meal row tied to a diet and service

@@ -8,6 +8,10 @@ const { showModal } = useModal()
 
 const props = defineProps({
     meal: { type: Object, required: true },
+    serviceGuestCount: {
+        type: Number,
+        required: true
+    }
 })
 
 // c5t: price per portion = sum of (ri.quantity / recipe.servings * defaultPrice)
@@ -40,11 +44,16 @@ function openMeal() {
         <span class="mealLabel grow">
             {{ meal.recipe?.name || 'Sans recette' }}
         </span>
-        
+
+        <span
+            class="beigeCardGreenText pad5 rounded10"
+        >
+            {{ meal.servingCount || serviceGuestCount }}
+        </span>
 
         <span
             v-if="pricePerPortion !== null"
-            class="fS14 weight6 shrink0"
+            class="shrink0"
         >
             {{ pricePerPortion.toFixed(2) }} €/pers
         </span>
