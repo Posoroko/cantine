@@ -186,7 +186,6 @@ function navigateToPrepList() {
                     <!-- <p class="textLg fontWeightBold">Régimes spéciaux</p> -->
 
                     <div class="dietBox marTop10">
-                        
                         <div class="liBox flex column gap10">
                             <div 
                                 v-for="dietCount in (selectedService.diets as any[])"
