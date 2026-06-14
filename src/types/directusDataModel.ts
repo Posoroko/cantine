@@ -117,7 +117,7 @@ type Item_Diet<
 // c5t: service-level diet count rows with M2M to diets
 type Item_DietCount<
     TDiets = string | Item_Diet,
-    TService = number | Item_Service,
+    TService = number,
 > = {
     id: number
     service: TService | null
