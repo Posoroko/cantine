@@ -24,7 +24,7 @@ const TIME_SLOT_CONFIG: Record<string, { label: string; icon: string; order: num
     snackPm:   { label: 'Goûter pm',     icon: 'bakery_dining',    order: 5 },
     aperoSoir:   { label: 'Apéro soir',      icon: 'liquor',         order: 6 },
     supper:    { label: 'Souper',     icon: 'dinner_dining',    order: 7 },
-    nightSnack:    { label: 'Night snack',     icon: 'menu',    order: 7 },
+    nightSnack:    { label: 'Night snack',     icon: 'pizza',    order: 7 },
 }
 
 const MEAL_TYPE_CONFIG: Record<string, { label: string; order: number }> = {
