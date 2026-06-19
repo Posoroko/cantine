@@ -72,22 +72,28 @@ const mealsByType = computed(() => {
         .map(([type, meals]) => ({ type, label: MEAL_TYPE_CONFIG[type]?.label ?? type, meals }))
 })
 
-// c5t: sum of price per portion across all meals in the selected service
+// c5t: weighted cost per guest — each meal's total cost is divided by service headcount
+// so meals with a partial servingCount (e.g. cheese for 50 artists out of 200) are
+// correctly diluted across the full service rather than counted as a full per-portion cost
 const servicePricePerPerson = computed(() => {
-    const meals = selectedService.value?.meals ?? []
-    let total = 0
+    const service = selectedService.value
+    if (!service?.guestCount) return null
+    const serviceHeadcount = service.guestCount
+    const meals = service.meals ?? []
+    let totalCost = 0
     let hasPrice = false
     for (const meal of meals as any[]) {
         const recipe = meal.recipe
         if (!recipe?.ingredients?.length || !recipe.servings) continue
+        const mealHeadcount = meal.servingCount ?? serviceHeadcount
         for (const ri of recipe.ingredients) {
             if (ri.quantity && ri.ingredient?.defaultPrice) {
-                total += (ri.quantity / recipe.servings) * ri.ingredient.defaultPrice
+                totalCost += (ri.quantity / recipe.servings) * mealHeadcount * ri.ingredient.defaultPrice
                 hasPrice = true
             }
         }
     }
-    return hasPrice ? total : null
+    return hasPrice ? totalCost / serviceHeadcount : null
 })
 
 function navigateToPrepList() {

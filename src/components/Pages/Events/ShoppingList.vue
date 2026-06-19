@@ -101,9 +101,12 @@ onMounted(async () => {
     const saved = eventData?.shoppingList
     if (Array.isArray(saved)) {
         for (const savedIng of saved) {
-            if (!savedIng.supplierId) continue
-            const supplier = eventSuppliers.value.find((s: any) => s.id === savedIng.supplierId)
-            if (supplier) supplierOverrides.set(savedIng.ingredientId, supplier)
+            if (savedIng.supplierId) {
+                const supplier = eventSuppliers.value.find((s: any) => s.id === savedIng.supplierId)
+                if (supplier) supplierOverrides.set(savedIng.ingredientId, supplier)
+            }
+            if (savedIng.orderedQuantity != null) orderedQuantities.set(savedIng.ingredientId, savedIng.orderedQuantity)
+            if (savedIng.ref) refs.set(savedIng.ingredientId, savedIng.ref)
         }
     }
     isRestoring.value = false
@@ -115,8 +118,19 @@ onMounted(async () => {
 // c5t: user overrides for supplier selection per ingredient id
 const supplierOverrides = reactive(new Map<number, any>())
 
-// c5t: tracks which ingredient rows have their supplier chips expanded
-const expandedIds = reactive(new Set<number>())
+// c5t: ingredients explicitly unassigned by the user — prevents auto-assignment from kicking back in
+const rejectedIds = reactive(new Set<number>())
+
+// c5t: user-entered ordered quantities — override the computed totalQuantity for price purposes only
+const orderedQuantities = reactive(new Map<number, number>())
+
+// c5t: supplier reference numbers per ingredient — shown on print for the salesperson
+const refs = reactive(new Map<number, string>())
+
+function setRef(ingId: number, val: string) {
+    if (val.trim()) refs.set(ingId, val.trim())
+    else refs.delete(ingId)
+}
 
 // c5t: supplier groups are collapsed by default
 const collapsedSuppliers = reactive(new Set<number>())
@@ -130,19 +144,34 @@ function toggleSupplier(supplierId: number) {
 function supplierTotal(items: any[]): number {
     let total = 0
     for (const ing of items) {
-        if (ing.defaultPrice != null) total += ing.totalQuantity * ing.defaultPrice
+        if (ing.defaultPrice != null) total += effectiveQty(ing) * ing.defaultPrice
     }
     return total
 }
 
-function toggleExpand(ingId: number) {
-    if (expandedIds.has(ingId)) expandedIds.delete(ingId)
-    else expandedIds.add(ingId)
+// c5t: returns the quantity to use for price calculation — ordered override if set, otherwise computed
+function effectiveQty(ing: any): number {
+    return orderedQuantities.get(ing.id) ?? ing.totalQuantity
+}
+
+function setOrderedQty(ingId: number, val: string) {
+    const num = parseFloat(val)
+    if (isNaN(num) || num <= 0) orderedQuantities.delete(ingId)
+    else orderedQuantities.set(ingId, num)
+}
+
+function clearOrderedQty(ingId: number) {
+    orderedQuantities.delete(ingId)
 }
 
 function selectSupplier(ingId: number, supplier: any) {
     supplierOverrides.set(ingId, supplier)
-    expandedIds.delete(ingId)
+    rejectedIds.delete(ingId)
+}
+
+function clearSupplier(ingId: number) {
+    supplierOverrides.delete(ingId)
+    rejectedIds.add(ingId)
 }
 
 const groupedIngredients = computed(() => {
@@ -223,6 +252,7 @@ const groupedIngredients = computed(() => {
         ing.possibleSuppliers = matches
         ing.selectedSupplier = supplierOverrides.has(ing.id)
             ? supplierOverrides.get(ing.id)
+            : rejectedIds.has(ing.id) ? null
             : matches.length === 1 ? matches[0] : null
     }
 
@@ -263,11 +293,27 @@ function formatPrice(price: number): string {
     return price.toFixed(2) + ' €'
 }
 
-// c5t: total estimated cost across all ingredients with a price
+// c5t: total based on raw computed quantities, never modified by user input
+const totalBaseCost = computed(() => {
+    let total = 0
+    const rows = []
+    for (const ing of groupedIngredients.value) {
+        if (ing.defaultPrice != null) {
+            const line = ing.totalQuantity * ing.defaultPrice
+            total += line
+            rows.push({ name: ing.name, qty: ing.totalQuantity, unit: ing.unit, price: ing.defaultPrice, line })
+        }
+    }
+    console.table(rows)
+    console.log('[totalBaseCost]', total.toFixed(2), '€')
+    return total
+})
+
+// c5t: total using ordered quantities when set, otherwise falls back to computed
 const totalCost = computed(() => {
     let total = 0
     for (const ing of groupedIngredients.value) {
-        if (ing.defaultPrice != null) total += ing.totalQuantity * ing.defaultPrice
+        if (ing.defaultPrice != null) total += effectiveQty(ing) * ing.defaultPrice
     }
     return total
 })
@@ -286,6 +332,8 @@ async function saveShoppingList() {
         supplyCategory: ing.supplyCategory?.value ?? null,
         supplierId: ing.selectedSupplier?.id ?? null,
         supplierName: ing.selectedSupplier?.name ?? null,
+        orderedQuantity: orderedQuantities.get(ing.id) ?? null,
+        ref: refs.get(ing.id) ?? null,
     }))
 
     console.log('[saveShoppingList] saving', payload.length, 'ingredients...')
@@ -301,22 +349,120 @@ async function saveShoppingList() {
     }
 }
 
-// c5t: auto-save whenever supplier assignments change
+// c5t: auto-save whenever supplier assignments, ordered quantities, or refs change
 watch(supplierOverrides, saveShoppingList)
+watch(rejectedIds, saveShoppingList)
+watch(orderedQuantities, saveShoppingList)
+watch(refs, saveShoppingList)
+
+// c5t: opens a new window with a print-friendly version of the shopping list
+function printList() {
+    const groups = bySupplier.value
+
+    const ingRow = (ing: any) => {
+        const baseQty = ing.totalQuantity
+        const ordered = orderedQuantities.get(ing.id)
+        const ref = refs.get(ing.id) ?? null
+        const basePrice = ing.defaultPrice != null ? formatPrice(baseQty * ing.defaultPrice) : ''
+        const orderedQtyDisplay = ordered != null
+            ? `${formatQty(ordered)} ${ing.unit}`
+            : `<span class="blankLine"></span> ${ing.unit}`
+
+        return `<div class="ing">
+            <span class="cb"></span>
+            <div class="ingBody">
+                <div class="ingNameRow">
+                        <div class="ingRefColumn">
+                            <span class="ingRef"># ${ref ? `${ref}` : ''}</span>
+                        </div>
+                    <span class="ingName">${ing.name}</span>
+                </div>
+                <div class="ingDataRow ingBase">
+                    <span class="ingQty">${formatQty(baseQty)} ${ing.unit}</span>
+                    <span class="ingPrice">${basePrice}</span>
+                </div>
+                <div class="ingDataRow ingOrdered">
+                    <span> commande: </span>
+                    <span class="ingQty">${orderedQtyDisplay}</span>
+                </div>
+            </div>
+        </div>`
+    }
+
+    let html = `
+        <html><head><title>Liste de courses</title><style>
+            body { font-family: sans-serif; padding: 32px; color: #111; }
+            h1 { font-size: 1.3em; margin-bottom: 24px; }
+            .supplier { margin-bottom: 28px; page-break-inside: avoid; }
+            .supplierName { font-weight: bold; font-size: 1.1em; border-bottom: 2px solid #333; padding-bottom: 4px; margin-bottom: 8px; }
+            .ing { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #eee; }
+            .cb { width: 16px; height: 16px; border: 1.5px solid #555; border-radius: 3px; flex-shrink: 0; margin-top: 3px; display: inline-block; }
+            .ingBody { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+            .ingNameRow { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
+            .ingRefColumn { width: 150px; }
+            .ingRef { display: block; color: black; border: 1px solid black; font-weight: 700; font-size: 0.85em; letter-spacing: 0.1em; padding: 4px 8px; border-radius: 4px; white-space: nowrap; box-sizing: border-box; width: 100%; }
+            .ingName { font-weight: 600; flex: 1; }
+            .ingDataRow { display: flex; justify-content: flex-end; gap: 16px; margin-top: 10px; }
+            .ingBase { color: #888; font-size: 0.85em; }
+            .ingOrdered { font-weight: 700; font-size: 0.95em; }
+            .ingQty { width: 120px; text-align: right; white-space: nowrap;  }
+            .ingPrice { width: 80px; text-align: right; white-space: nowrap; }
+            .blankLine { display: inline-block; width: 80px; border-bottom: 1.5px solid #aaa; margin-bottom: 2px; vertical-align: bottom; }
+            .totalLine { margin-top: 28px; font-weight: bold; font-size: 1.1em; border-top: 2px solid #333; padding-top: 10px; }
+        </style></head><body>
+    `
+
+    html += `<h1>Liste de courses</h1>`
+
+    for (const group of groups) {
+        html += `<div class="supplier">`
+        html += `<div class="supplierName">${group.supplier.name}</div>`
+        for (const ing of group.items) html += ingRow(ing)
+        html += `</div>`
+    }
+
+    if (unmatched.value.length) {
+        html += `<div class="supplier">`
+        html += `<div class="supplierName">À vérifier (${unmatched.value.length})</div>`
+        for (const ing of unmatched.value) html += ingRow(ing)
+        html += `</div>`
+    }
+
+    html += `<div class="totalLine">Total estimé : ${formatPrice(totalCost.value)}</div>`
+    html += `</body></html>`
+
+    const win = window.open('', '_blank')
+    if (!win) return
+    win.document.write(html)
+    win.document.close()
+    win.print()
+}
 
 </script>
 
 <template>
 	<div class="shoppingListContainer flex column gap20">
 
-		<button
-			class="saveBtn"
-			@click="saveShoppingList"
-		>Enregistrer la liste</button>
+		<div class="listActions flex gap10">
+			<button
+				class="printBtn"
+				@click="printList"
+			>Imprimer la liste</button>
+			<button
+				class="saveBtn"
+				@click="saveShoppingList"
+			>Enregistrer la liste</button>
+		</div>
 
-		<div class="totalCost flex justifyBetween alignCenter">
-			<span class="totalLabel">Total estimé</span>
-			<span class="totalAmount">{{ formatPrice(totalCost) }}</span>
+		<div class="totalCost flex column gap4">
+			<div class="flex justifyBetween alignCenter">
+				<span class="totalLabel">Total de base</span>
+				<span class="totalAmountBase">{{ formatPrice(totalBaseCost) }}</span>
+			</div>
+			<div class="flex justifyBetween alignCenter">
+				<span class="totalLabel">Total commandé</span>
+				<span class="totalAmount">{{ formatPrice(totalCost) }}</span>
+			</div>
 		</div>
 
 		<div
@@ -331,7 +477,9 @@ watch(supplierOverrides, saveShoppingList)
 				class="ingRow flex column gap4"
 			>
 				<div class="flex gap10">
-					<span class="ingName">{{ ing.name }}</span>					<span v-if="ing.hasError" class="ingError">ERROR</span>					<span class="ingQty">{{ formatQty(ing.totalQuantity) }} {{ ing.unit }}</span>
+					<span class="ingName">{{ ing.name }}</span>					
+                    <span v-if="ing.hasError" class="ingError">ERROR</span>					
+                    <span class="ingQty">{{ formatQty(ing.totalQuantity) }} {{ ing.unit }}</span>
 					<span
 						v-if="ing.defaultPrice != null"
 						class="ingPrice"
@@ -410,39 +558,93 @@ watch(supplierOverrides, saveShoppingList)
 					:key="ing.id"
 					class="ingRow flex column gap4"
 				>
-				<div class="flex gap10 alignCenter">
-					<span class="ingName">{{ ing.name }}</span>
-					<span v-if="ing.hasError" class="ingError">ERROR</span>
-					<span class="ingQty">{{ formatQty(ing.totalQuantity) }} {{ ing.unit }}</span>
-					<span
-						v-if="ing.defaultPrice != null"
-						class="ingPrice"
-					>{{ formatPrice(ing.totalQuantity * ing.defaultPrice) }}</span>
-					<button
-						class="expandBtn centered pad5"
-						:class="{ open: expandedIds.has(ing.id) }"
-						@click="toggleExpand(ing.id)"
-					>
-						<Icon>arrow_drop_down</Icon>
-					</button>
-				</div>
-				<div
-					v-if="expandedIds.has(ing.id)"
-					class="flex gap5 wrap"
-				>
-					<button
-						v-for="sup in ing.possibleSuppliers"
-						:key="sup.id"
-						class="supplierChip"
-						:class="{ active: ing.selectedSupplier?.id === sup.id }"
-						@click="selectSupplier(ing.id, sup)"
-					>{{ sup.name }}</button>
-					<span v-if="!ing.possibleSuppliers.length" class="noSupplier">Aucun fournisseur</span>
-				</div>
+                    
+                    <!-- line 1: name -->
+                    <div class="flex alignCenter justifyBetween w100">
+                        
+                        <span class="ingName textLg fontWeightBold">{{ ing.name }}</span>
+                        <span v-if="ing.hasError" class="ingError">ERROR</span>
+
+                        <button
+                            class="clearSupplierBtn centered pad5"
+                            @click.stop="clearSupplier(ing.id)"
+                            title="Retirer le fournisseur"
+                        >
+                            <Icon>close</Icon>
+                        </button>
+                    </div>
+                    <div
+                        class="flex w50 gap20"
+                    >
+                        <p>Réf. : </p>
+
+                        <input
+                            type="text"
+                            class="refInput"
+                            :class="[
+                                refs.get(ing.id) == null ? 'needsAction' : ''
+                            ]"
+                            :value="refs.get(ing.id) ?? ''"
+                            @input="setRef(ing.id, ($event.target as HTMLInputElement).value)"
+                            placeholder="Référence..."
+                        />
+                    </div>
+
+                    <!-- line 2: base computed qty + price -->
+                    <div class="ingTableRow">
+                        <span class="ingUnit textMd">
+                            {{ formatQty(ing.totalQuantity) }} {{ ing.unit }}
+                        </span>
+                        <span class="ingTableCell flex alignCenter justifyEnd">
+                            <template v-if="ing.defaultPrice != null">
+                                {{ formatPrice(ing.totalQuantity * ing.defaultPrice) }}
+                            </template>
+                        </span>
+                    </div>
+                    <!-- line 3: ordered qty input + effective price -->
+                    <div 
+                        v-if="ing.defaultPrice != null" 
+                        class="ingTableRow marTop10"
+                    >
+                        <!-- <Icon class="ingOrderIcon">shopping_cart</Icon> -->
+                        <div class="ingTableCell flex alignCenter justifyEnd gap5">
+                            <input
+                                class="ingOrderInput"
+                                type="number"
+                                min="0"
+                                step="any"
+                                :placeholder="formatQty(ing.totalQuantity)"
+                                :value="orderedQuantities.get(ing.id) ?? ''"
+                                @change="setOrderedQty(ing.id, ($event.target as HTMLInputElement).value)"
+                            />
+                            <span class="ingUnit textMd">{{ ing.unit }}</span>
+                        </div>
+                        <span class="ingTableCell flex alignCenter justifyEnd">
+                            {{ formatPrice(effectiveQty(ing) * ing.defaultPrice) }}
+                        </span>
+                        <!-- <button
+                            v-if="orderedQuantities.has(ing.id)"
+                            class="clearOrderBtn"
+                            @click="clearOrderedQty(ing.id)"
+                            title="Réinitialiser"
+                        >
+                            <Icon>close</Icon>
+                        </button> -->
+                    </div>
+                    <!-- <div class="flex gap5 wrap">
+                        <button
+                            v-for="sup in ing.possibleSuppliers"
+                            :key="sup.id"
+                            class="supplierChip"
+                            :class="{ active: ing.selectedSupplier?.id === sup.id }"
+                            @click="selectSupplier(ing.id, sup)"
+                        >{{ sup.name }}</button>
+                        
+                        <span v-if="!ing.possibleSuppliers.length" class="noSupplier">Aucun fournisseur</span>
+                    </div> -->
 				</div>
 			</div>
 		</div>
-
 	</div>
 </template>
 
@@ -534,7 +736,7 @@ watch(supplierOverrides, saveShoppingList)
 }
 
 .supplierIngList {
-	border-top: 1px solid color-mix(in srgb, var(--beige) 10%, transparent);
+	/* border-top: 1px solid color-mix(in srgb, var(--beige) 10%, transparent); */
 	padding: 0 16px;
 }
 
@@ -549,12 +751,6 @@ watch(supplierOverrides, saveShoppingList)
 .ingRow {
 	border-bottom: 1px solid color-mix(in srgb, var(--beige) 8%, transparent);
 	padding: 10px 0;
-}
-
-.ingName {
-	flex: 1;
-	color: var(--beige);
-	font-size: 1.05em;
 }
 
 .ingQty {
@@ -600,8 +796,11 @@ watch(supplierOverrides, saveShoppingList)
 	opacity: 0.4;
 }
 
+.listActions {
+	justify-content: flex-end;
+}
+
 .saveBtn {
-	align-self: flex-end;
 	background: color-mix(in srgb, var(--beige) 15%, transparent);
 	border: 1px solid var(--beige);
 	border-radius: 10px;
@@ -611,6 +810,23 @@ watch(supplierOverrides, saveShoppingList)
 	font-weight: 600;
 	min-height: 44px;
 	padding: 10px 28px;
+}
+
+.printBtn {
+	background: transparent;
+	border: 1px solid color-mix(in srgb, var(--beige) 40%, transparent);
+	border-radius: 10px;
+	color: var(--beige);
+	cursor: pointer;
+	font-size: 1em;
+	min-height: 44px;
+	opacity: 0.7;
+	padding: 10px 28px;
+	transition: opacity 0.15s;
+}
+
+.printBtn:hover {
+	opacity: 1;
 }
 
 .totalCost {
@@ -626,6 +842,12 @@ watch(supplierOverrides, saveShoppingList)
 	opacity: 0.7;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
+}
+
+.totalAmountBase {
+	color: var(--beige);
+	font-size: 1em;
+	opacity: 0.5;
 }
 
 .totalAmount {
@@ -648,20 +870,92 @@ watch(supplierOverrides, saveShoppingList)
 	letter-spacing: 0.05em;
 }
 
-.expandBtn {
+.clearSupplierBtn {
 	background: none;
 	border: none;
 	color: var(--beige);
 	cursor: pointer;
 	min-height: 40px;
 	min-width: 40px;
-	opacity: 0.4;
+	opacity: 0.3;
 	padding: 0;
 	transition: opacity 0.15s;
 }
 
-.expandBtn.open {
-	opacity: 0.9;
+.clearSupplierBtn:hover {
+	opacity: 1;
+	color: #e74c3c;
+}
+
+.ingOrderRow {
+	align-items: center;
+	display: grid;
+	grid-template-columns: 1fr 120px 85px 28px;
+}
+
+.ingTableRow {
+	display: flex;
+    justify-content: flex-end;
+}
+
+.ingTableCell {
+    width: 25%;
+}
+
+
+.ingOrderIcon {
+	color: var(--beige);
+	font-size: 1em;
+	opacity: 0.35;
+}
+
+.refInput,
+.ingOrderInput {
+	background: color-mix(in srgb, var(--beige) 8%, transparent);
+	border: 1px solid color-mix(in srgb, var(--beige) 25%, transparent);
+	border-radius: 6px;
+	color: var(--beige);
+	font-size: 1.2em;
+	min-height: 28px;
+	padding: 0 6px;
+}
+
+.refInput.needsAction {
+    border: 2px solid var(--color-error);
+}
+
+.ingOrderInput{
+    width: 72px;
+    text-align: right;
+}
+
+.ingOrderInput:focus {
+	border-color: color-mix(in srgb, var(--beige) 60%, transparent);
+	outline: none;
+}
+
+.ingOrderInput::-webkit-outer-spin-button,
+.ingOrderInput::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.ingOrderInput[type='number'] {
+	-moz-appearance: textfield;
+}
+
+.clearOrderBtn {
+	background: none;
+	border: none;
+	color: var(--beige);
+	cursor: pointer;
+	opacity: 0.35;
+	padding: 0;
+	transition: opacity 0.15s;
+}
+
+.clearOrderBtn:hover {
+	opacity: 1;
 }
 
 .supplierGroupTotal {

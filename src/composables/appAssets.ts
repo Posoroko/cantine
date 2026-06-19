@@ -17,14 +17,46 @@ export type {
 }
 
 const TIME_SLOT_CONFIG: Record<string, { label: string; icon: string; order: number }> = {
-    breakfast: { label: 'Petit-déj',  icon: 'breakfast_dining', order: 1 },
-    snackAm:   { label: 'Goûter am',     icon: 'local_cafe',    order: 2 },
-    aperoMidi:   { label: 'Apéro midi',      icon: 'wine_bar',         order: 3 },
-    lunch:     { label: 'Déjeuner',   icon: 'lunch_dining',     order: 4 },
-    snackPm:   { label: 'Goûter pm',     icon: 'bakery_dining',    order: 5 },
-    aperoSoir:   { label: 'Apéro soir',      icon: 'liquor',         order: 6 },
-    supper:    { label: 'Souper',     icon: 'dinner_dining',    order: 7 },
-    nightSnack:    { label: 'Night snack',     icon: 'local_pizza',    order: 7 },
+    breakfast: { 
+        label: 'Petit-déj',  
+        icon: 'breakfast_dining', 
+        order: 1 
+    },
+    snackAm:   { 
+        label: 'Goûter am',     
+        icon: 'local_cafe',    
+        order: 2 
+    },
+    aperoMidi:   { 
+        label: 'Apéro midi',      
+        icon: 'wine_bar',         
+        order: 3 
+    },
+    lunch:     { 
+        label: 'Déjeuner',   
+        icon: 'lunch_dining',     
+        order: 4 
+    },
+    snackPm:   { 
+        label: 'Goûter pm',     
+        icon: 'bakery_dining',    
+        order: 5 
+    },
+    aperoSoir:   { 
+        label: 'Apéro soir',      
+        icon: 'liquor',         
+        order: 6 
+    },
+    supper:    { 
+        label: 'Souper',     
+        icon: 'dinner_dining',    
+        order: 7 
+    },
+    nightSnack:    { 
+        label: 'Night snack',     
+        icon: 'local_pizza',    
+        order: 7 
+    },
 }
 
 const MEAL_TYPE_CONFIG: Record<string, { label: string; order: number }> = {
