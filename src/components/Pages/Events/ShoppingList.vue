@@ -160,10 +160,6 @@ function setOrderedQty(ingId: number, val: string) {
     else orderedQuantities.set(ingId, num)
 }
 
-function clearOrderedQty(ingId: number) {
-    orderedQuantities.delete(ingId)
-}
-
 function selectSupplier(ingId: number, supplier: any) {
     supplierOverrides.set(ingId, supplier)
     rejectedIds.delete(ingId)
