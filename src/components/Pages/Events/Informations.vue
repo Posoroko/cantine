@@ -119,7 +119,7 @@ const contactGroups = computed(() => {
                 <div
                     v-for="group in contactGroups"
                     :key="group.label"
-                    class="flex column gap8"
+                    class="flex column"
                 >
                     <p class="contactGroupLabel">{{ group.label }}</p>
 
@@ -132,6 +132,7 @@ const contactGroups = computed(() => {
                             flex column gap5
                             rounded10 overflowHidden
                             pad10
+                            marTop10
                         "
                     >
                         <div class="contactName flex alignCenter">
