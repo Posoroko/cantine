@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import Overlay from '@/components/Architecture/Overlay/Main.vue'
+import { initWakeLock } from '@/composables/wakeLock'
+
+onMounted(initWakeLock)
 </script>
 
 <template>
