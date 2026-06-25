@@ -14,6 +14,9 @@ const recipes = ref<Map<number, any>>(new Map())
 // c5t: prevents auto-save from firing while restoring saved state
 const isRestoring = ref(false)
 
+// c5t: true while user is typing in an input — shows the save button until @change fires and save completes
+const isDirty = ref(false)
+
 // c5t: ordered quantities pulled from shoppingList JSON — used as fallback for delivered
 const shoppingOrderedQtys = reactive(new Map<number, number>())
 
@@ -34,6 +37,9 @@ const searchQuery = ref('')
 
 // c5t: ingredient ids manually hidden from the list — persisted in pantryList
 const hiddenIngredients = reactive(new Set<number>())
+
+// c5t: extra qty per ingredient for unplanned use (ex. extra guests) — shown as "Autre" row in meal breakdown
+const autreQtys = reactive(new Map<number, number>())
 
 onMounted(async () => {
     // c5t: fetch meals with headcount + service context for labelling
@@ -104,6 +110,7 @@ onMounted(async () => {
     if (Array.isArray(savedPantry)) {
         for (const item of savedPantry) {
             if (item.deliveredQty != null) deliveredQtys.set(item.ingredientId, item.deliveredQty)
+            if (item.autreQty != null) autreQtys.set(item.ingredientId, item.autreQty)
             if (item.showInList === false) hiddenIngredients.add(item.ingredientId)
             if (Array.isArray(item.meals)) {
                 for (const m of item.meals) {
@@ -267,10 +274,17 @@ function isUsed(ingId: number, mealId: number): boolean {
     return usedMeals.has(`${ingId}:${mealId}`)
 }
 
+function setAutreQty(ingId: number, val: string) {
+    const num = parseFloat(val)
+    if (isNaN(num) || num < 0) autreQtys.delete(ingId)
+    else autreQtys.set(ingId, num)
+}
+
 function usedQty(ing: any): number {
-    return ing.mealBreakdown
+    const mealSum = ing.mealBreakdown
         .filter((m: any) => isUsed(ing.id, m.mealId))
         .reduce((sum: number, m: any) => sum + m.qty, 0)
+    return mealSum + (autreQtys.get(ing.id) ?? 0)
 }
 
 // c5t: returns null when no deliveredQty has been entered — signals missing info
@@ -308,6 +322,7 @@ async function savePantryList() {
         baseQty: ing.baseQty,
         showInList: !hiddenIngredients.has(ing.id),
         deliveredQty: deliveredQtys.get(ing.id) ?? null,
+        autreQty: autreQtys.get(ing.id) ?? null,
         meals: ing.mealBreakdown.map((m: any) => ({
             mealId: m.mealId,
             recipeName: m.recipeName,
@@ -323,6 +338,7 @@ async function savePantryList() {
             endpoint: `/items/events/${eventIdVal}`,
             body: { pantryList: payload },
         })
+        isDirty.value = false
     } catch (err) {
         console.error('[savePantryList] ✗ failed', err)
     }
@@ -332,6 +348,7 @@ async function savePantryList() {
 watch(deliveredQtys, savePantryList)
 watch(usedMeals, savePantryList)
 watch(hiddenIngredients, savePantryList)
+watch(autreQtys, savePantryList)
 
 </script>
 
@@ -364,7 +381,7 @@ watch(hiddenIngredients, savePantryList)
                 @click="toggleCategory('__hidden__')"
             >
                 <Icon>visibility_off</Icon>
-                <span>Cachés{{ hiddenCount > 0 ? ` (${hiddenCount})` : '' }}</span>
+                <span>{{ hiddenCount > 0 ? ` (${hiddenCount})` : '' }}</span>
             </button>
         </div>
 
@@ -413,7 +430,9 @@ watch(hiddenIngredients, savePantryList)
                 <span
                     v-if="ing.hasError"
                     class="ingError"
-                >convives manquants</span>
+                >
+                    convives manquants 
+                </span>
 
                 <button
                     v-if="activeCategory !== '__hidden__'"
@@ -437,11 +456,15 @@ watch(hiddenIngredients, savePantryList)
             <div class="qtyRow flex gap0">
                 <div class="qtyBlock flex column gap2">
                     <span class="qtyLabel">base</span>
-                    <span class="qtyValue">{{ formatQty(ing.baseQty) }} {{ ing.unit }}</span>
+                    <span class="qtyValue">
+                        {{ formatQty(ing.baseQty) }} {{ ing.unit }}
+                    </span>
                 </div>
 
                 <div class="qtyBlock flex column gap2">
-                    <span class="qtyLabel">commandé</span>
+                    <span class="qtyLabel">
+                        commandé
+                    </span>
                     <span
                         class="qtyValue"
                         :class="{ qtyMissing: shoppingOrderedQtys.get(ing.id) == null }"
@@ -461,13 +484,12 @@ watch(hiddenIngredients, savePantryList)
                             type="number"
                             min="0"
                             step="any"
-                            :placeholder="shoppingOrderedQtys.get(ing.id) != null
-                                ? formatQty(shoppingOrderedQtys.get(ing.id)!)
-                                : formatQty(ing.baseQty)"
+                            placeholder="--"
                             :value="deliveredQtys.get(ing.id) ?? ''"
+                            @input="isDirty = true"
                             @change="setDeliveredQty(ing.id, ($event.target as HTMLInputElement).value)"
                         />
-                        <span class="qtyUnit">{{ ing.unit }}</span>
+                        <!-- <span class="qtyUnit">{{ ing.unit }}</span> -->
                     </div>
                 </div>
 
@@ -481,7 +503,7 @@ watch(hiddenIngredients, savePantryList)
                 >
                     <span class="qtyLabel">restant</span>
                     <span class="qtyValue remainingValue">
-                        {{ remainingQty(ing) !== null ? `${formatQty(remainingQty(ing)!)} ${ing.unit}` : '—' }}
+                        {{ remainingQty(ing) !== null ? `${formatQty(remainingQty(ing)!)}` : '—' }}
                     </span>
                 </div>
             </div>
@@ -530,16 +552,65 @@ watch(hiddenIngredients, savePantryList)
                         </div>
                     </div>
                 </div>
+
+                <!-- autre row: extra unplanned usage input -->
+                <div class="autreRow flex alignCenter justifyBetween">
+                    <span class="mealRecipeName autreLabel">Autre</span>
+                    <div class="flex alignCenter gap8">
+                        <input
+                            class="autreInput"
+                            type="number"
+                            min="0"
+                            step="any"
+                            :value="autreQtys.get(ing.id) ?? ''"
+                            @input="isDirty = true"
+                            @change="setAutreQty(ing.id, ($event.target as HTMLInputElement).value)"
+                        />
+                        <!-- <span class="mealSubtitle">{{ ing.unit }}</span> -->
+                    </div>
+                </div>
             </div>
         </div>
 
         </div>
+
+        <!-- floating save button — clicking it blurs any active input, triggering @change saves -->
+        <button 
+            v-if="isDirty"
+            class="
+                beigeCardGreenText
+                saveFloatingBtn 
+                flex alignCenter gap5
+            "
+        >
+            <Icon
+                color="green"
+            >
+                save
+            </Icon>
+            <span>Enregistrer</span>
+        </button>
     </div>
 </template>
 
 <style scoped>
 .gardeManger {
     padding: 10px;
+    padding-bottom: 80px;
+}
+
+.saveFloatingBtn {
+    border: none;
+    border-radius: 50px;
+    bottom: 20px;
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--green) 40%, transparent);
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 700;
+    padding: 12px 22px;
+    position: fixed;
+    right: 20px;
+    z-index: 10;
 }
 
 /* category filter bar */
@@ -684,7 +755,7 @@ watch(hiddenIngredients, savePantryList)
     color: var(--beige);
     font-size: 0.7em;
     letter-spacing: 0.06em;
-    opacity: 0.5;
+    opacity: 0.8;
     text-transform: uppercase;
 }
 
@@ -706,12 +777,17 @@ watch(hiddenIngredients, savePantryList)
 
 /* remaining block color states */
 
-.remainingOk .qtyLabel { color: var(--green); opacity: 1; }
-.remainingOk .remainingValue { color: var(--green); }
-.remainingLow .qtyLabel { color: #e74c3c; opacity: 1; }
-.remainingLow .remainingValue { color: #e74c3c; }
-.remainingUnknown .qtyLabel { color: #f4b942; opacity: 1; }
-.remainingUnknown .remainingValue { color: #f4b942; }
+.remainingLow { 
+    border-color: #e74c3c; 
+}
+
+.remainingLow .remainingValue { 
+    color: #e74c3c; 
+}
+
+.remainingUnknown .remainingValue { 
+    color: #f4b942; 
+}
 
 .remainingValue {
     font-size: 1em;
@@ -834,5 +910,45 @@ watch(hiddenIngredients, savePantryList)
     font-size: 0.8em;
     opacity: 0.5;
     text-transform: capitalize;
+}
+
+/* autre row */
+
+.autreRow {
+    border-top: 1px dashed color-mix(in srgb, var(--beige) 15%, transparent);
+    margin-top: 4px;
+    padding: 8px 6px 4px;
+}
+
+.autreLabel {
+    opacity: 0.45;
+}
+
+.autreInput {
+    background: color-mix(in srgb, var(--beige) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--beige) 25%, transparent);
+    border-radius: 6px;
+    color: var(--beige);
+    font-size: 1em;
+    font-weight: 600;
+    min-height: 30px;
+    padding: 0 6px;
+    text-align: right;
+    width: 64px;
+}
+
+.autreInput:focus {
+    border-color: color-mix(in srgb, var(--beige) 60%, transparent);
+    outline: none;
+}
+
+.autreInput::-webkit-outer-spin-button,
+.autreInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.autreInput[type='number'] {
+    -moz-appearance: textfield;
 }
 </style>

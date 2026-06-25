@@ -1,7 +1,8 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import Icon from '@/components/Icon/Main.vue'
 import { TIME_SLOT_CONFIG } from '@/composables/appAssets'
+import { dbGet } from '@/composables/fetch'
 
 const props = defineProps({
     event: {
@@ -33,6 +34,46 @@ const totalGuests = computed(() =>
 const targetBudget = computed(() => {
     if (!props.event?.pricePerGuest || !totalGuests.value) return null
     return totalGuests.value * props.event.pricePerGuest
+})
+
+// ─── contacts ────────────────────────────────────────────────────────────
+
+const contacts = ref([])
+
+onMounted(async () => {
+    const raw = await dbGet({
+        endpoint: '/items/contacts',
+        query: {
+            fields: 'id,name,telephone,email,notes,event,supplier.id,supplier.name',
+            limit: -1,
+            filter: {
+                _or: [
+                    { event: { _eq: props.event.id } },
+                    { supplier: { events: { event: { _eq: props.event.id } } } },
+                ],
+            },
+        },
+    })
+    contacts.value = raw ?? []
+})
+
+// c5t: contacts without a supplier go under the event group; others group by supplier name
+const contactGroups = computed(() => {
+    const eventContacts = contacts.value.filter(c => !c.supplier)
+    const supplierMap = new Map()
+
+    for (const c of contacts.value) {
+        if (!c.supplier?.id) continue
+        if (!supplierMap.has(c.supplier.id)) {
+            supplierMap.set(c.supplier.id, { label: c.supplier.name, contacts: [] })
+        }
+        supplierMap.get(c.supplier.id).contacts.push(c)
+    }
+
+    const groups = []
+    if (eventContacts.length) groups.push({ label: props.event.name || 'Événement', contacts: eventContacts })
+    for (const group of supplierMap.values()) groups.push(group)
+    return groups
 })
 
 </script>
@@ -86,66 +127,51 @@ const targetBudget = computed(() => {
                 </div>
             </div>
 
-            <div 
-                v-if="event?.contacts?.length > 0" 
-                class="
-                    contactsList marTop10
-                    flex column gap10
-                "
+            <div
+                v-if="contactGroups.length"
+                class="contactsList marTop10 flex column gap16"
             >
-                <div 
-                    v-for="contact in event.contacts" :key="contact.id" 
-                    class="
-                        contactItem 
-                        beigeCardGreenText 
-                        flex column gap5
-                        rounded10 overflowHidden
-                        pad10
-                    "
+                <div
+                    v-for="group in contactGroups"
+                    :key="group.label"
+                    class="flex column gap8"
                 >
-                    <div 
+                    <p class="contactGroupLabel">{{ group.label }}</p>
+
+                    <div
+                        v-for="contact in group.contacts"
+                        :key="contact.id"
                         class="
-                            contactName 
-                            flex alignCenter
+                            contactItem
+                            beigeCardGreenText
+                            flex column gap5
+                            rounded10 overflowHidden
+                            pad10
                         "
                     >
-                        <span
-                            class="fontWeightBold"
-                        >
-                            {{ contact.name }}
-                        </span>
-                    </div>
+                        <div class="contactName flex alignCenter">
+                            <span class="fontWeightBold">{{ contact.name }}</span>
+                        </div>
 
-                    <div
-                        v-if="contact.telephone" 
-                        class="contactDetail flex alignCenter gap10"
-                    >
-                            <Icon
-                                color="green"
-                            >
-                                call
-                            </Icon>
-                        <span>
-                            {{ contact.telephone }}
-                        </span>
-                    </div>
-                    
-                    <div
-                        v-if="contact.email" 
-                        class="contactDetail flex alignCenter gap10"
-                    >
-                        <Icon
-                                color="green"
+                        <div
+                            v-if="contact.telephone"
+                            class="contactDetail flex alignCenter gap10"
                         >
-                            email
-                        </Icon>
+                            <Icon color="green">call</Icon>
+                            <span>{{ contact.telephone }}</span>
+                        </div>
 
-                        <span>
-                            {{ contact.email }}
-                        </span> 
+                        <div
+                            v-if="contact.email"
+                            class="contactDetail flex alignCenter gap10"
+                        >
+                            <Icon color="green">email</Icon>
+                            <span>{{ contact.email }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <p v-else class="infoValue">Aucun contact</p>
         </div>
 
@@ -196,6 +222,15 @@ const targetBudget = computed(() => {
 </template>
 
 <style scoped>
+.contactGroupLabel {
+    color: var(--beige);
+    font-size: 0.75em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
 .serviceRow {
     padding: 4px 0;
     border-bottom: 1px solid color-mix(in srgb, var(--beige) 10%, transparent);
