@@ -5,7 +5,8 @@ export {
     appAssetStore,
     loadAppAssets,
     TIME_SLOT_CONFIG,
-    MEAL_TYPE_CONFIG
+    MEAL_TYPE_CONFIG,
+    SUPPLY_CATEGORY_CONFIG,
 }
 
 export type {
@@ -65,6 +66,14 @@ const MEAL_TYPE_CONFIG: Record<string, { label: string; order: number }> = {
     side:     { label: 'Accompagnement',  order: 3 },
     dessert:  { label: 'Dessert',         order: 4 },
     beverage: { label: 'Boisson',         order: 5 },
+}
+
+const SUPPLY_CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {
+    freshProduce: { icon: 'eco',         order: 1 },
+    fridge:       { icon: 'ac_unit',     order: 2 },
+    frozen:       { icon: 'severe_cold', order: 3 },
+    sec:          { icon: 'inventory_2', order: 4 },
+    nonEdible:    { icon: 'cleaning_services', order: 5 },
 }
 
 //* 

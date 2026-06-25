@@ -134,6 +134,21 @@ function goToTab(tab) {
                 </Icon>
             </button>
 
+            <button
+                @click="goToTab('gardeManger')"
+                :class="{ active: activeTab === 'gardeManger' }"
+                class="
+                    slideButton
+                    flex alignCenter
+                "
+            >
+                <Icon
+                    :color="activeTab === 'gardeManger' ? 'green' : 'beige'"
+                >
+                    kitchen
+                </Icon>
+            </button>
+
             <div
                 v-if="imageUrl(event.image)"
                 class="eventImage"
