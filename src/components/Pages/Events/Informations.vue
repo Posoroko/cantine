@@ -96,20 +96,6 @@ const contactGroups = computed(() => {
 
         <div class="infoItem">
             <div class="infoLabel flex alignCenter gap5">
-                <Icon>table</Icon>
-
-                <a 
-                    class="infoValue"
-                    href="https://assogetup.sharepoint.com/:x:/s/SHAREPOINTGETUP/IQBS4VqRE43sRasFO8v9bo1cAdhZVNqFB8YK3WrwpFpoOR4?rtime=L9vWf3_F3kg"
-                >
-                    Tableau des jauges
-                </a>
-            </div>
-        </div>
-
-
-        <div class="infoItem">
-            <div class="infoLabel flex alignCenter gap5">
                 <Icon>calendar_today</Icon>
                 <h3 class="infoValue">
                     {{ event.days?.length || 0 }}
@@ -117,7 +103,6 @@ const contactGroups = computed(() => {
                 </h3>
             </div>
         </div>
-
 
         <div class="infoItem">
             <div class="flex">
