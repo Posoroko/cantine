@@ -10,7 +10,7 @@ export interface TodoItem {
     closedBy?: string | null
 }
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
     todos: TodoItem[]
     canCreate?: boolean
     emptyText?: string

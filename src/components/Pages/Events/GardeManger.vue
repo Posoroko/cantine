@@ -3,7 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { dbGet, dbPatch } from '@/composables/fetch'
 import Icon from '@/components/Icon/Main.vue'
-import { appAssetStore, SUPPLY_CATEGORY_CONFIG } from '@/composables/appAssets'
+import { SUPPLY_CATEGORY_CONFIG } from '@/composables/appAssets'
 
 const route = useRoute()
 const eventId = computed(() => parseInt(route.params.eventId as string))
@@ -364,7 +364,7 @@ watch(hiddenIngredients, savePantryList)
                 @click="toggleCategory('__hidden__')"
             >
                 <Icon>visibility_off</Icon>
-                <!-- <span>Cachés{{ hiddenCount > 0 ? ` (${hiddenCount})` : '' }}</span> -->
+                <span>Cachés{{ hiddenCount > 0 ? ` (${hiddenCount})` : '' }}</span>
             </button>
         </div>
 
