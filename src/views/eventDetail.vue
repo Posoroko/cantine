@@ -10,6 +10,7 @@ import Days from '@/components/Pages/Events/Days.vue'
 import Meals from '@/components/Pages/Events/Meals.vue'
 import ShoppingList from '@/components/Pages/Events/ShoppingList.vue'
 import GardeManger from '@/components/Pages/Events/GardeManger.vue'
+import NotesAndTodos from '@/components/Pages/Events/NotesAndTodos.vue'
 import { dbGet } from '@/composables/fetch'
 
 const route = useRoute()
@@ -116,6 +117,10 @@ const days = computed(() => event.value?.days)
 
                     <GardeManger
                         v-if="activeTab === 'gardeManger'"
+                    />
+
+                    <NotesAndTodos
+                        v-if="activeTab === 'notesAndTodos'"
                     />
                 </div>
             </div>

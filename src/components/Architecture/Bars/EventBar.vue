@@ -149,6 +149,21 @@ function goToTab(tab) {
                 </Icon>
             </button>
 
+            <button
+                @click="goToTab('notesAndTodos')"
+                :class="{ active: activeTab === 'notesAndTodos' }"
+                class="
+                    slideButton
+                    flex alignCenter
+                "
+            >
+                <Icon
+                    :color="activeTab === 'notesAndTodos' ? 'green' : 'beige'"
+                >
+                    checklist
+                </Icon>
+            </button>
+
             <div
                 v-if="imageUrl(event.image)"
                 class="eventImage"

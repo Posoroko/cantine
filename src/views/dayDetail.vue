@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Private from '@/components/Architecture/Layouts/Private.vue'
 import Icon from '@/components/Icon/Main.vue'
 import Loading from '@/components/Loading/Main.vue'
 import EventBar from '@/components/Architecture/Bars/EventBar.vue'
 import Meal from '@/components/Cards/Meal.vue'
+import TodoList from '@/components/Todos/TodoList.vue'
+import type { TodoItem } from '@/components/Todos/TodoList.vue'
+
+const dayTodoListRef = ref<InstanceType<typeof TodoList> | null>(null)
 import {
     TIME_SLOT_CONFIG,
     MEAL_TYPE_CONFIG
 } from '@/composables/appAssets'
 import { eventDaysStore, loadEventDays } from '@/composables/currentEvent'
+import { dbGet, dbPatch, dbPost, dbDelete } from '@/composables/fetch'
+import { useUserState } from '@/composables/userState'
 
 const route = useRoute()
 const router = useRouter()
@@ -18,7 +24,10 @@ const router = useRouter()
 const dayId = computed(() => parseInt(route.params.dayId as string))
 const eventId = computed(() => parseInt(route.params.eventId as string))
 
-onMounted(() => loadEventDays(eventId.value))
+onMounted(() => {
+    loadEventDays(eventId.value)
+    fetchDayTodos()
+})
 
 // c5t: day is a computed — reacts instantly to route param changes, no watcher needed
 const day = computed(() => eventDaysStore.value?.find((d: any) => d.id === dayId.value) ?? null)
@@ -103,6 +112,72 @@ function navigateToPrepList() {
     })
 }
 
+// ─── day todos ────────────────────────────────────────────────────────────────
+
+const userState = useUserState()
+const dayTodos = ref<TodoItem[]>([])
+
+async function fetchDayTodos() {
+    const raw = await dbGet<any[]>({
+        endpoint: '/items/toDos',
+        query: {
+            fields: 'id,text,dueTime,isPending,user_markedAsClosed',
+            sort: 'dueTime',
+            limit: -1,
+            filter: { day: { _eq: dayId.value } },
+        },
+    })
+    dayTodos.value = (raw ?? []).map(t => ({
+        id: t.id,
+        text: t.text ?? '',
+        dueTime: t.dueTime ?? null,
+        isPending: t.isPending ?? true,
+        closedBy: t.user_markedAsClosed ?? null,
+    }))
+}
+
+async function onCreateDayTodo(text: string, dueTime: string | null) {
+    const created = await dbPost<any>({
+        endpoint: '/items/toDos',
+        body: {
+            text,
+            dueTime: dueTime || null,
+            isPending: true,
+            day: dayId.value,
+        },
+    })
+    if (created) {
+        dayTodos.value = [
+            ...dayTodos.value,
+            { id: created.id, text, dueTime, isPending: true, closedBy: null },
+        ]
+    }
+}
+
+async function onToggleDayTodo(id: string | number) {
+    let newPending = true
+    dayTodos.value = dayTodos.value.map(t => {
+        if (t.id !== id) return t
+        newPending = !t.isPending
+        return { ...t, isPending: newPending, closedBy: newPending ? null : (userState.value.id || null) }
+    })
+    await dbPatch({
+        endpoint: `/items/toDos/${id}`,
+        body: {
+            isPending: newPending,
+            user_markedAsClosed: newPending ? null : (userState.value.id || null),
+        },
+    })
+}
+
+async function onRemoveDayTodo(id: string | number) {
+    dayTodos.value = dayTodos.value.filter(t => t.id !== id)
+    await dbDelete(`/items/toDos/${id}`)
+}
+
+// c5t: reload todos when navigating between days
+watch(dayId, fetchDayTodos)
+
 </script>
 
 <template>
@@ -149,6 +224,26 @@ function navigateToPrepList() {
                 v-else
                 class="flex column gap20 pad10"
             >
+                <!-- todos -->
+                <div class="todosSection flex column gap8">
+                    <div class="todosSectionHeader flex alignCenter justifyBetween">
+                        <p class="todosSectionLabel">Tâches du jour</p>
+                        <button
+                            class="addTodoBtn"
+                            @click="dayTodoListRef?.openCreate()"
+                        >
+                            <Icon>add</Icon>
+                        </button>
+                    </div>
+                    <TodoList
+                        ref="dayTodoListRef"
+                        :todos="dayTodos"
+                        emptyText="Aucune tâche pour ce jour"
+                        @create="onCreateDayTodo"
+                        @toggle="onToggleDayTodo"
+                        @remove="onRemoveDayTodo"
+                    />
+                </div>
                 <!-- service tab bar -->
                 <div class="serviceTabBar flex justifyCenter gap20">
                     <div
@@ -269,6 +364,8 @@ function navigateToPrepList() {
                         <span class="weight7">{{ servicePricePerPerson.toFixed(2) }} €</span>
                     </div>
                 </div>
+                
+
             </div>
         </template>
     </Private>
@@ -278,6 +375,30 @@ function navigateToPrepList() {
 .titleArrowBox {
     padding: 10px 0;
 }
+
+.todosSection {
+    background: color-mix(in srgb, var(--beige) 5%, transparent);
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.todosSectionHeader {
+    margin-bottom: 4px;
+}
+
+.todosSectionLabel {
+    color: var(--beige);
+    font-size: 0.75em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+.addTodoBtn {
+    padding: 2px;
+}
+
 .dayTitle {
     font-size: clamp(20px, 5vw, 30px);
     padding: 3px 20px;
