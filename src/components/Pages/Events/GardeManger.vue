@@ -50,8 +50,10 @@ onMounted(async () => {
                 'id',
                 'recipe',
                 'servingCount',
+                'service.id',
                 'service.guestCount',
                 'service.timeSlot',
+                'service.day.id',
                 'service.day.dayOfTheWeek',
             ].join(','),
             limit: -1,
@@ -164,6 +166,8 @@ const pantryIngredients = computed(() => {
             entry.baseQty += qty
             entry.mealBreakdown.push({
                 mealId,
+                dayId: meal.service?.day?.id ?? null,
+                serviceId: meal.service?.id ?? null,
                 recipeName: recipe.name ?? '',
                 dayOfTheWeek: meal.service?.day?.dayOfTheWeek ?? '',
                 timeSlot: meal.service?.timeSlot ?? '',
@@ -532,9 +536,28 @@ watch(autreQtys, savePantryList)
                 >
                     <div class="flex column flex1">
                         <span class="mealRecipeName">{{ meal.recipeName }}</span>
-                        <span class="mealSubtitle">
-                            {{ meal.dayOfTheWeek }} {{ formatSlot(meal.timeSlot) }}
-                        </span>
+                        <div class="flex alignCenter gap10 marTop10">
+                            <span class="mealSubtitle">
+                                {{ meal.dayOfTheWeek }} {{ formatSlot(meal.timeSlot) }}
+                            </span>
+
+                            <RouterLink
+                                v-if="meal.dayId && meal.serviceId"
+                                :to="{
+                                    name: 'DayDetail',
+                                    params: {
+                                        eventId,
+                                        dayId: meal.dayId,
+                                        serviceId: meal.serviceId,
+                                    },
+                                }"
+                                class="mealDetailLink"
+                                @click.stop
+                                title="Ouvrir le détail du jour"
+                            >
+                                <Icon size="sm">open_in_new</Icon>
+                            </RouterLink>
+                        </div>
                     </div>
 
                     <div
@@ -826,6 +849,7 @@ watch(autreQtys, savePantryList)
 }
 
 .deliveredInput[type='number'] {
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 
@@ -912,6 +936,18 @@ watch(autreQtys, savePantryList)
     text-transform: capitalize;
 }
 
+.mealDetailLink {
+    color: var(--beige);
+    display: inline-flex;
+    opacity: 0.55;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.mealDetailLink:hover {
+    opacity: 1;
+}
+
 /* autre row */
 
 .autreRow {
@@ -949,6 +985,7 @@ watch(autreQtys, savePantryList)
 }
 
 .autreInput[type='number'] {
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 </style>

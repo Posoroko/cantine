@@ -27,6 +27,7 @@ async function loadEventDays(eventId: number) {
                 'services.timeSlot',
                 'services.guestCount',
                 'services.note',
+                'services.servicePlanning',
                 'services.diets.count',
                 'services.diets.diets',
                 'services.diets.diets.id',

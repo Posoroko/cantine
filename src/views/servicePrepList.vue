@@ -11,6 +11,52 @@ const route = useRoute()
 
 const service = ref<any>(null)
 
+type ServicePlanningNote = {
+    id: number
+    text: string
+}
+
+type ServicePlanningState = {
+    startTime: string
+    endTime: string
+    notes: ServicePlanningNote[]
+}
+
+function normalizeServicePlanning(rawPlanning: any): ServicePlanningState {
+    if (Array.isArray(rawPlanning)) {
+        return {
+            startTime: '',
+            endTime: '',
+            notes: rawPlanning
+                .map((entry: any, index: number) => {
+                    if (typeof entry === 'string') {
+                        return { id: index, text: entry }
+                    }
+
+                    return {
+                        id: entry.id ?? index,
+                        text: entry.text ?? entry.label ?? '',
+                    }
+                })
+                .filter((entry: ServicePlanningNote) => entry.text.trim().length > 0),
+        }
+    }
+
+    if (!rawPlanning || typeof rawPlanning !== 'object') {
+        return {
+            startTime: '',
+            endTime: '',
+            notes: [],
+        }
+    }
+
+    return {
+        startTime: rawPlanning.startTime ?? rawPlanning.start ?? '',
+        endTime: rawPlanning.endTime ?? rawPlanning.end ?? '',
+        notes: normalizeServicePlanning(rawPlanning.notes ?? rawPlanning.items ?? rawPlanning.list ?? []).notes,
+    }
+}
+
 
 onMounted(async () => {
     const result = await dbGet<any[]>({
@@ -20,9 +66,14 @@ onMounted(async () => {
                 'id',
                 'timeSlot',
                 'guestCount',
+                'servicePlanning',
                 'day.id',
                 'day.date',
                 'day.event.name',
+                'diets.count',
+                'diets.diets.id',
+                'diets.diets.diets.value',
+                'diets.diets.diets.text',
                 'meals.id',
                 'meals.servingCount',
                 'meals.recipe.name',
@@ -39,6 +90,13 @@ onMounted(async () => {
     console.log("result", result)
     service.value = result ?? null
 })
+
+const planning = computed(() => normalizeServicePlanning(service.value?.servicePlanning))
+const planningNotes = computed(() => planning.value.notes)
+const planningStartTime = computed(() => planning.value.startTime)
+const planningEndTime = computed(() => planning.value.endTime)
+
+const serviceDiets = computed(() => service.value?.diets ?? [])
 
 
 function getIngredientQuantity(baseQuantity: number, recipeBaseServingCount: number, mealServingCount: number | null) {
@@ -228,8 +286,39 @@ function printList() {
         >
             <div class="printPage">
                 <div class="printHeader">
-                    <span class="printDay">{{ service?.day?.date ? new Date(service.day.date).toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit' }) : '' }}</span>
-                    <span class="printSlot">{{ TIME_SLOT_CONFIG[service?.timeSlot]?.label }}</span>
+                    <div class="flex column">
+                        <span class="printDay">{{ service?.day?.date ? new Date(service.day.date).toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit' }) : '' }}</span>
+                        <span class="printSlot">{{ TIME_SLOT_CONFIG[service?.timeSlot]?.label }}</span>
+                        <span
+                            v-if="planningStartTime || planningEndTime"
+                            class="printServiceTime"
+                        >
+                            {{ planningStartTime || '??:??' }} - {{ planningEndTime || '??:??' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div
+                    v-if="serviceDiets.length"
+                    class="printSection"
+                >
+                    <h3 class="printSectionTitle">Régimes spéciaux</h3>
+                    <div
+                        v-for="dietCount in serviceDiets"
+                        :key="dietCount.id ?? dietCount.count"
+                        class="printDietRow"
+                    >
+                        <span class="printDietCount">{{ dietCount.count }}</span>
+                        <div class="printDietList">
+                            <span
+                                v-for="diet in (dietCount.diets ?? [])"
+                                :key="diet.id ?? diet.diets?.value"
+                                class="printDietText"
+                            >
+                                {{ diet.diets?.text }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 <h2 class="printRecipeName">{{ meal.recipe.name }}</h2>
@@ -246,6 +335,20 @@ function printList() {
                             {{ ingredient.ingredient.unit }}
                         </span>
                         <div class="printCheckbox"></div>
+                    </div>
+                </div>
+
+                <div
+                    v-if="planningNotes.length"
+                    class="printSection printNotesSection"
+                >
+                    <h3 class="printSectionTitle">Organisation du Service</h3>
+                    <div
+                        v-for="note in planningNotes"
+                        :key="note.id"
+                        class="printNoteLine"
+                    >
+                        {{ note.text }}
                     </div>
                 </div>
             </div>
@@ -337,6 +440,12 @@ function printList() {
         box-sizing: border-box;
     }
 
+    
+    .printServiceTime {
+        font-size: 12pt;
+        font-weight: 600;
+        margin-top: 0.1cm;
+    }
     .printHeader {
         display: flex;
         justify-content: space-between;
@@ -346,6 +455,45 @@ function printList() {
         margin-bottom: 0.5cm;
         padding-bottom: 0.3cm;
         border-bottom: 2px solid black;
+    }
+
+    .printSection {
+        margin: 0.35cm 0 0.6cm;
+        padding: 0.25cm 0 0;
+        border-top: 1px solid #555;
+    }
+
+    .printSectionTitle {
+        font-size: 13pt;
+        font-weight: 700;
+        margin: 0 0 0.2cm;
+    }
+
+    .printDietRow {
+        display: flex;
+        gap: 0.4cm;
+        margin-bottom: 0.15cm;
+    }
+
+    .printDietCount {
+        font-size: 14pt;
+        font-weight: 700;
+        min-width: 0.8cm;
+    }
+
+    .printDietList {
+        display: flex;
+        flex-direction: column;
+        gap: 0.08cm;
+    }
+
+    .printDietText,
+    .printNoteLine {
+        font-size: 13pt;
+    }
+
+    .printNotesSection {
+        margin-top: 0.55cm;
     }
 
     .printRecipeName {
