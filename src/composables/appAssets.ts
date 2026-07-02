@@ -61,11 +61,30 @@ const TIME_SLOT_CONFIG: Record<string, { label: string; icon: string; order: num
 }
 
 const MEAL_TYPE_CONFIG: Record<string, { label: string; order: number }> = {
-    starter:  { label: 'Entrée',          order: 1 },
-    main:     { label: 'Plat',            order: 2 },
-    side:     { label: 'Accompagnement',  order: 3 },
-    dessert:  { label: 'Dessert',         order: 4 },
-    beverage: { label: 'Boisson',         order: 5 },
+    starter:  { 
+        label: 'Entrée',          
+        order: 1 
+    },
+    main:     { 
+        label: 'Plat',            
+        order: 2 
+    },
+    side:     { 
+        label: 'Accompagnement',  
+        order: 3 
+    },
+    dessert:  { 
+        label: 'Dessert',         
+        order: 4 
+    },
+    beverage: { 
+        label: 'Boisson',         
+        order: 5 
+    },
+    artistExtra: { 
+        label: 'Extra artiste',
+        order: 6
+     }
 }
 
 const SUPPLY_CATEGORY_CONFIG: Record<string, { icon: string; order: number }> = {

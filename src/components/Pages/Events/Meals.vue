@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { dbGet, dbDelete } from '@/composables/fetch'
 import Icon from '@/components/Icon/Main.vue'
 import MealCard from '@/components/Cards/Meal.vue'
+import { TIME_SLOT_CONFIG } from '@/composables/appAssets'
 
 const props = defineProps({
     eventId: {
@@ -79,14 +80,23 @@ async function refreshMeal() {
                 flex column gap10
             "
         >
-            <MealCard
+            <div
                 v-for="meal in meals" :key="meal.id"
-                :meal="meal"
-                :showMenu="openMenuMealId === meal.id"
-                variant="list"
-                @toggle-menu="toggleMealMenu(meal.id)"
-                @delete="deleteMeal(meal.id)"
-            />
+                class="mealEntry flex column gap4"
+            >
+                <MealCard
+                    :meal="meal"
+                    :showMenu="openMenuMealId === meal.id"
+                    variant="list"
+                    @toggle-menu="toggleMealMenu(meal.id)"
+                    @delete="deleteMeal(meal.id)"
+                />
+                <p class="mealMeta">
+                    {{ meal.service?.day?.date ? new Date(meal.service.day.date).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' }) : '' }}
+                    · {{ TIME_SLOT_CONFIG[meal.service?.timeSlot ?? '']?.label ?? meal.service?.timeSlot }}
+                </p>
+            </div>
+
         </div>
 
         <p
@@ -97,6 +107,18 @@ async function refreshMeal() {
         </p>
     </div>
 </template>
+
+<style scoped>
+.mealMeta {
+    color: var(--beige);
+    font-size: 0.72em;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    padding-left: 12px;
+    text-transform: capitalize;
+}
+</style>
 
 <style scoped>
 .mealsContainer {
