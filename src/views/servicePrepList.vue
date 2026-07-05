@@ -92,11 +92,9 @@ onMounted(async () => {
 })
 
 const planning = computed(() => normalizeServicePlanning(service.value?.servicePlanning))
-const planningNotes = computed(() => planning.value.notes)
 const planningStartTime = computed(() => planning.value.startTime)
 const planningEndTime = computed(() => planning.value.endTime)
 
-const serviceDiets = computed(() => service.value?.diets ?? [])
 
 
 function getIngredientQuantity(baseQuantity: number, recipeBaseServingCount: number, mealServingCount: number | null) {
