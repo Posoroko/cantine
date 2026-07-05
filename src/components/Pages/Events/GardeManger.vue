@@ -354,13 +354,88 @@ watch(usedMeals, savePantryList)
 watch(hiddenIngredients, savePantryList)
 watch(autreQtys, savePantryList)
 
+// c5t: all non-hidden ingredients grouped by category — used for the print layout, ignores active search/filter
+const printGroups = computed(() => {
+    return groupedIngredients.value
+        .map(g => ({
+            ...g,
+            items: g.items.filter((ing: any) => !hiddenIngredients.has(ing.id)),
+        }))
+        .filter(g => g.items.length > 0)
+})
+
+function triggerPrint() {
+    const win = window.open('', '_blank', 'width=900,height=700')
+    if (!win) return
+
+    const groupHtml = printGroups.value.map((group, i) => {
+        const rowsHtml = group.items.map((ing: any) => {
+            const base = formatQty(ing.baseQty)
+            const ordered = shoppingOrderedQtys.get(ing.id) != null
+                ? formatQty(shoppingOrderedQtys.get(ing.id)!)
+                : '—'
+            return `<tr>
+                <td>${ing.name} <span class="unit">(${ing.unit})</span></td>
+                <td class="center">${base}</td>
+                <td class="center">${ordered}</td>
+                <td class="received"><div class="receivedBox"></div></td>
+            </tr>`
+        }).join('')
+        return `<div class="group${i > 0 ? ' pageBreak' : ''}">
+            <h2>${group.label}</h2>
+            <table>
+                <thead><tr>
+                    <th class="colName">Ingrédient</th>
+                    <th class="colQty">Base</th>
+                    <th class="colQty">Commandé</th>
+                    <th class="colReceived">Reçu</th>
+                </tr></thead>
+                <tbody>${rowsHtml}</tbody>
+            </table>
+        </div>`
+    }).join('')
+
+    const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Garde-Manger</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #000; }
+        .group { padding: 20px 24px; }
+        .pageBreak { page-break-before: always; }
+        h2 { font-size: 1.3em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #000; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #000; padding: 7px 10px; text-align: left; }
+        th { background: #eee; font-weight: 700; text-transform: uppercase; font-size: 0.78em; letter-spacing: 0.05em; }
+        .colName { width: 45%; }
+        .colQty { width: 15%; text-align: center; }
+        .colReceived { width: 25%; }
+        .center { text-align: center; }
+        .received { height: 44px; padding: 6px 8px; }
+        .receivedBox { border: 1.5px solid #555; border-radius: 4px; height: 100%; min-height: 30px; width: 100%; }
+        .unit { font-size: 0.8em; color: #666; }
+        tr:nth-child(even) td { background: #f7f7f7; }
+    </style>
+</head>
+<body>${groupHtml}</body>
+</html>`
+
+    win.document.write(html)
+    win.document.close()
+    win.focus()
+    win.onafterprint = () => win.close()
+    win.print()
+}
+
 </script>
 
 <template>
     <div class="gardeManger flex column gap20">
 
         <!-- category filter bar -->
-        <div class="categoryFilterBar flex gap10 wrap">
+        <div class="categoryFilterBar flex alignCenter gap10 wrap">
             <button
                 class="categoryFilterBtn flex alignCenter gap6"
                 :class="{ active: activeCategory === null }"
@@ -386,6 +461,14 @@ watch(autreQtys, savePantryList)
             >
                 <Icon>visibility_off</Icon>
                 <span>{{ hiddenCount > 0 ? ` (${hiddenCount})` : '' }}</span>
+            </button>
+
+            <button
+                class="printBtn flex alignCenter gap6 marLeftAuto"
+                @click="triggerPrint"
+            >
+                <Icon>print</Icon>
+                <span>Imprimer</span>
             </button>
         </div>
 
@@ -613,6 +696,8 @@ watch(autreQtys, savePantryList)
             </Icon>
             <span>Enregistrer</span>
         </button>
+
+
     </div>
 </template>
 
@@ -988,4 +1073,24 @@ watch(autreQtys, savePantryList)
     appearance: textfield;
     -moz-appearance: textfield;
 }
+
+/* print button */
+
+.printBtn {
+    background: color-mix(in srgb, var(--beige) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--beige) 20%, transparent);
+    border-radius: 20px;
+    color: var(--beige);
+    cursor: pointer;
+    font-size: 0.85em;
+    opacity: 0.7;
+    padding: 6px 14px;
+    transition: opacity 0.15s;
+}
+
+.printBtn:hover {
+    opacity: 1;
+}
+
+
 </style>

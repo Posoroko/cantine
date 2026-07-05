@@ -126,18 +126,68 @@ function toggleMeal(id: number) {
 
 function printList() {
     showPrintModal.value = false
+
+    const selectedMeals = meals.value.filter((m: any) => selectedMealIds.value.has(m.id))
     const eventName = service.value?.day?.event?.name ?? 'Prep list'
     const rawDate = service.value?.day?.date ?? ''
     const date = rawDate
         ? new Date(rawDate).toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit' })
         : ''
     const slot = TIME_SLOT_CONFIG[service.value?.timeSlot]?.label ?? service.value?.timeSlot ?? ''
-    const originalTitle = document.title
-    document.title = `${eventName} - ${date} - ${slot}`
-    setTimeout(() => {
-        window.print()
-        document.title = originalTitle
-    }, 50)
+    const timeHtml = (planningStartTime.value || planningEndTime.value)
+        ? ` &nbsp;${planningStartTime.value || '??:??'} - ${planningEndTime.value || '??:??'}`
+        : ''
+
+    const pagesHtml = `<p class="serviceLabel">${date} &mdash; ${slot}${timeHtml} &nbsp;&bull;&nbsp; ${service.value?.guestCount ?? '?'} pers.</p>
+    <div class="page">
+        ${selectedMeals.map((meal: any) => {
+        const ingredientsHtml = (meal.recipe?.ingredients ?? []).map((ing: any) => {
+            const qty = getIngredientQuantity(ing.quantity, meal.recipe.servings, meal.servingCount)
+            return `<div class="row">
+                <span class="ingName">${ing.ingredient.name}</span>
+                <span class="qty">${qty} ${ing.ingredient.unit}</span>
+                <div class="checkbox"></div>
+            </div>`
+        }).join('')
+
+        const servings = meal.servingCount ?? service.value?.guestCount ?? '?'
+        return `<div class="recipe">
+            <h2 class="recipeName">${meal.recipe.name} <span class="recipeServings">${servings} pers.</span></h2>
+            <p class="recipeService">${date} &mdash; ${slot}${timeHtml}</p>
+            ${ingredientsHtml}
+        </div>`
+    }).join('')}
+    </div>`
+
+    const win = window.open('', '_blank', 'width=900,height=700')
+    if (!win) return
+
+    win.document.write(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>${eventName} - ${date} - ${slot}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: white; color: black; font-family: Arial, sans-serif; }
+        .page { padding: 1cm 1.5cm; width: 17cm; }
+        .recipe { break-inside: avoid; margin-bottom: 0.8cm; page-break-inside: avoid; }
+        .serviceLabel { border-bottom: 2px solid black; font-size: 16pt; font-weight: 700; margin-bottom: 0.5cm; padding-bottom: 0.25cm; }
+        .recipeService { color: #666; font-size: 9pt; margin-bottom: 0.3cm; margin-top: 0.1cm; }
+        .recipeName { border-bottom: 2px solid black; font-size: 20pt; font-weight: 700; margin-bottom: 0.15cm; padding-bottom: 0.2cm; display: flex; justify-content: space-between; align-items: baseline; }
+        .recipeServings { font-size: 13pt; font-weight: 600; color: #444; }
+        .row { align-items: center; border-bottom: 1px solid #ddd; display: flex; gap: 0.4cm; padding: 0.22cm 0; }
+        .ingName { flex: 1; font-size: 14pt; font-weight: 600; }
+        .qty { font-size: 14pt; font-weight: 700; min-width: 2.5cm; text-align: right; }
+        .checkbox { border: 2px solid black; border-radius: 4px; flex-shrink: 0; height: 1cm; width: 1cm; }
+    </style>
+</head>
+<body>${pagesHtml}</body>
+</html>`)
+    win.document.close()
+    win.focus()
+    win.onafterprint = () => win.close()
+    win.print()
 }
 </script>
 
@@ -278,82 +328,7 @@ function printList() {
         </div>
     </Teleport>
 
-    <!-- print area (hidden on screen, visible on print) -->
-    <div class="printArea">
-        <template
-            v-for="meal in meals.filter((m: any) => selectedMealIds.has(m.id))"
-            :key="meal.id"
-        >
-            <div class="printPage">
-                <div class="printHeader">
-                    <div class="flex column">
-                        <span class="printDay">{{ service?.day?.date ? new Date(service.day.date).toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit' }) : '' }}</span>
-                        <span class="printSlot">{{ TIME_SLOT_CONFIG[service?.timeSlot]?.label }}</span>
-                        <span
-                            v-if="planningStartTime || planningEndTime"
-                            class="printServiceTime"
-                        >
-                            {{ planningStartTime || '??:??' }} - {{ planningEndTime || '??:??' }}
-                        </span>
-                    </div>
-                </div>
 
-                <div
-                    v-if="serviceDiets.length"
-                    class="printSection"
-                >
-                    <h3 class="printSectionTitle">Régimes spéciaux</h3>
-                    <div
-                        v-for="dietCount in serviceDiets"
-                        :key="dietCount.id ?? dietCount.count"
-                        class="printDietRow"
-                    >
-                        <span class="printDietCount">{{ dietCount.count }}</span>
-                        <div class="printDietList">
-                            <span
-                                v-for="diet in (dietCount.diets ?? [])"
-                                :key="diet.id ?? diet.diets?.value"
-                                class="printDietText"
-                            >
-                                {{ diet.diets?.text }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 class="printRecipeName">{{ meal.recipe.name }}</h2>
-
-                <div
-                    v-for="ingredient in meal.recipe?.ingredients"
-                    :key="ingredient.id"
-                    class="printIngredient"
-                >
-                    <span class="printIngredientName">{{ ingredient.ingredient.name }}</span>
-                    <div class="printIngredientRight">
-                        <span class="printQty">
-                            {{ getIngredientQuantity(ingredient.quantity, meal.recipe.servings, meal.servingCount) }}
-                            {{ ingredient.ingredient.unit }}
-                        </span>
-                        <div class="printCheckbox"></div>
-                    </div>
-                </div>
-
-                <div
-                    v-if="planningNotes.length"
-                    class="printSection printNotesSection"
-                >
-                    <h3 class="printSectionTitle">Organisation du Service</h3>
-                    <div
-                        v-for="note in planningNotes"
-                        :key="note.id"
-                        class="printNoteLine"
-                    >
-                        {{ note.text }}
-                    </div>
-                </div>
-            </div>
-        </template>
-    </div>
 </template>
 
 <style scoped>
@@ -397,143 +372,5 @@ function printList() {
     width: 20px;
     height: 20px;
     cursor: pointer;
-}
-
-/* print area — hidden on screen */
-.printArea {
-    display: none;
-}
-
-/* print styles */
-@media print {
-    /* hide everything and force white background */
-    body {
-        background: white !important;
-    }
-
-    body * {
-        visibility: hidden;
-    }
-
-    /* show only the print area */
-    .printArea,
-    .printArea * {
-        visibility: visible;
-    }
-
-    .printArea {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        background: white;
-    }
-
-    .printPage {
-        width: 17cm;
-        padding: 1cm 1.5cm;
-        page-break-after: always;
-        break-after: page;
-        background: white;
-        color: black;
-        box-sizing: border-box;
-    }
-
-    
-    .printServiceTime {
-        font-size: 12pt;
-        font-weight: 600;
-        margin-top: 0.1cm;
-    }
-    .printHeader {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14pt;
-        font-weight: 600;
-        margin-bottom: 0.5cm;
-        padding-bottom: 0.3cm;
-        border-bottom: 2px solid black;
-    }
-
-    .printSection {
-        margin: 0.35cm 0 0.6cm;
-        padding: 0.25cm 0 0;
-        border-top: 1px solid #555;
-    }
-
-    .printSectionTitle {
-        font-size: 13pt;
-        font-weight: 700;
-        margin: 0 0 0.2cm;
-    }
-
-    .printDietRow {
-        display: flex;
-        gap: 0.4cm;
-        margin-bottom: 0.15cm;
-    }
-
-    .printDietCount {
-        font-size: 14pt;
-        font-weight: 700;
-        min-width: 0.8cm;
-    }
-
-    .printDietList {
-        display: flex;
-        flex-direction: column;
-        gap: 0.08cm;
-    }
-
-    .printDietText,
-    .printNoteLine {
-        font-size: 13pt;
-    }
-
-    .printNotesSection {
-        margin-top: 0.55cm;
-    }
-
-    .printRecipeName {
-        font-size: 22pt;
-        font-weight: 700;
-        margin: 0.4cm 0;
-        padding-bottom: 0.2cm;
-        border-bottom: 1px solid #555;
-    }
-
-    .printIngredient {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.25cm 0;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .printIngredientName {
-        font-size: 16pt;
-        font-weight: 700;
-    }
-
-    .printIngredientRight {
-        display: flex;
-        align-items: center;
-        gap: 0.5cm;
-    }
-
-    .printQty {
-        font-size: 16pt;
-        font-weight: 700;
-    }
-
-    .printCheckbox {
-        width: 1.2cm;
-        height: 1.2cm;
-        border: 2px solid black;
-        border-radius: 4px;
-        flex-shrink: 0;
-    }
 }
 </style>
